@@ -1,0 +1,192 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="editURL" value="/promotion/listsalepoint/edit" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/category.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+
+        function viewResults() {
+            $('#ctkmKiemTra').submit();
+        }
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH CHƯƠNG TRÌNH KHUYẾN MÃI</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="ctkmKiemTra" id="ctkmKiemTra">
+
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+                    <tr>
+                        <td>  
+                            <div style="padding-left: 10px; display: inline;">
+                                <label>Tên điểm (<label
+									class="errorMessage">*</label>): </label>
+                                <form:input path="searchText" cssStyle="width: 160px" />
+                            </div>
+                            <div style="padding-left: 10px; display: inline;">
+                                <label>Mã điểm bán(<label
+									class="errorMessage">*</label>): </label>
+                                <form:input path="endDateString" cssStyle="width: 160px" />
+                            </div>
+                            &#160;&#160;&#160;&#160;
+                       		<div style="min-width:150px; display: inline;">
+                            <a href="javascript:;" onclick="viewResults()" class="btn-1" title="Xem kết ">
+                                <span><span>&#160;&#160;Xem kết quả&#160;&#160;</span></span>
+                            </a>
+                            </div>								
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <util:pagination maxPages="${maxPages}" page="${page}" size="${size}" 
+                                             id="catTopPagination" formSubmit="ctkmKiemTra" submitMethod="POST" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT </td>
+										<td width="7%">Mã Điểm bán </td>								
+										<td width="10%">Tên Điểm bán </td>
+										<td width="8%">Số Điện Thoại </td>
+										<td width="10%">Địa chỉ </td>	
+										<td width="10%">Tặng </td>							
+										<td width="5%">Số Lượng </td>
+										<td width="5%">Tổng tiền(vnd)</td>
+										<td width="15%">Tên KM </td>										
+										<td width="5%">Cần approve </td>
+										<td width="10%">Ngày Tạo </td>
+										<td width="5%">Trạng Thái</td>	
+										<td width="5%">Lý Do</td>	
+                                    </tr>
+                                </thead>
+                                <tbody>
+                               <c:choose>
+										<c:when test="${not empty ctkmSalePointList}">
+								
+									<c:forEach items="${ctkmSalePointList}" var="item" varStatus="status">
+										<tr>
+											<td align="center">${(page-1)*size+status.count}</td>											
+											<td>${item.poss.posCode}</td>
+											<td>
+											<c:choose>
+												<c:when test="${item.promotions.conditionQuantity eq 5}">
+													<a href="${editURLAC}/${item.id}/${item.promotions.id}">${item.poss.name}</a>												
+												</c:when>
+												<!-- check here -->
+												<c:otherwise>
+													${item.poss.name}
+												</c:otherwise>
+											</c:choose>					
+											</td><td>
+											${item.poss.tel}
+											</td>	
+											<td>${item.poss.address}</td>									
+											<td>${item.awardName}</td>
+											<td align="right"><c:choose>
+														<c:when test="${item.promotions.promotionAwards.id == 4}">
+															<fmt:formatNumber type="number"
+															pattern="###,###" value="${item.awardQuantity}" />%
+														</c:when>
+														<c:otherwise>
+															<fmt:formatNumber type="number"
+															pattern="###,###" value="${item.awardQuantity}" />
+														</c:otherwise>
+													</c:choose>	</td>
+											<td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${item.awardAmount}" /></td>
+											<td>${item.promotions.name}</td>
+											<td>${item.promotions.approveRoles.name}</td>
+											
+											<td><fmt:parseDate value="${item.promotions.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" var="createdAt"/> <fmt:formatDate value="${createdAt}" pattern="dd/MM/yyyy HH:mm:ss" /></td>	
+											<td>
+												<c:choose>
+													<c:when test="${item.statuss.id == 24}"> <div class="errorMessage">
+                                               <p>${item.statuss.name }</p>
+                                            </div></c:when>
+													<c:otherwise>${item.statuss.name }</c:otherwise>
+												</c:choose>
+																								
+											</td>
+											<td>											
+											<c:choose>
+													<c:when test="${item.promotions.statuss.id ==1}">	
+														<c:choose>
+															<c:when test="${item.conditionQuantity eq 3}">
+																<a class="redTxt" href="${deliveryURLAC}/${item.ctkmId}/${item.id}"><spring:message code="s_promotion_award_table_b_delivery" text="Giao khuyáº¿n mÃ£i" htmlEscape="false" /></a>
+																
+															</c:when>
+															<c:otherwise>
+																<a class="redTxt" href="${deliveryURL}/${item.id}"><spring:message code="s_promotion_award_table_b_delivery" text="Giao khuyáº¿n mÃ£i" htmlEscape="false" /></a>
+															</c:otherwise>
+														</c:choose>															
+													</c:when>	
+													<c:when test="${item.promotions.statuss.id==0}">														
+															<c:choose>
+																<c:when test="${item.conditionQuantity eq 3}">																
+																	<a class="redTxt" href="${delURLAC}/${item.ctkmId}/${item.id}"><spring:message code="s_promotion_award_table_lb_delete" htmlEscape="false" /></a>
+																</c:when>
+																<c:otherwise>
+																	<a class="redTxt" href="${delURL}/${item.id}"><spring:message code="s_promotion_award_table_lb_delete" htmlEscape="false" /></a>
+																</c:otherwise>
+															</c:choose>											
+																							
+													</c:when>																									
+													<c:otherwise>
+														${item.note} 
+													</c:otherwise>																				
+											</c:choose>													
+											</td>										
+										</tr>
+									</c:forEach>
+								
+								</c:when>
+								<c:otherwise>
+								
+									<tr>
+										<td colspan="13" align="center">Không có dữ liệu. </td>
+									</tr>
+									
+								</c:otherwise>
+								</c:choose>
+								</tbody>
+							</table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catTopPagination"
+                                         formSubmit="ctkmKiemTra" submitMethod="POST" /></td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

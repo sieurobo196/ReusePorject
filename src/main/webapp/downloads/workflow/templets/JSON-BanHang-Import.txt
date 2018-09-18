@@ -1,0 +1,36 @@
+[
+  {
+    "workFlowTypeCode": "WORKFLOW_COMPANY",
+    "workFlowTypeName": "Quy trình bán hàng của công ty",
+    "workFlow": [
+      {
+        "title": "Phát triển điểm mới",
+        "code": "NEW_POS",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 1
+      },
+      {
+        "title": "Chỉ tiêu",
+        "code": "TARGET",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 2
+      },
+      {
+        "title": "Nhập hàng",
+        "code": "RECEIVE_GOODS",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 3
+      },
+      {
+        "title": "Bán hàng",
+        "code": "SELL_GOODS",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 4
+      }
+    ]
+  }
+]

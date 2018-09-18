@@ -1,0 +1,321 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="LIST_URL" value="/promotion/salepointlist" />
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>THÔNG TIN KHUYẾN MÃI CỦA ĐIỂM BÁN</span>
+			</h2>
+		</div>
+		<div id="content">
+			
+			<div class="formContent">
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr height="25">
+					<td width="80%"></td>					
+					<td width="20%">
+						<a href="${LIST_URL}" class="btn-1"
+						title="Trở về danh sách"><span><span>Trở về danh sách</span></span></a>
+					</td>													
+			</tr>
+			</table>
+				&#160;&#160;
+			<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />	
+				<thead>
+				<tr height="25">
+					<td></td>
+					<td align="left" style="text-align: left" colspan="4"><label style="font-weight: bold;font-size: 14"> &#160;&#160;Thông tin điểm bán </label></td>
+									
+				</tr>
+				</thead>
+				<tbody>					
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Tên điểm bán:</label></td>
+					<td> ${itemObj.poss.name}</td>	
+					<td align="right"><label style="font-weight: bold">Điện thoại:</label></td>
+					<td colspan="2"> ${itemObj.poss.tel}</td>
+								
+				</tr>
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Địa chỉ:</label></td>
+					<td colspan="2">${itemObj.poss.address}</td>					
+					<td colspan="2"></td>							
+				</tr>
+				</tbody>
+				<thead>
+				<tr height="25">
+					<td></td>
+					<td colspan="4" style="text-align: left" ><label style="font-weight: bold;font-size: 14">&#160;&#160;Thông tin đơn hàng </label></td>									
+				</tr>
+				</thead>
+				<tbody>				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Số lượng(đv nhỏ nhất):</label></td>
+					<td><fmt:formatNumber type="number" pattern="###,###" value="${itemObj.quantity}" /> (sp)</td>	
+					<td align="right"><label style="font-weight: bold">Tổng giá trị:</label></td>
+					<td colspan="2"><fmt:formatNumber type="number" pattern="###,###" value="${itemObj.amount}" />( VNĐ)</td>
+								
+				</tr>
+				
+				<c:forEach items="${itemObj2.goodsQuantityList}" var="goodsQuantityItem">
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">${goodsQuantityItem.name}:</label></td>
+					<td>
+						<fmt:formatNumber type="number" pattern="###,###" value="${goodsQuantityItem.quantityR}" /> thùng
+						<fmt:formatNumber type="number" pattern="###,###" value="${goodsQuantityItem.quantityM}" /> ${goodsQuantityItem.unit} 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Giá trị:</label></td>
+					<td colspan="2"><fmt:formatNumber type="number" pattern="###,###" value="${goodsQuantityItem.revenue}" />( VNĐ)</td>
+									
+				</tr>									
+				</c:forEach>
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold;font-size: 14">Trạng thái KM: </label></td>
+					<td >					
+					${itemObj.statuss.name}					
+					</td>		
+					<td align="right"><!--<label style="font-weight: bold">Người duyệt:</label> --></td>	
+					<td colspan="2"></td>	
+						
+				</tr>
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Thời gian tham gia:</label></td>
+					<td><fmt:parseDate	value="${itemObj.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" var="createdAt" /> <fmt:formatDate
+															value="${createdAt}" pattern="dd/MM/yyyy" /></td>		
+					<td align="right"><!-- <label style="font-weight: bold">Thời gian duyệt:</label> --></td>
+					<td colspan="2"></td>
+								
+				</tr>	
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold;font-size: 14">Khuyến mãi sẽ được nhận: </label></td>
+					<td>
+						${itemObj.awardQuantity} ${itemObj.awardName}												 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Giá trị:</label></td>
+					<td colspan="2"><fmt:formatNumber type="number" pattern="###,###" value="${itemObj.awardAmount}" />( VNĐ)</td>
+										
+				</tr>
+				
+				</tbody>
+				<thead>
+				<tr height="25">
+					<td></td>
+					<td colspan="4" style="text-align: left" ><label style="font-weight: bold;font-size: 14">&#160;&#160;Thông tin chương trình khuyến mãi </label></td>									
+				</tr>
+				</thead>
+				<tbody>				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Tên CT:</label></td>
+					<td>
+						${itemObj.promotions.name}												 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Mô tả:</label></td>
+					<td colspan="2" >${itemObj.promotions.description}</td>
+								
+				</tr>
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Trạng thái:</label></td>					
+					<td>${itemObj.promotions.statuss.name}</td>	
+					<td align="right"><label style="font-weight: bold">Thời gian khuyến mãi:</label></td>
+					<td colspan="2"><fmt:parseDate	value="${itemObj.promotions.startDate}" pattern="yyyy-MM-dd HH:mm:ss" var="startDate" /> <fmt:formatDate
+															value="${startDate}" pattern="dd/MM/yyyy" /> - <fmt:parseDate	value="${itemObj.promotions.endDate}"
+								pattern="yyyy-MM-dd HH:mm:ss" var="endDate" />
+								 <fmt:formatDate value="${endDate}" pattern="dd/MM/yyyy" /></td>			
+				</tr>
+				
+				<tr height="25">
+					<td align="right" colspan="1"><label style="font-weight: bold">Phạm vi áp dụng:</label></td>
+					<td colspan="4">
+					</td>	
+					<!-- <td align="right"></td>
+					<td colspan="2" ></td> -->
+									
+				</tr>
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Miền:</label></td>
+					<td>
+						<c:forEach items="${listRegions}" var="itemArea" varStatus="statusArea">
+							<c:choose>
+								<c:when test="${statusArea.count==1}">
+									${itemArea.name}
+								</c:when>
+								<c:otherwise>
+									<br/>${itemArea.name}
+								</c:otherwise>
+							</c:choose>								
+						</c:forEach>												 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Khu vực:</label></td>
+					<td colspan="2" ><c:forEach items="${listASMs}" var="itemSubArea" varStatus="statusSubArea">
+							<c:choose>
+								<c:when test="${statusSubArea.count==1}">
+									${itemSubArea.name}
+								</c:when>
+								<c:otherwise>
+									<br/>${itemSubArea.name}
+								</c:otherwise>
+							</c:choose>							
+						</c:forEach>
+					</td>
+								
+				</tr>		
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Tỉnh thành phố:</label></td>
+					<td>
+						<c:forEach items="${listTinhThanh}" var="itemProvince" varStatus="statusProvince">
+							<c:choose>
+								<c:when test="${statusProvince.count==1}">
+									${itemProvince.name}
+								</c:when>
+								<c:otherwise>
+									<br/>${itemProvince.name}
+								</c:otherwise>
+							</c:choose>								
+						</c:forEach>												 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Nhà phân phối:</label></td>
+					<td colspan="2" >
+					
+					<c:forEach items="${listNPPs}" var="itemDistributor" varStatus="statusDistributor">
+							<c:choose>
+								<c:when test="${statusDistributor.count==1}">
+									${itemDistributor.name}
+								</c:when>
+								<c:otherwise>
+									<br/>${itemDistributor.name}
+								</c:otherwise>
+							</c:choose>									
+						</c:forEach>
+						
+					</td>
+							
+				</tr>
+				
+				<tr height="25">
+					<td align="right" colspan="1"><label style="font-weight: bold">Sản phẩm áp dụng:</label></td>
+					<td colspan="4">
+					</td>	
+					<!-- 
+					<td></td>	
+					<td align="right"></td>
+					<td colspan="2" ></td>	
+						 -->					
+				</tr>
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Loại sản phẩm:</label></td>
+					<td>
+							${itemObj.promotions.goodsCategorys.name}
+																	 
+					</td>	
+					<td align="right"><label style="font-weight: bold">Tên sản phẩm:</label></td>
+					<td colspan="2" ><c:forEach items="${listGoods}" var="itemGoods"  varStatus="statusGoods">
+							<c:choose>
+								<c:when test="${statusGoods.count==1}">
+									${itemGoods.goodss.name}
+								</c:when>
+								<c:otherwise>
+									<br/>${itemGoods.goodss.name}
+								</c:otherwise>
+							</c:choose>								
+						</c:forEach>
+					</td>
+								
+				</tr>
+				
+				<tr height="25">
+					<td align="right"><label style="font-weight: bold">Hình thức: </label></td>
+					<td><c:forEach items="${itemObj2.listAwardCTKM}" var="itemAward">
+							<c:choose>
+							<c:when test="${itemAward.id=='AWARD_OTHER'}">
+								Tặng vật phẩm
+							</c:when>
+							<c:when test="${itemAward.id=='AWARDGOODS'}">
+								Tặng sản phẩm
+							</c:when>
+							<c:when test="${itemAward.id=='AWARD_AMOUNT'}">
+								Chiết khấu giảm tiền
+							</c:when>		
+							<c:otherwise>
+								Chiết khấu % trên doanh số
+							</c:otherwise>									
+						</c:choose>							
+						</c:forEach>
+						${itemObj.promotions.promotionAwards.promotionAwardName}
+					</td>	
+					
+					<td align="right"><label style="font-weight: bold">Cần xét duyệt:</label></td>
+					<td colspan="2" >
+						<c:choose>
+							<c:when test="${not empty itemObj2.listApproveRole}">
+								<c:forEach items="${itemObj2.listApproveRole}" var="itemRole">
+									${itemRole.val}
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								
+							</c:otherwise>
+						</c:choose>	
+						<c:choose>
+							<c:when test="${itemObj.promotions.approveRoles.id== 1}">
+								Admin Company 
+							</c:when>
+							<c:when test="${itemObj.promotions.approveRoles.id== 2}">
+								Admin Channel
+							</c:when>
+							<c:when test="${itemObj.promotions.approveRoles.id== 3}">
+								Assistant
+							</c:when>
+							<c:when test="${itemObj.promotions.approveRoles.id== 4}">
+								Sales Sup
+							</c:when>		
+							<c:otherwise>
+								Không cần cấp xét duyệt 
+							</c:otherwise>	
+						</c:choose>						
+					</td>								
+				</tr>				
+				</tbody>
+			</table>
+			&#160;&#160;
+				&#160;&#160;
+			<table width="100%" border="0" cellspacing="0" cellpadding="0">
+			<tr height="25">
+					<td width="80%"></td>					
+					<td width="20%">
+						<a href="${LIST_URL}" class="btn-1"
+						title="Trở về danh sách"><span><span>Trở về danh sách</span></span></a>
+					</td>													
+			</tr>
+			</table>	
+		</div>
+			
+		</div>
+	</div>
+</div>
+
+
+		
+	

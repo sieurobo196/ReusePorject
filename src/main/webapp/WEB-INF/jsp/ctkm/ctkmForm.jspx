@@ -1,0 +1,1491 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="urlAjaxGetGoods" value="/ajax/getGoodsByGoodsCategoryId" />
+    <spring:url var="urlAjaxGetGoodsUnit" value="/ajax/getGoodsUnitByGoodsId" />
+    <spring:url var="urlAjaxGetOtherUnit" value="/ajax/getOtherUnitByOtherId" />
+    <spring:url var="urlAjaxDeletePromotionImage" value="/ajax/deletePromotionImage" />
+
+    <spring:url var="LIST_URL" value="/promotion/list" />
+    <spring:url var="ADD_OTHER_URL" value="/ajax/createGoodsAwardOther" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="rootURL" value="/" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+
+
+    <![CDATA[    
+    <script src="${scriptsFolder}/autoNumeric.js" type=text/javascript></script>  
+
+    <style type="text/css">
+
+        div.pictureBox{
+            width:202px;
+            margin-top: 10px;
+            position: relative;
+        }
+
+        #lnkDeletePromotion{
+            display: block;
+            position: absolute;
+            top:1px;
+            right: 1px;
+            background-image: url('${imagesFolder}/delete.png');
+            width:24px;
+            height:24px;
+        }
+
+        #lnkDeletePromotion:hover{
+            width:32px;
+            height:32px;
+            background-image: url('${imagesFolder}/delete_hover.png');
+        }
+
+
+
+
+
+    </style>
+    <script type="text/javascript">
+        function removeOtherData()
+        {
+            $("#p_other_name").val('');
+            $("#p_other_quantity").val('');
+            $("#p_other_unit").val(0);
+            $("#p_other_unit").select2();
+        }
+        
+        function imageClick() {
+            $('#promotionFile').click();
+        }
+
+        function deletePromotionImage(id)
+        {
+            if (id == '')
+            {
+                $('#promotionFile').val('');
+                $('#divPicture').hide();
+            }
+            else {
+                var ok = confirm('Bạn có chắc muốn xóa hình này không?');
+                if (ok)
+                {
+                    $.ajax({
+                        type: 'POST',
+                        url: '${urlAjaxDeletePromotionImage}',
+                        dataType: 'json',
+                        data: JSON.stringify(id),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data.success) {
+                                $('#divPicture').hide();
+                            } else {
+                                alert('Xóa thất bại.');
+                            }
+                        }
+                    });
+                }
+            }
+        }
+
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#divPicture').show();
+                    $('#pictureBox')
+                            .attr('src', e.target.result)
+                            .width(200)
+                            .height(100);
+                    $('#lnkDeletePromotion')
+                            .attr('href', 'javascript:deletePromotionImage("")')
+                };
+
+                reader.readAsDataURL(input.files[0]);
+            }
+            else {
+                $('#divPicture').hide();
+            }
+        }
+
+        function changeRegister()
+        {
+            if ($('#isReg').attr("checked") == 'checked')
+            {
+                $('#rowApplyRole').show();
+                $('#approveRoles\\.id').removeAttr('disabled');
+                $('#cbbQuantityType').find("option").each(function () {
+                    if ($(this).val() == '3' || $(this).val() == '4')
+                    {
+                        $(this).remove();
+                    }
+                });
+                $('#cbbQuantityType').select2();
+            }
+            else {
+                $('#rowApplyRole').hide();
+                $('#approveRoles\\.id').attr('disabled', 'disabled');
+                $('#cbbQuantityTypeFull').find("option").each(function () {
+                    $('#cbbQuantityType').append($(this).clone());
+                });
+            }
+        }
+
+        function checkStartDate()
+        {
+            var txtStartDate = $('#txtStartDate').val();
+            var strArray = txtStartDate.split('/');
+            var ret = false;
+            if (strArray.length == 3)
+            {
+                var date = new Date();
+                date.setFullYear(strArray[2]);
+                date.setMonth(strArray[1] - 1);
+                date.setDate(strArray[0]);
+                date.setHours(23);
+                date.setMinutes(59);
+                date.setSeconds(59);
+                var now = new Date();
+                if (date >= now)
+                {
+                    $("#startDateError").hide();
+                    $("#startDate\\.errors").hide();
+                    ret = true;
+                }
+                else {
+                    $("#startDateError").text("Ngày bắt đầu phải lớn hơn hoặc bằng ngày hiện tại");
+                    $("#startDateError").show();
+                    $("#startDate\\.errors").hide();
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        function checkEndDate()
+        {
+            var txtStartDate = $('#txtStartDate').val();
+            var txtEndDate = $('#txtEndDate').val();
+            var strArrayStart = txtStartDate.split('/');
+            var strArrayEnd = txtEndDate.split('/');
+            var ret = false;
+            if (strArrayStart.length == 3 && strArrayEnd.length == 3)
+            {
+                var startDate = new Date();
+                startDate.setFullYear(strArrayStart[2]);
+                startDate.setMonth(strArrayStart[1] - 1);
+                startDate.setDate(strArrayStart[0]);
+                startDate.setHours(23);
+                startDate.setMinutes(59);
+                startDate.setSeconds(59);
+
+                var endDate = new Date();
+                endDate.setFullYear(strArrayEnd[2]);
+                endDate.setMonth(strArrayEnd[1] - 1);
+                endDate.setDate(strArrayEnd[0]);
+                endDate.setHours(23);
+                endDate.setMinutes(59);
+                endDate.setSeconds(59);
+
+                if (endDate >= startDate)
+                {
+                    $("#endDateError").hide();
+                    $("#endDate\\.errors").hide();
+                    return true;
+                }
+                else {
+                    $("#endDateError").text("Ngày kết thúc phải lớn hơn hoặc bằng ngày bắt đầu");
+                    $("#endDateError").show();
+                    $("#endDate\\.errors").hide();
+                    ret = false;
+                }
+            }
+            return ret;
+        }
+
+        function validateNumber()
+        {
+            var flag = true;
+            var reg = /^[-,+]*\d+$/;
+
+            if ($("#chkRange").prop('checked'))
+            {
+//                var promotionR01 = document.getElementById("proRanges.promotionR01").value;
+//                var promotionR02 = document.getElementById("proRanges.promotionR02").value;
+//                var promotionR03 = document.getElementById("proRanges.promotionR03").value;
+//                var promotionR04 = document.getElementById("proRanges.promotionR04").value;
+//                var promotionR05 = document.getElementById("proRanges.promotionR05").value;
+//
+//                var promotionV01 = document.getElementById("proRanges.promotionV01").value;
+//                var promotionV02 = document.getElementById("proRanges.promotionV02").value;
+//                var promotionV03 = document.getElementById("proRanges.promotionV03").value;
+//                var promotionV04 = document.getElementById("proRanges.promotionV04").value;
+//                var promotionV05 = document.getElementById("proRanges.promotionV05").value;
+//
+//                if (promotionR01 == '' || promotionR01 < 1)
+//                {
+//                    $("#promotionR01NumberError").show();
+//                    $("#proRanges\\.promotionR01\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionR02 == '' || promotionR02 < 1)
+//                {
+//                    $("#promotionR02NumberError").show();
+//                    $("#proRanges\\.promotionR02\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionR03 == '' || promotionR03 < 1)
+//                {
+//                    $("#promotionR03NumberError").show();
+//                    $("#proRanges\\.promotionR03\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionR04 == '' &&  || promotionR04 < 1)
+//                {
+//                    $("#promotionR04NumberError").show();
+//                    $("#proRanges\\.promotionR04\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionR05 == ''|| promotionR05 < 1)
+//                {
+//                    $("#promotionR05NumberError").show();
+//                    $("#proRanges\\.promotionR05\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionV01 == '' || promotionV01 < 1)
+//                {
+//                    $("#promotionV01NumberError").show();
+//                    $("#proRanges\\.promotionV01\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionV02 == '' || promotionV02 < 1)
+//                {
+//                    $("#promotionV02NumberError").show();
+//                    $("#proRanges\\.promotionV01\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionV03 == '' || promotionV03 < 1)
+//                {
+//                    $("#promotionV03NumberError").show();
+//                    $("#proRanges\\.promotionV03\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionV04 == '' || promotionV04 < 1)
+//                {
+//                    $("#promotionV04NumberError").show();
+//                    $("#proRanges\\.promotionV04\\.errors").hide();
+//                    flag = false;
+//                }
+//                if (promotionV05 == '' || promotionV05 < 1)
+//                {
+//                    $("#promotionV05NumberError").show();
+//                    $("#proRanges\\.promotionV05\\.errors").hide();
+//                    flag = false;
+//                }
+            }
+            else {
+                var quantity = document.getElementById("quantity").value;
+                if (quantity == '' || quantity < 1)
+                {
+                    $("#quantityNumberError").show();
+                    $("#quantity\\.errors").hide();
+                    flag = false;
+                }
+                else {
+                    $("#quantityNumberError").hide();
+                    $("#quantity\\.errors").hide();
+                }
+            }
+
+            if ($('#name').val() == '' || $('#name').val().trim() == '')
+            {
+                $('#nameError').text("Chưa nhập tên CTKM");
+                $('#nameError').show();
+                $('#name\\.errors').hide();
+            }
+            else {
+                $('#nameError').hide();
+                $('#name\\.errors').hide();
+            }
+
+            if ($('#code').val() == '' || $('#code').val().trim() == '')
+            {
+                $('#codeError').text("Chưa nhập mã CTKM");
+                $('#codeError').show();
+                $('#code\\.errors').hide();
+                flag = false;
+            }
+            else {
+                $('#codeError').hide();
+                $('#code\\.errors').hide();
+            }
+
+
+
+            var proAwardOtherQuantity = document.getElementById("proAwardOtherQuantity").value;
+            var proAwardQuantity = document.getElementById("proAwardQuantity").value;
+            var discount = document.getElementById("discount").value;
+
+
+            var awardType = $("#cbbAward").val();
+            if (awardType == 1)
+            {
+                if (proAwardQuantity == '' || proAwardQuantity < 1)
+                {
+                    $("#proAwardQuantityNumberError").show();
+                    $("#proAwardQuantity\\.errors").hide();
+                    flag = false;
+                }
+                else {
+                    $("#proAwardQuantityNumberError").hide();
+                    $("#proAwardQuantity\\.errors").hide();
+                }
+
+            } else if (awardType == 2)
+            {
+                if (proAwardOtherQuantity == '' || proAwardOtherQuantity < 1)
+                {
+                    $("#proAwardOtherQuantityNumberError").show();
+                    $("#proAwardOtherQuantity\\.errors").hide();
+                    flag = false;
+                }
+                else {
+                    $("#proAwardOtherQuantityNumberError").hide();
+                    $("#proAwardOtherQuantity\\.errors").hide();
+                }
+            } else if (awardType == 3 || awardType == 4)
+            {
+                if (discount == '' || discount < 1)
+                {
+                    $("#discountNumberError").show();
+                    $("#discount\\.errors").hide();
+                    flag = false;
+                }
+                else {
+                    $("#discountNumberError").hide();
+                    $("#discount\\.errors").hide();
+                }
+            }
+
+            var startDate = document.getElementById("txtStartDate").value;
+            var endDate = document.getElementById("txtEndDate").value;
+            if (startDate.length > 0) {
+                var m = startDate.match(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/);
+                if (m == null)
+                {
+                    $("#startDateError").text("Ngày bắt đầu không hợp lệ");
+                    $("#startDateError").show();
+                    $("#startDate\\.errors").hide();
+                    flag = false;
+                }
+                else if (!checkStartDate())
+                {
+                    flag = false;
+                }
+                else {
+                    $("#startDateError").hide();
+                    $("#startDate\\.errors").hide();
+                }
+            } else {
+                $("#startDateError").text("Chưa chọn ngày bắt đầu");
+                $("#startDateError").show();
+                $("#startDate\\.errors").hide();
+                flag = false;
+            }
+
+
+            if (endDate.length > 0) {
+                var m = endDate.match(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/);
+                if (m == null)
+                {
+                    $("#endDateError").text("Ngày kết thúc khôp hợp lệ");
+                    $("#endDateError").show();
+                    $("#endDate\\.errors").hide();
+                    flag = false;
+                }
+                else if (!checkEndDate())
+                {
+                    flag = false;
+                }
+                else {
+                    $("#endDateError").hide();
+                    $("#endDate\\.errors").hide();
+                }
+            }
+            else {
+                $("#endDateError").text("Chưa chọn ngày kết thúc");
+                $("#endDateError").show();
+                $("#endDate\\.errors").hide();
+                flag = false;
+            }
+
+            if ($('#cbbGoods').find(':selected').length < 1)
+            {
+                $("#goodsIdListError").text("Chưa chọn sản phẩm");
+                $("#goodsIdListError").show();
+                $("#goodsIdList\\.errors").hide();
+                flag = false;
+            }
+            else {
+                $("#goodsIdListError").hide();
+                $("#goodsIdList\\.errors").hide();
+            }
+
+            if ($('#cbbGoodsCategory').val() == '' || $('#cbbGoodsCategory').val() == 0)
+            {
+                $("#goodsCategorysError").text("Chưa chọn Loại SP");
+                $("#goodsCategorysError").show();
+            }
+            else {
+                $("#goodsCategorysError").hide();
+            }
+
+            if ($('#cbbAward').val() == 1)
+            {
+                //tang san pham                                
+                if ($('#cbbGoodsCategoryAward').val() == '' || $('#cbbGoodsCategoryAward').val() == 0
+                        || $('#cbbAwardGoods').val() == '' || $('#cbbAwardGoods').val() == 0)
+                {
+                    $('#proAwardGoodssError').text('Chưa chọn sản phẩm tặng thưởng');
+                    $('#proAwardGoodssError').show();
+                    $('#proAwardGoodss\\.id\\.errors').hide();
+                    flag = false;
+                }
+                else {
+                    $('#proAwardGoodssError').hide();
+                    $('#proAwardGoodss\\.id\\.errors').hide();
+                }
+
+            }
+            else if ($('#cbbAward').val() == 2)
+            {
+                //tang vat pham
+                if ($('#cbbAwardOther').val() == '' || $('#cbbAwardOther').val() == 0)
+                {
+                    $('#awardOthersError').text('Chưa chọn vật phẩm');
+                    $('#awardOthersError').show();
+                    $('#awardOthers\\.id\\.errors').hide();
+                    flag = false;
+                }
+                else {
+                    $('#awardOthersError').hide();
+                    $('#awardOthers\\.id\\.errors').hide();
+                }
+            }
+
+
+
+            if (flag)
+            {
+                var regEx = new RegExp(",", 'g');
+
+                $('#quantity').val($('#quantity').val().replace(regEx, ''));
+                $('#proAwardQuantity').val($('#proAwardQuantity').val().replace(regEx, ''));
+                $('#proAwardOtherQuantity').val($('#proAwardOtherQuantity').val().replace(regEx, ''));
+                $('#discount').val($('#discount').val().replace(regEx, ''));
+                document.forms[0].submit();
+            }
+        }
+
+        function showApplyScope()
+        {
+            if ($("#chkApplyScope").prop('checked'))
+            {
+                $("#divApplyScope").show();
+            }
+            else {
+                $("#divApplyScope").hide();
+            }
+        }
+
+        function selectGoodsCategory() {
+            var $cbb = $("#cbbGoodsCategory");
+            var categoryIdValue = $cbb.val();
+            var $cbbGoods = $("#cbbGoods");
+
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: '${urlAjaxGetGoods}',
+                data: JSON.stringify(categoryIdValue),
+                success: function (data) {
+                    if (data.goodsList.length > 0) {
+                        renderComboBoxScope($cbbGoods, data.goodsList, '--Chọn sản phẩm--');
+                    } else {
+                        renderComboBoxEmptyScope($cbbGoods, '--Chọn sản phẩm--');
+                    }
+                }
+            });
+        }
+
+        function selectGoodsCategoryAward() {
+            var $cbb = $("#cbbGoodsCategoryAward");
+            var categoryIdValue = $cbb.val();
+            var $cbbGoods = $("#cbbAwardGoods");
+
+            if (categoryIdValue != '' && categoryIdValue != 0)
+            {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '${urlAjaxGetGoods}',
+                    data: JSON.stringify(categoryIdValue),
+                    success: function (data) {
+                        if (data.goodsList.length > 0) {
+                            renderComboBoxScope($cbbGoods, data.goodsList, '--Chọn sản phẩm--');
+                        } else {
+                            renderComboBoxEmptyScope($cbbGoods, '--Chọn sản phẩm--');
+                        }
+                    }
+                });
+            }
+            else {
+                renderComboBoxEmptyScope($cbbGoods, '--Chọn sản phẩm--');
+                document.getElementById("awardGoods_d_lb").textContent = "(Đơn vị nhỏ nhất)";
+                document.getElementById("txtProAwardUnit").value = '';
+                document.getElementById("txtProAwardUnitName").value = '';
+            }
+        }
+
+        function selectTypeQuantity() {
+            var typeQuantity = $('#cbbQuantityType').val();
+            typeQuantity = parseInt(typeQuantity);
+
+            if (typeQuantity == 3 || typeQuantity == 4)
+            {
+                $('[name=spanRegister]').each(function () {
+                    $(this).hide();
+                });
+            } else {
+                $('[name=spanRegister]').each(function () {
+                    $(this).show();
+                });
+            }
+            if (typeQuantity > 0 && typeQuantity % 2 == 0) {
+                $('#awardCode').removeAttr('disabled');
+                $('#goodsQuantity').removeAttr('disabled');
+                $('#awardQuantity').removeAttr('disabled');
+                $('#quantity').removeAttr('disabled');
+                $('#quantity_label').html('Doanh thu(<label class="errorMessage">*</label>):');
+                $('#quantity_unit').text('(VNĐ)');
+//                $('#quantity_min_unit').text('(VNĐ)');
+//                $('#rangeR01_lb').text('(VNĐ)');
+//                $('#rangeR02_lb').text('(VNĐ)');
+//                $('#rangeR03_lb').text('(VNĐ)');
+//                $('#rangeR04_lb').text('(VNĐ)');
+//                $('#rangeR05_lb').text('(VNĐ)');
+//                $('#rangeR01_f_lb').text('Doanh số bậc 1(*):');
+//                $('#rangeR02_f_lb').text('Doanh số bậc 2(*):');
+//                $('#rangeR03_f_lb').text('Doanh số bậc 3:');
+//                $('#rangeR04_f_lb').text('Doanh số bậc 4:');
+//                $('#rangeR05_f_lb').text('Doanh số bậc 5:');
+
+            } else {
+                $('#awardCode').removeAttr('disabled');
+                $('#goodsQuantity').removeAttr('disabled');
+                $('#awardQuantity').removeAttr('disabled');
+                $('#quantity').removeAttr('disabled');
+                $('#quantity_label').html('Số lượng(<label class="errorMessage">*</label>):');
+                $('#quantity_unit').text('(Đơn vị nhỏ nhất)');
+//                $('#quantity_min_unit').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR01_lb').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR02_lb').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR03_lb').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR04_lb').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR05_lb').text('(Đơn vị nhỏ nhất)');
+//                $('#rangeR01_f_lb').text('Số lượng bậc 1(*):');
+//                $('#rangeR02_f_lb').text('Số lượng bậc 2(*):');
+//                $('#rangeR03_f_lb').text('Số lượng bậc 3:');
+                //                $('#rangeR04_f_lb').text('Số lượng bậc 4:');
+                //                $('#rangeR05_f_lb').text('Số lượng bậc 5:');
+
+            }
+        }
+
+        var first = true;
+        function selectCategoryAward() {
+            var awardId = $('#cbbAward').val();
+            $("#lnkAddOther").hide();
+            $("#divAwardGoods").hide();
+
+            if (!first)
+            {
+                $("#proAwardGoodss\\.id\\.errors").hide();
+                $("#proAwardGoodss\\.id\\.errors").hide();
+                $("#awardOthers\\.id\\.errors").hide();
+            }
+            else
+            {
+                first = false;
+            }
+
+            if (awardId == 1)
+            {
+                $('#awardOthersError').hide();
+            }
+            else if (awardId == 2)
+            {
+                $('#proAwardGoodssError').hide();
+            }
+            else {
+                $('#awardOthersError').hide();
+                $('#proAwardGoodssError').hide();
+            }
+
+
+            if (awardId == 1) {
+                $("#divAwardGoods").show();
+                $('#awardQuantity_d_id').hide();
+                $('#awardother_d_id').hide();
+                $('#other_d_id').hide();
+                $('#awardGoods_d_id').show();
+                $('#goods_d_id').show();
+                $('#goods_d_lb').html('Sản phẩm(<label class="errorMessage">*</label>):');
+                $('#goodsQuantity_lb').text('(Đơn vị nhỏ nhất)');
+                $('#rangeV01_lb').text('(Đơn vị nhỏ nhất)');
+                $('#rangeV02_lb').text('(Đơn vị nhỏ nhất)');
+                $('#rangeV03_lb').text('(Đơn vị nhỏ nhất)');
+                $('#rangeV04_lb').text('(Đơn vị nhỏ nhất)');
+                $('#rangeV05_lb').text('(Đơn vị nhỏ nhất)');
+            } else {
+                $('#goods_d_id').hide();
+                $('#goods_d_lb').text('');
+                if (awardId == 2) {
+                    $("#lnkAddOther").show();
+                    $("#other_d_id").show();
+                    $('#awardQuantity_d_id').hide();
+                    $('#awardGoods_d_id').hide();
+                    $('#awardother_d_id').show();
+                    $('#goods_d_lb').html('Vật phẩm(<label class="errorMessage">*</label>):');
+                    $('#rangeV01_lb').text('(Vật phẩm)');
+                    $('#rangeV02_lb').text('(Vật phẩm)');
+                    $('#rangeV03_lb').text('(Vật phẩm)');
+                    $('#rangeV04_lb').text('(Vật phẩm)');
+                    $('#rangeV05_lb').text('(Vật phẩm)');
+                } else {
+                    $('#awardGoods_d_id').hide();
+                    $('#awardother_d_id').hide();
+                    $('#other_d_id').hide();
+                    $('#goods_d_lb').html();
+                    $('#awardQuantity_d_id').show();
+                    if (3 == awardId) {
+                        $('#awardpoint_d_lb').text('(VNĐ)');
+                        $('#rangeV01_lb').text('(VNĐ)');
+                        $('#rangeV02_lb').text('(VNĐ)');
+                        $('#rangeV03_lb').text('(VNĐ)');
+                        $('#rangeV04_lb').text('(VNĐ)');
+                        $('#rangeV05_lb').text('(VNĐ)');
+                    } else {
+                        $('#awardpoint_d_lb').text('(%)');
+                        $('#rangeV01_lb').text('(%)');
+                        $('#rangeV02_lb').text('(%)');
+                        $('#rangeV03_lb').text('(%)');
+                        $('#rangeV04_lb').text('(%)');
+                        $('#rangeV05_lb').text('(%)');
+                    }
+                }
+
+            }
+        }
+
+        function renderComboBoxScope(comboBoxSelector, items, label) {
+            if (items && items != null && items.length > 0) {
+                var $domCbo = $(comboBoxSelector);
+                renderComboBoxEmptyScope(comboBoxSelector, label);
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var $domOption = $("<option value = '" + item.id + "'>" + item.name
+                            + "</option>");
+                    $domCbo.append($domOption);
+                }
+            }
+        }
+
+        function appendComboBoxScope(comboBoxSelector, item) {
+            if (item !== null) {
+                var $domCbo = $(comboBoxSelector);
+                var $domOption = $("<option value = '" + item.id + "'>" + item.name
+                        + "</option>");
+                $domCbo.append($domOption);
+            }
+        }
+
+        function renderComboBoxEmptyScope(comboBoxSelector, label) {
+            var $domCbo = $(comboBoxSelector);
+            $domCbo.empty(); // remove old options
+            var $domOption = $("<option value = '0'  disabled='disabled'>" + label + "</option>");
+            $domCbo.append($domOption);
+            $domCbo.select2();
+        }
+
+        function renderNoneComboBoxEmptyScope(comboBoxSelector, label) {
+            var $domCbo = $(comboBoxSelector);
+            $domCbo.empty(); // remove old options
+            var $domOption = $("<option value = '0'>" + label + "</option>");
+            $domCbo.append($domOption);
+            $domCbo.select2();
+        }
+
+        //add minGoods
+        function isNumber(n) {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+
+        function deleteGoods(id) {
+            $('#tr_' + id).remove();
+        }
+        function changeNumber(el) {
+            if (!isNumber(el.value) || parseFloat(el.value) < 0) {
+                alert('Phải nhập số lớn hơn 0');
+                el.value = '0';
+                el.focus();
+                el.select();
+            }
+        }
+        function changeCheckRange() {
+            var status = document.getElementById('chkRange').checked;
+            if (status) {
+                $('#awardRange_none').hide();
+                $('#awardRange_level').show();
+                $('#divRangeType').show();
+            } else {
+                $('#awardRange_level').hide();
+                $('#awardRange_none').show();
+                $('#divRangeType').hide();
+                selectTypeQuantity();
+            }
+        }
+
+        function changeAwardGoodsId() {
+            var goodsId = document.getElementById("cbbAwardGoods").value;
+
+            if (goodsId != '' && goodsId != 0)
+            {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '${urlAjaxGetGoodsUnit}',
+                    data: JSON.stringify(goodsId),
+                    success: function (data) {
+                        document.getElementById("awardGoods_d_lb").textContent = "(" + data.name + ")";
+                        document.getElementById("txtProAwardUnit").value = data.id;
+                        document.getElementById("txtProAwardUnitName").value = data.name;
+                    }
+                });
+            }
+            else {
+                document.getElementById("awardGoods_d_lb").textContent = "(Đơn vị nhỏ nhất)";
+                document.getElementById("txtProAwardUnit").value = '';
+                document.getElementById("txtProAwardUnitName").value = '';
+            }
+        }
+
+        function changeAwardOther()
+        {
+            var otherId = document.getElementById("cbbAwardOther").value;
+
+            if (otherId != '' && otherId != 0)
+            {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '${urlAjaxGetOtherUnit}',
+                    data: JSON.stringify(otherId),
+                    success: function (data) {
+                        document.getElementById("awardOther_d_lb").textContent = "(" + data.name + ")";
+                        document.getElementById("txtAwardOtherName").value = data.name;
+                    }
+                });
+            }
+            else {
+                document.getElementById("awardOther_d_lb").textContent = "(Vật phẩm)";
+            }
+        }
+
+
+        function clearForm(mainForm) {
+            var childs = $("#TB_ajaxContent").children();
+            for (var i = 0; i < childs.length; i++) {
+                if (childs[i].attributes['name'] != null && (mainForm == null || childs[i].attributes['name'].value != mainForm)) {
+                    $("#" + childs[i].attributes['name'].value).append(childs[i]);
+                }
+            }
+        }
+
+        function openOtherForm() {
+            clearForm();
+            tb_show('Thêm vật phẩm', 'TB_inline?height=130&amp;width=400&amp;inlineId=otherDialog');
+        }
+
+        function isBlank(str) {
+            return (!str || /^\s*$/.test(str));
+        }
+        function createOther() {
+            var otherName = $('#p_other_name').val();
+            if (isBlank(otherName)) {
+                alert("Vui lòng nhập tên vật phẩm");
+                return;
+            }
+
+            var regEx = new RegExp(",", 'g');
+            var otherQuantity = $('#p_other_quantity').val().replace(regEx, '');
+            if (!isBlank(otherQuantity)) {
+                var val = otherQuantity;
+                var reg = /^[-,+]*\d+$/;
+                if (!reg.test(val)) {
+                    alert("Giá tiền phải là số");
+                    return;
+                }
+                if (val <= 0) {
+                    alert("Giá tiền của vật phẩm phải lớn hơn 0");
+                    return;
+                }
+            } else {
+                alert("Vui lòng nhập giá tiền của vật phẩm");
+                return;
+            }
+
+            var otherUnit = $('#p_other_unit').val();
+            if (isBlank(otherUnit) || parseInt(otherUnit) < 1) {
+                alert("Vui lòng chọn đơn vị");
+                return;
+            }
+
+            var addOtherLink = '${ADD_OTHER_URL}';
+            var data = new Object();
+            data.name = otherName;
+            data.price = otherQuantity;
+            data.unitId = otherUnit;
+            $.ajax({
+                type: 'POST',
+                url: addOtherLink,
+                dataType: 'json',
+                data: JSON.stringify(data),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data.success) {
+                        appendComboBoxScope('#cbbAwardOther', data.item);
+                        alert("Thêm vật phẩm thành công");
+                        $('#p_other_name').val("");
+                        $('#p_other_quantity').val("");
+                        removeOtherData();
+                        tb_remove();
+                    } else {
+                        alert("Thêm vật phẩm thất bại");
+                    }
+                }
+            });
+        }
+    </script>
+    ]]>
+
+    <form:form action="" method="POST"
+               commandName="promotion" enctype="multipart/form-data">		
+        <div class="formContent">
+            <table width="100%" cellpadding="0" cellspacing="5"
+                   class="TableThongTinTram">
+                <col width="20%" />
+                <col width="20%" />
+                <col width="20%" />
+                <col width="20%" />
+                <col width="20%" />
+                <tr>
+                    <td></td>
+                    <td colspan="3">
+                        <c:if test="${not empty success}">
+                            <c:choose>
+                                <c:when test="${success}">
+                                    <div class="infoMessage" id="messageArea">
+                                        <p>Tạo chương trình khuyến mãi thành công</p>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="errorMessage" id="messageArea">
+                                        <p>Xãy ra lỗi khi lưu dữ liệu</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                        <c:if test="${not empty updated}">
+                            <c:choose>
+                                <c:when test="${updated}">                                    
+                                    <div class="infoMessage" id="messageArea">
+                                        <p>Cập nhật thành công</p>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="errorMessage" id="messageArea">
+                                        <p>Cập nhật thất bại</p>
+                                    </div>                                    
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </td>
+                    <td></td>
+                </tr>
+
+
+                <tr>
+                    <td></td>
+                    <td><span style="font-size: 12px;">Thông tin khuyến mãi</span></td>
+                    <td colspan="3"></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Tên chương trình(<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <form:input path="name" cssClass="textInput mediumWidth" cssStyle="width:300px;" />	
+                        <br />
+                        <form:errors path="name" cssClass="errorMessage" />
+                        <span id="nameError" style="display: none" class="errorMessage"></span>
+                    </td>
+                    <td align="right">Mã chương trình(<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${promotion.id>0}">
+                                <form:input path="code" cssClass="textInput mediumWidth" readonly="true"/>
+                            </c:when>
+                            <c:otherwise>                                
+                                <form:input path="code" cssClass="textInput mediumWidth"/>
+                            </c:otherwise>
+                        </c:choose>	
+                        <br />
+                        <form:errors path="code" cssClass="errorMessage" />
+                        <span id="codeError" style="display: none" class="errorMessage"></span>
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr style="vertical-align: top;">
+                    <td align="right">Mô tả:</td>
+                    <td ><form:textarea path="description" cssClass="textInput mediumWidth" rows="3"  cssStyle="width:296px;height:auto;"/></td>
+                    <td align="right">Ảnh:</td>
+                    <td >
+                        <input type="file" id="promotionFile" name="promotionFile" class="textInput mediumWidth" onchange="readURL(this)"/>
+                        <c:choose>
+                            <c:when test="${not empty promotion.urlImage}">
+                                <div class="pictureBox"  id="divPicture">
+                                    <spring:eval var="promotionImg" expression="@systemPros['system.promotionImage']" />
+                                    <spring:url var="picture" value="/imagesSource/${promotionImg}/${promotion.urlImage}" />                            
+                                    <img id="pictureBox" src="${picture}" width="202" height="100"  onclick="imageClick()" />
+
+                                    <c:if test="${empty readonly or not readonly}">
+                                        <a id="lnkDeletePromotion" href="javascript:deletePromotionImage(${promotion.id})" title="Xóa"></a>
+                                    </c:if>
+
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="pictureBox" id="divPicture" style="display: none;">                           
+                                    <img id="pictureBox" width="200" height="100" onclick="imageClick()"/>
+                                    <c:if test="${empty readonly or not readonly}">
+                                        <a id="lnkDeletePromotion" href="javascript:deletePromotionImage(${promotion.id})" title="Xóa"></a>
+                                    </c:if>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="right">Ngày bắt đầu áp dụng(<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <form:input id="txtStartDate" path="startDate" cssClass="textInput tcal" cssStyle="width:100px;" />						
+                        &#160;(dd/MM/yyyy) 
+                        <br />
+                        <form:errors path="startDate" cssClass="errorMessage" />                       
+                        <span id="startDateError" style="display: none" class="errorMessage"></span>
+                    </td>
+                    <td align="right">Ngày kết thúc(<label class="errorMessage">*</label>):</td>
+                    <td colspan="2">
+                        <form:input id="txtEndDate" path="endDate" cssClass="textInput tcal" cssStyle="width:100px;"/>						
+                        &#160;(dd/MM/yyyy) 
+                        <br />
+                        <form:errors path="endDate" cssClass="errorMessage" />
+                        <span id="endDateError" style="display: none" class="errorMessage"></span>
+                    </td>
+                </tr>	
+
+                <tr>						
+                    <td align="right"><span name="spanRegister">Cần:</span></td>
+                    <td >
+                        <span name="spanRegister">
+                            <form:checkbox id="isReg" value="true"  path="reg" onchange="changeRegister()"/>Đăng ký trước
+                        </span>                       
+                    </td>
+                    <td align="right"></td>
+                    <td><form:checkbox value="true" path="isMany" cssStyle="vertical-align: middle;height: auto;"/>Khuyến mãi nhiều lần											
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr id="rowApplyRole" style="display: none;">		
+                    <td align="right">Cấp xét duyệt(<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <form:select disabled="true" path="approveRoles.id" cssClass="selectBox select2_combo" style="width:200px">
+                            <form:options items="${approveRoleList}" itemValue="id" itemLabel="name" />                    
+                        </form:select>	
+                        <br />
+                        <form:errors path="approveRoles.id" cssClass="errorMessage" />
+                    </td>
+                    <td align="right"></td>
+                    <td>
+
+
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr>						
+                    <td align="right">Trạng thái:</td>
+                    <td >
+                        <form:select path="statuss.id" cssClass="selectBox select2_combo" style="width:200px">							
+                            <form:options items="${statusList}" itemValue="id" itemLabel="name" />
+                        </form:select>	
+                        <br />                    
+                        <form:errors path="statuss.id" cssClass="errorMessage" />
+                    </td>
+                    <td align="right"></td>
+                    <td>
+
+                    </td>
+                    <td></td>
+                </tr>
+
+                <tr>
+                    <td align="right" style="vertical-align: top;">Nơi áp dụng:</td>	
+
+                    <td colspan="4">
+                        <form:checkbox cssStyle="margin-top:0px" id="chkApplyScope" path="scope"  onchange="showApplyScope()"/>                         
+                        <form:errors path="scope" cssClass="errorMessage" cssStyle="vertical-align: top;" />
+                        <div id="divApplyScope" style="display: none">
+                            <jsp:include page="../promotionChannelSelector.jspx" />
+                        </div>                        
+                    </td>					
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td><span style="font-size: 12px;">Chọn hình thức khuyến mãi</span></td>
+                    <td colspan="3"></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Loại SP(<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <form:select id="cbbGoodsCategory" path="goodsCategorys.id" cssClass="selectBox select2_combo" onchange="selectGoodsCategory()" style="width:200px">
+                    <option value="0">---Chọn loại SP---</option>								
+                    <form:options items="${goodsCategoryList}" itemLabel="name" itemValue="id" />										
+                </form:select>
+                <br />
+                <span id="goodsCategorysError" style="display: none" class="errorMessage"></span>
+                </td>
+
+                <td align="right">Sản phẩm(<label class="errorMessage">*</label>):</td>
+                <td>
+                    <form:select placeholder="Chọn sản phẩm" id="cbbGoods" name="goodsIdList" path="goodsIdList" multiple="multiple" cssClass="selectBox select2_combo" style="width:200px">
+                    <option value="0" disabled="disabled" >---Chọn sản phẩm---</option>								
+                    <form:options items="${goodsList}" itemLabel="name" itemValue="id" />											
+                </form:select>
+                <br />
+                <form:errors path="goodsIdList" cssClass="errorMessage" />	
+                <span id="goodsIdListError" style="display: none" class="errorMessage"></span>
+                </td>
+
+
+                <td></td>
+
+                </tr>
+
+                <tr>
+                    <td align="right" >Hình thức tặng(<label class="errorMessage">*</label>):</td>
+                    <td >					
+                        <form:select path="promotionAwards.id" cssClass="selectBox select2_combo" id="cbbAward"  onchange="selectCategoryAward()"  style="width:200px">
+                    <option value="0" disabled="disabled">---Chọn tặng thưởng---</option>																		
+                    <form:options items="${awardList}" itemLabel="name" itemValue="id" />												
+                </form:select>	
+                <!--<label style="float: right;padding-top: 5px;" id="goods_d_lb"></label>-->
+                <br />
+                <form:errors path="promotionAwards.id" cssClass="errorMessage" />
+
+                </td>
+
+
+
+                <td >	
+                    <div id="goods_d_id" style="${goods_d_id_P}">
+                        <form:select id="cbbGoodsCategoryAward" path="proAwardGoodsCategory" cssClass="selectBox select2_combo" style="width:200px;" onchange="selectGoodsCategoryAward()">
+                            <option value="0" >---Chọn loại sản phẩm---</option>
+                            <form:options items="${goodsCategoryList}" itemLabel="name" itemValue="id" />                            											
+                        </form:select>
+                    </div>								
+                    <div id="other_d_id" style="${other_d_id_P}">
+                        <form:select id="cbbAwardOther" path="awardOthers.id" cssClass="selectBox select2_combo" style="width:200px;" onchange="changeAwardOther()">
+                            <option value="0">---Chọn vật phẩm---</option>								
+                            <form:options items="${goodsOtherList}" itemValue="id" itemLabel="name" />                            												
+                        </form:select>
+                    </div>														
+                </td>
+
+                <td>                    
+                    <div id="divAwardGoods" >
+                        <form:select id="cbbAwardGoods" path="proAwardGoodss.id" cssClass="selectBox select2_combo" onchange="changeAwardGoodsId();" style="width:200px">
+                            <option value="0" >---Chọn sản phẩm ---</option>								
+                            <form:options items="${awardGoodsList}" itemLabel="name" itemValue="id" />
+                        </form:select>
+                    </div>
+                    <a id="lnkAddOther" name="checkView" href="javascript:;" onclick="javascript:
+
+                                    openOtherForm();" class="btn-1" title="Thêm vật phẩm"><span><span>Thêm vật phẩm</span></span></a>
+
+                </td>
+
+                <td>
+
+                </td>
+                </tr>	
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <form:errors path="awardOthers.id" cssClass="errorMessage" />
+                        <span id="awardOthersError" style="display: none" class="errorMessage"></span>
+
+                    </td>
+                    <td>
+                        <form:errors path="proAwardGoodss.id" cssClass="errorMessage" />
+                        <span id="proAwardGoodssError" style="display: none" class="errorMessage"></span>
+                    </td>
+                    <td></td>
+
+                </tr>
+
+                <tr>
+                    <td align="right">Cách tính(<label class="errorMessage">*</label>):</td>
+
+                    <td colspan="3" >        
+                        <form:select id="cbbQuantityType" path="conditionQuantity" cssClass="selectBox select2_combo" onchange="selectTypeQuantity()" style="width:200px">                            	
+                    <option value="0"  disabled="disabled">---Chọn cách tính---</option>	
+                    <form:options  name="quantityItem" items="${quantityTypeList}" itemLabel="name" itemValue="id" />
+                </form:select>
+
+
+                <select id="cbbQuantityTypeFull" disabled="true" style="display: none;">
+                    <c:forEach items="${quantityTypeList}" var="item">
+                        <c:if test="${item.id == 3 or item.id == 4}">
+                            <option value="${item.id}">${item.name}</option>
+                        </c:if>
+                    </c:forEach>
+                </select>
+
+
+                <span style="display: none">    
+                    &#160;
+                    <form:checkbox value="true" path="isRange" id ="chkRange" onchange="changeCheckRange();" cssStyle="vertical-align: middle;"/> KM bậc thang 
+                    &#160;
+                    <span id="divRangeType" style="display: none">
+                        <form:checkbox id="chkRangeType" value="true"  path="flag" cssStyle="vertical-align: middle;" />
+                        Tính từng bậc(≠Chỉ 1 bậc thỏa đk)
+                    </span>  
+                </span>          
+                <form:errors path="conditionQuantity" cssClass="errorMessage" cssStyle="display:block;" />
+                </td>					
+                <td></td>
+                </tr>	
+
+                <c:choose>
+                    <c:when test="${promotion.flag==true}">
+                        <c:set var="rangeNoneP">display: none</c:set>
+                        <c:set var="rangeLevelP"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="rangeNoneP"/>
+                        <c:set var="rangeLevelP">display: none</c:set>
+                    </c:otherwise>
+                </c:choose>	
+
+                <!-- quantity good and quantity award -->										
+                <tr  id="awardRange_none" style="${rangeNoneP}">					
+                    <td align="right"><label id="quantity_label">Số lượng(<label class="errorMessage">*</label>):</label></td>
+                    <td>
+                        <form:input path="quantity"  cssClass="textInput"/><label id="quantity_unit">(Đơn vị nhỏ nhất)</label>
+                        <br />
+                        <form:errors path="quantity" cssClass="errorMessage" />
+                        <span id="quantityNumberError" style="display: none" class="errorMessage">Số lượng (doanh thu) phải là số lớn hơn 0</span>
+                    </td>
+                    <td></td>
+                    <td >
+                        <div id="awardother_d_id" style="${other_d_id_P}">
+                            <form:input  path="proAwardOtherQuantity"   cssClass="textInput" cssStyle="width:70px"/>
+                            <c:choose >
+                                <c:when test="${promotion.awardOthers !=null and promotion.awardOthers.units !=null}">
+                                    <label id="awardOther_d_lb">(${promotion.awardOthers.units.name})</label>(<label class="errorMessage">*</label>)
+                                </c:when>
+                                <c:otherwise>
+                                    <label id="awardOther_d_lb">(Vật phẩm)</label>(<label class="errorMessage">*</label>)
+                                </c:otherwise>
+                            </c:choose>   
+                            <form:hidden id="txtAwardOtherName" path="awardOthers.units.name" />                                    
+                            <br />
+                            <form:errors path="proAwardOtherQuantity" cssClass="errorMessage" />
+                            <span style="display: none" class="errorMessage" id="proAwardOtherQuantityNumberError">Số lượng phải là số lớn hơn 0</span>
+                        </div>
+                        <div id="awardQuantity_d_id" style="${quantity_d_id_P}">
+                            <form:input path="discount" cssClass="textInput" cssStyle="width:70px"/><label id="awardpoint_d_lb">(VNĐ)</label>(<label class="errorMessage">*</label>)
+                            <br />
+                            <form:errors path="discount"   cssClass="errorMessage" />
+                            <span style="display: none"  class="errorMessage" id="discountNumberError">Chiết khấu phải là số lớn hơn 0</span>
+                        </div>
+                        <div id="awardGoods_d_id" style="${goods_d_id_P}">
+                            <form:input path="proAwardQuantity" cssClass="textInput" cssStyle="width:70px"/>
+                            <c:choose>
+                                <c:when test="${promotion.proAwardUnits != null}">
+                                    <label id="awardGoods_d_lb">(${promotion.proAwardUnits.name})</label>
+                                </c:when>
+                                <c:otherwise>
+                                    <label id="awardGoods_d_lb">(Đơn vị nhỏ nhất)</label>
+                                </c:otherwise>
+                            </c:choose>                            
+                            (<label class="errorMessage">*</label>)
+                            <br />
+                            <form:errors path="proAwardQuantity" cssClass="errorMessage" />
+                            <span style="display: none"  class="errorMessage" id="proAwardQuantityNumberError">Số lượng phải là số lớn hơn 0</span>
+                            <form:hidden id="txtProAwardUnit" path="proAwardUnits.id" />
+                            <form:hidden id="txtProAwardUnitName" path="proAwardUnits.name" />
+                        </div>																	
+                    </td>
+                    <td></td>
+                </tr>
+                <tbody id="awardRange_level"  style="${rangeLevelP}">
+                    <tr>					
+                        <td align="right"><label id="rangeR01_f_lb">(Bậc 1:)</label></td>
+                        <td>
+                            <form:hidden path="proRanges.id"/>
+                            <form:input path="proRanges.promotionR01" cssClass="textInput"/>
+                            <label id="rangeR01_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <form:errors path="proRanges.promotionR01" cssClass="errorMessage" />
+                            <span style="display: none" id="promotionR01NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>          
+                        <td></td>
+                        <td colspan="2">
+                            <form:input path="proRanges.promotionV01" cssClass="textInput"/>	
+                            <label id="rangeV01_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <form:errors path="proRanges.promotionV01" cssClass="errorMessage" />
+                            <span style="display: none"  id="promotionV01NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                    </tr>
+                    <tr>					
+                        <td align="right"><label id="rangeR02_f_lb">(Bậc 2:)</label></td>
+                        <td>					
+                            <form:input path="proRanges.promotionR02" cssClass="textInput"/>
+                            <label id="rangeR02_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <form:errors path="proRanges.promotionR02" cssClass="errorMessage" />
+                            <span style="display: none"  id="promotionR02NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                        <td></td>
+                        <td colspan="2">
+                            <form:input path="proRanges.promotionV02" cssClass="textInput"/>
+                            <label id="rangeV02_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <form:errors path="proRanges.promotionV02" cssClass="errorMessage" />
+                            <span style="display: none"  id="promotionV02NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                    </tr>
+                    <tr>					
+                        <td align="right"><label id="rangeR03_f_lb">(Bậc 3:)</label></td>
+                        <td>					
+                            <form:input path="proRanges.promotionR03" cssClass="textInput"/>
+                            <label id="rangeR03_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span style="display: none"  id="promotionR03NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                        <td></td>
+                        <td  colspan="2">
+                            <form:input path="proRanges.promotionV03" cssClass="textInput"/>
+                            <label id="rangeV03_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span style="display: none"  id="promotionV03NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                    </tr>
+                    <tr>					
+                        <td align="right"><label id="rangeR04_f_lb">(Bậc 4:)</label></td>
+                        <td>					
+                            <form:input path="proRanges.promotionR04" cssClass="textInput"/>
+                            <label id="rangeR04_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span style="display: none"  id="promotionR04NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                        <td></td>
+                        <td  colspan="2">
+                            <form:input path="proRanges.promotionV04" cssClass="textInput"/>
+                            <label id="rangeV04_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span  style="display: none" id="promotionV04NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>                        
+                    </tr>
+                    <tr>					
+                        <td align="right"><label id="rangeR05_f_lb">(Bậc 5:)</label></td>
+                        <td>					
+                            <form:input path="proRanges.promotionR05" cssClass="textInput"/>
+                            <label id="rangeR05_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span style="display: none"  id="promotionR05NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                        <td></td>
+                        <td colspan="2">
+                            <form:input path="proRanges.promotionV05" cssClass="textInput"/>
+                            <label id="rangeV05_lb">(Đơn vị nhỏ nhất)</label>
+                            <br />
+                            <span style="display: none"  id="promotionV05NumberError" class="errorMessage">Phải là số lớn hơn 0</span>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tr>
+                    <td></td><td></td><td></td><label id="min_span_id"></label><td><label id="min_span_g_unit"></label></td><td></td>
+                </tr>
+
+                <tr style="display: none">
+                    <td></td>
+                    <td colspan="4">
+                        <table border="0" cellspacing="0" class="table-2">
+                            <thead>
+                                <tr>
+                                    <td align="center" width="150">
+                                        Tặng sản phẩm
+                                    </td>
+                                    <td align="center"  width="70">Tối thiểu</td>									
+                                    <td align="center"  width="50">Xóa</td>
+                                </tr>
+                            </thead>
+                            <tbody id="goodsTable">		
+                                <c:forEach items="${minGoodsList}" var="minItem">	
+                                    <tr id="tr_${minItem.goodsId}">
+                                        <td align="left">
+                                            ${minItem.name} 
+                                            <input type="hidden" name="minGoodsId_m" value="${minItem.goodsId}"/>
+                                        </td>
+                                        <td>
+                                            <c:choose>
+                                                <c:when test="${ctkmForm.conditionQuantity%2==1}">
+                                                    <input type="text" id="minGoodsQuantity_m_${minItem.goodsId}" name="minGoodsQuantity_m_${minItem.goodsId}" value="${minItem.quantity}" style="width:100px;" onchange="changeNumber(this)"/>
+                                                </c:when>	
+                                                <c:otherwise>
+                                                    <input type="text" id="minGoodsQuantity_m_${minItem.goodsId}" name="minGoodsQuantity_m_${minItem.goodsId}" value="${minItem.revenue}" style="width:100px;" onchange="changeNumber(this)"/>
+                                                </c:otherwise>									
+                                            </c:choose>											
+                                        </td>									
+                                        <td align="center">
+                                            <a href="javascript:deleteGoods(${minItem.goodsId});">Xóa</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td colspan="5">&#160;</td>
+                </tr>
+                <tr>
+                    <td><label> 
+                        </label></td>
+                    <td colspan="4">
+                        <c:choose>
+                            <c:when test="${not empty isUpdate and isUpdate}">
+                                <a href="javascript:;" name="checkView"
+                                   onclick="javascript:return
+                                           validateNumber();" class="btn-1"
+                                   title="Cập nhật thông tin Khuyến mãi"><span><span>Cập nhật</span></span></a>
+                                        </c:when>
+                                        <c:otherwise>
+                                <a href="javascript:;" name="checkView"
+                                   onclick="javascript:return
+                                           validateNumber();" class="btn-1"
+                                   title="Lưu thông tin Khuyến mãi này"><span><span>Lưu</span></span></a>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                        <a href="${LIST_URL}" class="btn-1"
+                           title="Quay lại"><span><span>Danh sách CTKM</span></span></a></td>
+                </tr>
+            </table>
+        </div>
+    </form:form>
+    <jsp:include page="otherForm.jspx"></jsp:include>  
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                showApplyScope();
+                selectTypeQuantity();
+                selectCategoryAward();
+                changeCheckRange();
+                if ('${promotion.reg}' == 'true')
+                {
+                    $("#rowApplyRole").show();
+                    $('#approveRoles\\.id').removeAttr('disabled');
+                    $('#cbbQuantityType').find("option").each(function () {
+                        if ($(this).val() == '3' || $(this).val() == '4')
+                        {
+                            $(this).remove();
+                        }
+                    });
+                }
+            });
+
+
+            var someOptions = {mDec: '0'};
+            jQuery(function ($) {
+                $('#quantity').autoNumeric('init', someOptions);
+                $('#proAwardQuantity').autoNumeric('init', someOptions);
+                $('#proAwardOtherQuantity').autoNumeric('init', someOptions);
+                $('#discount').autoNumeric('init', someOptions);
+                $('#p_other_quantity').autoNumeric('init', someOptions);
+            });
+
+            function f_tcalUpdate(n_date, b_keepOpen) {
+                var e_input = f_tcalGetInputs(true);
+                if (!e_input)
+                    return;
+
+                d_date = new Date(n_date);
+                var s_pfx = A_TCALCONF.cssprefix;
+
+                if (b_keepOpen) {
+                    var e_cal = document.getElementById(s_pfx);
+                    if (!e_cal || e_cal.style.visibility != 'visible')
+                        return;
+                    e_cal.innerHTML = f_tcalGetHTML(d_date, e_input);
+                }
+                else {
+                    e_input.value = f_tcalGenerateDate(d_date, A_TCALCONF.format);
+                    f_tcalCancel();
+                }
+                checkStartDate();
+                checkEndDate();
+            }
+
+    </script>
+</div>

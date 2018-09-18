@@ -1,0 +1,154 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="careDetailURL" value="/topSalesman/bestCare/details" />
+
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=1"></script>
+<script type="text/javascript">
+	var contextPath = "${pageContext.request.contextPath}";
+	
+	$(document).ready(function() { 
+		$("select").select2(); 
+	});
+	
+	function submitActionForm(formId, url) {	
+			$("#" + formId).attr("action", url);
+			$("#" + formId).submit();
+		};
+		
+	function viewResults() {
+		$('#topCareForm').submit();
+	}
+</script>
+]]>
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH NHÂN VIÊN ĐI TUYẾN TỐT NHẤT</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="topCareForm" commandName="topCareForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						
+							<div style="padding-left: 10px; display: inline;">
+									<spring:message code="map_filter_from_date" htmlEscape="true" />
+									:
+									<fmt:formatDate value="${frm_startDate}" var="startDate"
+										pattern="dd/MM/yyyy" />
+									<form:input type="text" id="frm_startDate" size="14"
+										path="startDate" cssClass="dateField tcal" />
+							</div>
+						
+							<div style="padding-left: 10px; display: inline;">
+									<spring:message code="map_filter_to_date" htmlEscape="true" />
+									:
+									<fmt:formatDate value="${frm_endDate}" var="endDate"
+										pattern="dd/MM/yyyy" />
+									<form:input type="text" id="frm_endDate" size="14"
+										path="endDate" cssClass="dateField tcal" />
+							</div>
+						
+							<div style="padding-left: 10px; display: inline;">
+								
+								<a href="javascript:;" onclick="viewResults()" class="btn-1" title="Tìm">
+									<span><span style="width:70px">Tìm Kiếm</span></span>
+								</a>
+							</div>
+							
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" 
+							page="${page}" size="${size}" listingURL="" 
+							id="posTopPagination" formSubmit="topCareForm" submitMethod="POST" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="20%">Tên Nhân Viên</td>
+										<td width="30%">Tổng % Hoàn Thành Tuyến</td>
+										<td width="15%">Số Tuyến Được Giao</td>
+										<td width="15%">Trung Bình Hoàn Thành</td>
+										<td width="10%">Hành Động</td>		
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty listBestCare}">
+											<c:forEach items="${listBestCare}" var="posItem" varStatus="status">
+											 
+												<tr>
+												
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td><a href="${userDetailURL}/${posItem.nhanVienThucHien}">${posItem.tenNhanVienSuDung}</a></td>
+													<td align="center"><lable ><strong><fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${posItem.tongPhanTram}"/> %</strong></lable></td>
+													<td align="center">${posItem.soTuyenDuong}</td>						
+													<!--  <td align="center"><lable class="errorMessage"><strong>${posItem.phanTramHoanThanh} %</strong></lable></td>-->
+													<td align="center"><lable class="errorMessage"><strong><fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${posItem.phanTramHoanThanh}"/> %</strong></lable></td>
+            										<td align="center"><a href="${careDetailURL}/${posItem.nhanVienThucHien}">Chi Tiết</a></td>
+												</tr>
+												
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr><td colspan="10" align="center">Không có dữ liệu.</td></tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posBottomPagination" formSubmit="topCareForm" submitMethod="POST"/>
+						</td>
+					</tr>
+					
+				</table>
+			</form:form>
+			 
+		</div>
+	</div>
+</div>

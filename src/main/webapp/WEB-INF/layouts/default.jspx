@@ -1,0 +1,52 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	disable-url-rewriting="true">
+<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+
+<jsp:directive.page contentType="text/html; charset=UTF-8" />
+<jsp:directive.page pageEncoding="UTF-8" />
+<head>
+	<title>mSales - Bán hàng KPP</title>
+	<util:load-scripts />
+</head>
+
+<body>
+    <spring:url var="imageFolder" value="/resources/images" />
+    <div id="container">
+		<tiles:insertAttribute name="header" ignore="true" />
+		
+		<div id="main">
+        	<div id="wrap-context">
+                <div id="inner-context">
+                	<span class="bor-right"><img src="${imageFolder}/dummy.gif" alt="" /></span>
+                    <div class="context">
+                		<p class="context-title"><img src="${imageFolder}/upload/logo_min.png" width="33" height="12" alt="" /></p>
+                        <div class="wrap-context-block">
+                        	<tiles:insertAttribute name="navigation" ignore="true"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="wrap-content">
+				<tiles:insertAttribute name="body" ignore="true"/>
+			</div>
+        </div>
+        <tiles:insertAttribute name="footer" ignore="true" />
+	</div>
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <script type="text/javascript" src="${scriptsFolder}/gpstracking/lib.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/l10n.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/plugin.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/start.js"><!-- Fix for FF & Opera --></script>
+	
+	<link href="${scriptsFolder}/select2/select2.css" rel="stylesheet"/>
+    <script type="text/javascript" src="${scriptsFolder}/select2/select2.js?v=1"><!-- Fix for FF & Opera --></script>
+    <script type="text/javascript" src="${scriptsFolder}/select2/select2_locale_vi.js"><!-- Fix for FF & Opera --></script>
+	
+	<div id="fullscreenContainer" style="display: none;">
+		<!-- Empty -->
+	</div>
+</body>
+</html>

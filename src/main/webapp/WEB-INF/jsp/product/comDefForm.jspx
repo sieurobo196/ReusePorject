@@ -1,0 +1,254 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"
+		pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js"></script>	
+	<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function changeComType (comType) {
+			if (comType.value == 1) {
+				$("select#comPercent").attr('disabled', false);
+				document.getElementById('phanTramHH').disabled = false;
+				document.getElementById('tienHH').disabled = true;
+				document.getElementById('tienHH').value = "";	
+			}
+			else if (comType.value == 2) {
+				$("select#comValue").attr('disabled', false);
+				document.getElementById('tienHH').disabled = false;
+				document.getElementById('phanTramHH').disabled = true;
+				document.getElementById('phanTramHH').value = "";
+			}
+		}
+		
+		/*
+		function changeDef (comDefType) {
+			if (comDefType.val() == 2) {
+				document.getElementById('conTractType').disabled = true;	
+				document.getElementById('comLevel').disabled = true;
+				document.getElementById('goods').disabled = true;
+				document.getElementById('tienHH').disabled = true;
+				document.getElementById('money').disabled = true;
+			}
+			else {
+				document.getElementById('conTractType').disabled = false;	
+				document.getElementById('comLevel').disabled = false;
+				document.getElementById('goods').disabled = false;
+				document.getElementById('tienHH').disabled = false;
+				document.getElementById('money').disabled = false;
+			}
+		}
+		*/
+
+	</script>
+]]>
+	
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imageFolder}/dummy.gif"
+				alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>ĐỊNH NGHĨA CHIẾT KHẤU / HOA HỒNG</span>
+			</h2>
+		</div>
+  
+	<div id="content">
+		<form:form method="POST" id="comDefForm" commandName="comDefForm">
+		
+			<table width="100%" cellspacing="5px" cellpadding="0"
+					class="TableThongTinTram">
+				<col width="20%" />
+				<col width="80%" />
+				
+				  
+				<tr>
+					<td></td>
+					<td><c:if test="${not empty success}">
+							<c:choose>
+								<c:when test="${success}">
+									<div class="infoMessage" id="messageArea">
+										<p>Thông tin được cập nhật thành công.</p>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<div class="errorMessage" id="messageArea">
+										<p>Định nghĩa đã tồn tại hoặc xảy ra lỗi khi lưu dữ liệu</p>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:if></td>
+				</tr>
+				
+				<tr>
+						<td align="right"><strong>Khu Vực Áp Dụng :</strong>
+						</td>
+						<td>
+							<form:select path="branchId" cssClass="selectBox">
+									<form:options items="${branchList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+						<td align="right"><strong>Định Nghĩa :</strong> (<label class="errorMessage">*</label>)
+						</td>
+						<td>
+							<!-- <form:select path="comDefType" cssClass="selectBox" id="comDefType" onchange="changeDef($('#comDefType'));" /> -->
+							<form:select path="comDefType" cssClass="selectBox" id="comDefType" onchange="selectDiscount(this);" >
+									<form:options items="${comDefTypeList}" itemValue="id" 
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="comDefType" cssClass="errorMessage" />
+						</td>
+				</tr>
+
+				<tr>
+						<td align="right"><strong>Loại :</strong>
+						</td>
+						<td>
+							<form:select path="comContract" cssClass="selectBox" id="conTractType">
+									<form:options items="${contractList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="comContract" cssClass="errorMessage" />
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+						<td style="text-align: right"><label><Strong>Sản Phẩm / Dịch Vụ </Strong> (<label class="errorMessage">*</label>):</label>
+						</td>
+						<td>
+							<form:select path="goodsCatId" cssClass="selectBox" onchange="selectCat(this);" id="goodsCatId">
+									<form:options items="${goodsCatList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="goodsCatId" cssClass="errorMessage" />
+							
+							<form:select path="goodsId" cssClass="selectBox" id="goodsId">
+									<form:options items="${goodsList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="goodsId" cssClass="errorMessage" />
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+						<td align="right"><strong>Cấp Bậc </strong>(<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<form:select path="comLevel" cssClass="selectBox" id="comLevel">
+									<form:options items="${levelList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="comLevel" cssClass="errorMessage" />
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<!--
+				<tr>
+					<td align="right"><label><strong>Khoản Tiền :</strong></label></td>
+				</tr>
+				<tr>
+					<td align="right">Từ :</td>
+					<td>
+						<form:input path="fromPrice" class="textInput numberField" 
+						onkeyup="restrictInputDoubleOnly(event,this)"/><label> VND </label>
+						<form:errors path="fromPrice" cssClass="errorMessage" />
+					</td>
+				</tr>
+				<tr>	
+					<td align="right"> Đến :</td>
+					<td>
+						<form:input path="toPrice" class="textInput numberField" 
+						onkeyup="restrictInputDoubleOnly(event,this)"/><label> VND </label>
+						<form:errors path="toPrice" cssClass="errorMessage" />
+					</td>
+				</tr>
+				-->
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><label><strong>Cách Tính</strong> </label>(<label class="errorMessage">*</label>):
+					</td>
+					<td><form:errors path="comType" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+					<td align="right"></td>
+					<td>
+						<form:radiobutton path="comType" value="1" onclick="javascript:changeComType(this);"/> 
+							<form:input path="comPercent" class="textInput numberField" 
+							onkeyup="restrictInputDoubleOnly(event,this)" id="phanTramHH"/>
+							<form:errors path="comPercent" cssClass="errorMessage" />
+						<label> % </label> 
+						<br/>
+						
+						<form:radiobutton path="comType" value="2" onclick="javascript:changeComType(this);" id="money"/> 
+							<form:input path="comValue" class="textInput numberField" 
+							onkeyup="restrictInputDoubleOnly(event,this)" id="tienHH"/>
+							<form:errors path="comValue" cssClass="errorMessage" />
+						<label> VND </label> 							
+						<br/>
+
+					</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+			
+				<tr>
+					<td align="right"><strong>Sử dụng định nghĩa:</strong></td>
+					<td><form:checkbox path="status" /></td>
+				</tr>
+				<tr>
+					<td align="right">Ghi chú:</td>
+					<td>
+						<form:textarea style="height: 100px; width: 500px;" path="description" cssClass="textInput" />
+					</td>
+				</tr>
+
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				  
+				<tr>
+					<td><label>
+					</label></td>
+					<td>
+						<a href="javascript:;" onclick="javascript:document.forms[0].submit();" class="btn-1" title="Lưu thông tin">
+							<span><span>Lưu</span></span>
+						</a>
+					</td>
+				</tr>
+			</table>
+		</form:form>
+		</div>
+		
+	</div>
+</div>

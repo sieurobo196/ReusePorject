@@ -1,0 +1,44 @@
+@charset "utf-8";
+	#tab_mainMenu{
+		/*float:left;
+		height:auto;
+		width:540px;*/
+		
+	}
+	#tab_mainMenu a{
+		padding:1px;
+		cursor:pointer;
+		display:block;
+		margin:8px 0 8px 5px;
+		float:left;
+		display:inline
+	}
+	#tab_submenu{		
+		width:377px;
+		height:245px;
+		overflow:hidden
+		
+	}	
+	#tab_submenu div{
+		white-space:nowrap;	/* Don't change this option */
+		
+	}
+	/*
+	Style attributes of active menu item 
+	*/
+	#tab_mainMenu .activeMenuItem{
+		
+	}
+	
+	#tab_mainMenu .inactiveMenuItem{		
+		text-decoration:none; color:#fff;;
+	}
+	#tab_submenu a{	
+		text-decoration:none;
+	}
+	.tab_mainMenu{min-height:82px !important;height:auto !important;height:82px;margin:10px 0 0 4px;background-color:#e7e7e7}
+	
+.zoom{background:url(../../images/icon_kl.jpg) 50px center no-repeat;margin:10px 0 10px 5px;display:inline;height:25px
+}
+.zoom span{float:left;margin-left:70px;display:inline;color:#2163f9;display:block;height:25px;line-height:25px}
+	.zoom span a{color:#2163f9;font-size:12px}

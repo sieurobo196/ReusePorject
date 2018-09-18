@@ -1,0 +1,381 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="editCompany" value="/admin/company/edit" />
+    <spring:url var="listCompany" value="/admin/company" />
+
+
+    <style>
+        input{
+            width:200px;
+        }        
+        tr{
+            height: 30px;
+        }
+
+        .error{
+            display: none;
+            color:red;
+        }
+        .empty-error,.type-error{
+            color:red;
+        }
+
+
+        .empty-error:after{
+            display: block;
+            content: "Thông tin bắt buộc.";
+        }        
+        .type-error:after{
+            display: block;
+            content: "Dữ liệu không hợp lệ.";
+        }
+    </style>
+
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>THÔNG TIN CÔNG TY</span>
+            </h2>
+        </div>
+
+
+        <div id="content" >
+            <form:form method="POST" action="" modelAttribute="company">
+                <table  style="margin-left:30px;">
+                    <tr style="height: auto;">
+                        <td></td>
+                        <td colspan="2">
+                            <c:if test="${not empty success and not success}">
+                                <div class="errorMessage">
+                                    <p>Lỗi máy chủ!</p>
+                                </div>
+                            </c:if>
+
+                            <c:if test="${not empty errorData and errorData}">
+                                <div class="errorMessage">
+                                    <p>Lỗi dữ liệu!</p>
+                                </div>
+                            </c:if>
+
+                            <c:if test="${not empty success and success}">
+                                <div class="infoMessage">
+                                    <p>Cập nhật thành công.</p>
+                                </div>
+                            </c:if>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Tên công ty(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:input path="name" id="name" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("name")?"empty-error":"error"}' id="nameError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Mã công ty:</td>
+                        <td>
+                            <form:input readonly="true" path="code" id="code" />
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Gói dịch vụ(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:select path="packageService" id="packageService"  cssClass="select2_combo" style="min-width:150px;">
+                                <form:options items="${packageList}" itemLabel="name" itemValue="id" />
+                            </form:select>
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("packageServiceType")?"empty-error": errorList.contains("packageService")?"type-error" : "error"}' id="packageServiceError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Số lượng thiết bị(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:input path="equipmentMax" id="equipmentMax" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("equipmentMax")?"empty-error": errorList.contains("equipmentMaxType")?"type-error" : "error"}' id="equipmentMaxError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Ngày hết hạn(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <fmt:formatDate value="${company.expireTime}" pattern="dd/MM/yyyy" var="expireTime" />
+                            <form:input style="width:180px;" path="expireTime" id="expireTime" value="${expireTime}" cssClass="textInput tcal" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("expireTime")?"empty-error":"error"}' id="expireTimeError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Điện thoại(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:input path="tel" id="tel" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("tel")?"empty-error": errorList.contains("telType")?"type-error" : "error"}' id="telError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Email(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:input path="email" id="email" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("email")?"empty-error": errorList.contains("emailType")?"type-error" : "error"}' id="emailError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Người liên hệ:</td>
+                        <td>
+                            <form:input path="contactPersonName"  id="contactPersonName"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Địa chỉ:</td>
+                        <td>
+                            <form:input path="address"  id="address"/>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Tỉnh/Thành phố(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <form:select style="width:150px;" path="locations.id" id="locationId" cssClass="select2_combo">
+                                <form:options items="${locationList}" itemLabel="name" itemValue="id"/>
+                            </form:select>
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("locationId")?"empty-error": errorList.contains("locationIdError")?"type-error" : "error"}' id="locationIdError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Vĩ độ(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <fmt:formatNumber pattern="###0.###############" value="${company.lat}" var="lat"/>
+                            <form:input path="lat" id="lat" value="${lat}" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("lat")?"empty-error": "error"}' id="latError"></span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>Kinh độ(<label class="errorMessage">*</label>):</td>
+                        <td>
+                            <fmt:formatNumber pattern="###0.###############" value="${company.lng}" var="lng"/>
+                            <form:input path="lng" id="lng" value="${lng}" />
+                        </td>
+                        <td>
+                            <span class='${errorList.contains("lng")?"empty-error" : "error"}' id="lngError"></span>
+                        </td>
+                    </tr>
+
+                    <tr style="height:10px;"></tr>
+
+                    <tr>
+                        <td></td>
+                        <td>
+                            <a href="javascript:" onclick="onSubmit()" class="btn-1">
+                                <span><span>Cập nhật</span></span>
+                            </a>
+                            <a href="${listCompany}" class="btn-1">
+                                <span><span>Danh sách công ty</span></span>
+                            </a>  
+                        </td>
+                    </tr>
+
+                    <tr style="height:10px;"></tr>
+
+                </table>
+            </form:form>
+        </div>
+    </div>  
+    <![CDATA[
+    <script>
+        var datePattern = /^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/;
+        var telPattern = /^[0-9]{9,15}$/;
+        var emailPattern = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        function onSubmit() {
+            var name = document.getElementById("name");
+            var nameError = document.getElementById("nameError");
+            var packageService = document.getElementById("packageService");
+            var packageServiceError = document.getElementById("packageServiceError");
+            var equipmentMax = document.getElementById("equipmentMax");
+            var equipmentMaxError = document.getElementById("equipmentMaxError");
+            var expireTime = document.getElementById("expireTime");
+            var expireTimeError = document.getElementById("expireTimeError");
+            var tel = document.getElementById("tel");
+            var telError = document.getElementById("telError");
+            var email = document.getElementById("email");
+            var emailError = document.getElementById("emailError");
+            var locationId = document.getElementById("locationId");
+            var locationIdError = document.getElementById("locationIdError");
+            var lat = document.getElementById("lat");
+            var latError = document.getElementById("latError");
+            var lng = document.getElementById("lng");
+            var lngError = document.getElementById("lngError");
+
+            var flag = true;
+            if (checkNullOrEmpty(name)) {
+                flag = false;
+                nameError.setAttribute("style", "display:block;");
+                nameError.setAttribute("class", "empty-error");
+            }
+            else {
+                nameError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(packageService)) {
+                flag = false;
+                packageServiceError.setAttribute("style", "display:block;");
+                packageServiceError.setAttribute("class", "empty-error");
+            }
+            else if (!checkInteger(packageService) || packageService.value < 1 || packageService.value > 3) {
+                flag = false;
+                packageServiceError.setAttribute("style", "display:block;");
+                packageServiceError.setAttribute("class", "type-error");
+            }
+            else {
+                packageServiceError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(equipmentMax)) {
+                flag = false;
+                equipmentMaxError.setAttribute("style", "display:block;");
+                equipmentMaxError.setAttribute("class", "empty-error");
+            }
+            else if (!checkInteger(equipmentMax) || equipmentMax.value < 0) {
+                flag = false;
+                equipmentMaxError.setAttribute("style", "display:block;");
+                equipmentMaxError.setAttribute("class", "type-error");
+            }
+            else {
+                equipmentMaxError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(expireTime)) {
+                flag = false;
+                expireTimeError.setAttribute("style", "display:block;");
+                expireTimeError.setAttribute("class", "empty-error");
+            }
+            else if (expireTime.value.match(datePattern) == null) {
+                flag = false;
+                expireTimeError.setAttribute("style", "display:block;");
+                expireTimeError.setAttribute("class", "type-error");
+            }
+            else {
+                expireTimeError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(tel)) {
+                flag = false;
+                telError.setAttribute("style", "display:block;");
+                telError.setAttribute("class", "empty-error");
+            }
+            else if (tel.value.match(telPattern) == null) {
+                flag = false;
+                telError.setAttribute("style", "display:block;");
+                telError.setAttribute("class", "type-error");
+            }
+            else {
+                telError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(email)) {
+                flag = false;
+                emailError.setAttribute("style", "display:block;");
+                emailError.setAttribute("class", "empty-error");
+            }
+            else if (!emailPattern.test(email.value)) {
+                flag = false;
+                emailError.setAttribute("style", "display:block;");
+                emailError.setAttribute("class", "type-error");
+            }
+            else {
+                emailError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(locationId)) {
+                flag = false;
+                locationIdError.setAttribute("style", "display:block;");
+                locationIdError.setAttribute("class", "empty-error");
+            }
+            else if (!checkInteger(locationId) || locationId.value < 1) {
+                flag = false;
+                locationIdError.setAttribute("style", "display:block;");
+                locationIdError.setAttribute("class", "type-error");
+            }
+            else {
+                locationIdError.setAttribute("class", "error");
+            }
+
+            if (checkNullOrEmpty(lat)) {
+                flag = false;
+                latError.setAttribute("style", "display:block;");
+                latError.setAttribute("class", "empty-error");
+            }
+            else if (!checkFloat(lat)) {
+                flag = false;
+                latError.setAttribute("style", "display:block;");
+                latError.setAttribute("class", "type-error");
+            }
+            else {
+                latError.setAttribute("class", "error");
+            }
+            if (checkNullOrEmpty(lng)) {
+                flag = false;
+                lngError.setAttribute("style", "display:block;");
+                lngError.setAttribute("class", "empty-error");
+            }
+            else if (!checkFloat(lng)) {
+                flag = false;
+                lngError.setAttribute("style", "display:block;");
+                lngError.setAttribute("class", "type-error");
+            }
+            else {
+                lngError.setAttribute("class", "error");
+            }
+
+            if (flag) {
+                document.forms[0].submit();
+            }
+        }
+
+        function checkNullOrEmpty(input) {
+            if (input === undefined || input.value.trim() == '') {
+                return true;
+            }
+            return false;
+        }
+
+        function checkInteger(input) {
+            return (parseInt(input.value) == input.value);
+        }
+        function checkFloat(input) {
+            return (parseFloat(input.value) == input.value);
+        }
+    </script>
+    ]]>
+</div>
+

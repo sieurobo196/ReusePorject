@@ -1,0 +1,101 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+  <jsp:directive.page contentType="text/html;charset=UTF-8" />
+  <jsp:output omit-xml-declaration="yes" />
+  <spring:url var="jsFolder" value="/resources/js" />
+  <spring:url var="scriptsFolder" value="/resources/scripts" />
+  <spring:url var="imagesFolder" value="/resources/images" />
+  <spring:url var="cssFolder" value="/resources/css" />
+  <spring:url var="createURL" value="/unit/create"/>
+  <spring:url var="editURL" value="/unit/edit/"/>
+  <![CDATA[
+  <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+  <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+  <script type="text/javascript" src="${jsFolder}/units.js"></script>
+  <script type="text/javascript">
+      var contextPath = "${pageContext.request.contextPath}";
+  </script>
+  ]]>
+
+
+  <div id="inner-content">
+    <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                alt="" />
+    </span>
+    <div class="content-title" >
+      <h2>
+        <span>Danh sách đơn vị tính</span>
+      </h2>
+    </div>
+
+    <div id="content">
+      <form:form method="POST" commandName="unitListForm" path="unitListForm" id="unitListForm">
+        <table width="99%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+          <tr>
+            <td></td>
+            <td style="vertical-align: middle">
+              <label>Tìm theo mã/tên </label>
+              <form:input path="textSearch" id="textSearch" class="textInput mediumWidth" type="text" cssStyle="width: 200px"/>
+              <a href="javascript:;" onclick="javascript:document.forms[0].submit()" class="btn-1"><span><span style="width:70px">Xem kết quả</span></span></a>
+              <a href="${createURL}" class="btn-1"><span><span style="width:60px">Thêm mới</span></span></a>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2"><util:pagination maxPages="${maxPages}"
+                             page="${page}" size="${size}" id="UnitTopPagination"
+                             formSubmit="unitListForm" submitMethod="POST" /></td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <table width="99%" border="0" cellspacing="0" cellpadding="0" class="table-2">
+                <thead>
+                  <tr>
+                    <td width="4%" align="center">STT</td>
+                    <td width="20%" align="center">Mã đơn vị</td>
+                    <td width="20%" align="center">Tên đơn vị</td>
+                    <td width="8%" align="center">Thứ tự sắp xếp</td>
+                    <td width="10%" align="center">Hành động</td>
+                  </tr>
+                </thead>
+                <tbody id="table_list_unit">
+                  <c:choose>
+                    <c:when test="${not empty unitListForm.listUnits}">
+                      <c:forEach items="${unitListForm.listUnits}" var="unit" varStatus="status">
+                        <tr>
+                          <td align="center">${(status.index +1) + (page -1) * 10 }</td>
+                          <td><a href="${editURL}/${unit.id}">${unit.code}</a></td>
+                          <td><a href="${editURL}/${unit.id}">${unit.name}</a></td>
+                          <td align="center">${unit.order}</td>
+                          <td align="center"><a href="${editURL}${unit.id}" class="redTxt">Xem</a> | <a href="javascript:;" onclick="javascript: deleteUnit(${unit.id}, '${unit.name}');" class="redTxt">Xóa</a></td>
+                        </tr>
+                      </c:forEach>                      
+                    </c:when>
+                    <c:otherwise>
+                      <tr>
+                        <td colspan="5" align="center">Không tìm thấy dữ liệu</td>
+                      </tr>
+                    </c:otherwise>
+                  </c:choose>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4">
+              <util:pagination maxPages="${maxPages}"
+                               page="${page}" size="${size}" id="UnitBottomPagination"
+                               formSubmit="unitListForm" submitMethod="POST" />
+            </td>
+          </tr>
+        </table>
+      </form:form>
+    </div>
+  </div>
+</div>

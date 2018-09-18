@@ -1,0 +1,87 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="delURL" value="/api/ctkm/range/del" />
+	<spring:url var="editURL" value="/api/ctkm/range/edit" />
+	<spring:url var="addURL" value="/api/ctkm/range/add" />
+	
+	
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>Danh mục bậc thang</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="ctkmForm">				
+				<table width="100%" border="0" cellspacing="3px" cellpadding="0"
+					class="table-1">
+					<tr height="28">						
+						<td align="left">
+							<a href="${addURL}" class="btn-1"
+							title="Thêm CTKM"><span><span>Thêm CTKM</span></span></a>
+						</td>
+					</tr>
+				</table>	
+				<table width="100%" border="0" cellspacing="0" cellpadding="0"
+					class="table-2">
+					<thead>						
+						<tr>
+							<td width="5%">STT</td>
+							<td width="15%">Tên</td>
+							<td width="5%">Mã</td>
+							<td width="10%">Loại bậc thang</td>
+							<td width="10%">Hình thức tặng</td>	
+							<td width="6%">Giá trị mức 1</td>
+							<td width="4%">Nhận mức 1</td>		
+							<td width="6%">Giá trị mức 2</td>
+							<td width="4%">Nhận mức 2</td>	
+							<td width="6%">Giá trị mức 3</td>
+							<td width="4%">Nhận mức 3</td>	
+							<td width="6%">Giá trị mức 4</td>
+							<td width="4%">Nhận mức 4</td>
+							<td width="6%">Giá trị mức 5</td>
+							<td width="4%">Nhận mức 5</td>	
+							<td width="5%"></td>							
+						</tr>	
+					</thead>
+					<tbody>
+						<c:forEach items="${listObj}" var="item" varStatus="status">
+							<tr id="${item.id }">
+								<td align="center">${(page-1)*size+status.count}</td>
+								<td><a href="${editURL}/${item.id}">${item.name}</a></td>
+								<td>${item.code}</td>
+								<td>${item.statusNext}</td>
+								<td>${item.statusVal}</td>								
+								<td>${item.r01}</td>
+								<td>${item.v01}</td>
+								<td>${item.r02}</td>
+								<td>${item.v02}</td>
+								<td>${item.r03}</td>
+								<td>${item.v03}</td>
+								<td>${item.r04}</td>
+								<td>${item.v04}</td>
+								<td>${item.r05}</td>
+								<td>${item.v05}</td>								
+								<td><a href="${delURL}/${item.id}">Xóa</a></td>																			
+							</tr>
+						</c:forEach>
+					</tbody>					
+				</table>						
+			</form:form>
+		</div>
+	</div>
+</div>

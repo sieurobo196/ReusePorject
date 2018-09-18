@@ -1,0 +1,281 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="productListURL" value="/product/list/" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/product.js"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+    <script src="${scriptsFolder}/autoNumeric.js" type=text/javascript></script>
+    <script type="text/javascript">
+        var someOptions = {mDec: '0'};
+        jQuery(function ($) {
+            $('#price').autoNumeric('init', someOptions);
+        });
+       
+
+
+
+       
+
+
+
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+
+                <c:choose>
+                    <c:when test="${view}">
+                        <span> Thông tin hàng hóa </span>
+                        <spring:url value="/product/update" var="url" >					
+                        </spring:url>
+
+                    </c:when>
+                    <c:otherwise>
+                        <span> Thêm mới hàng hóa </span>
+                        <spring:url value="/product/create" var="url" >					
+                        </spring:url>
+                    </c:otherwise>
+                </c:choose>		
+            </h2>
+        </div>
+        <div id="content">
+            <form:form  method="POST" action="${url}"
+                        modelAttribute="goods">
+                <form:hidden path="id" />
+                <form:hidden path="updatedUser" />
+                <form:hidden path="createdUser" />
+                <form:hidden path="deletedUser" />
+
+                <div class="formContent">
+                    <table width="100%" cellpadding="0" cellspacing="5"
+                           class="TableThongTinTram">
+                        <col width="20%" />
+                        <col width="80%" />
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <c:if test="${not empty create}">
+                                    <c:choose>
+                                        <c:when test="${create}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p> Lưu thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p> Lưu thất bại </p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <c:if test="${not empty update}">
+                                    <c:choose>
+                                        <c:when test="${update}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p> Cập nhật thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p> Cập nhật thất bại </p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td align="right"> Loại hàng hóa (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:select id="goodsCategoryId" path="goodsCategorys.id" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">--Danh sách loại hàng hóa--</form:option>
+                                    <form:options items="${goodsCatList}" itemValue="id" itemLabel="name" />
+                                </form:select>&#160;&#160;&#160;
+                                <form:errors id="goodsCategoryId" path="goodsCategorys.id" cssClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"> Mã hàng hóa (<label class="errorMessage">*</label>): </td>
+                            <td>
+                                <form:input path="goodsCode" cssClass="textInput mediumWidth"/>&#160;&#160;&#160;
+                                <form:errors path="goodsCode" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Tên (<label class="errorMessage">*</label>): 
+                            </td>
+                            <td>
+                                <form:input path="name" cssClass="textInput mediumWidth"/>
+                                &#160;&#160;&#160;
+                                <form:errors path="name" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"> Giá (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:input path="price" cssClass="textInput mediumWidth" onkeyup="restrictInputDoubleOnly(event,this)" value="${goods.price}"/>
+                                &#160;&#160;&#160;
+                                <form:errors path="price"  cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"> Hệ số hoa hồng (<label class="errorMessage">*</label>): </td>
+                            <td>
+                                <form:input path="factor" cssClass="textInput mediumWidth" onkeyup="restrictInputDoubleOnly(event,this)"/>
+                                &#160;&#160;&#160;
+                                <form:errors path="factor" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"> Được thu hồi:
+                            </td>
+                            <td>
+                                <form:checkbox path="isRecover"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"> SP trọng tâm:
+                            </td>
+                            <td><form:checkbox path="isFocus"/></td>
+                        </tr>
+                        <tr>
+                            <td align="right"> Trạng thái (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:select id="statusId" path="statuss.id" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">---Trạng thái---</form:option>
+                                    <form:options items="${statusList}" itemValue="id" itemLabel="name" />
+                                </form:select>&#160;&#160;&#160;
+                                <form:errors path="statuss.id" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&#160;&#160;&#160;</td>
+                            <td>
+                                <table border="0" cellspacing="0" class="table-2">
+                                    <thead>
+                                        <tr>
+                                            <td align="center"> Đơn vị (<label class="errorMessage">*</label>)
+                                            </td>
+                                            <td align="center"> Số lượng (<label class="errorMessage">*</label>)
+                                            </td> 
+                                            <td align="center"> Đơn vị nhỏ
+                                            </td>
+                                            <td align="center"> Xóa </td>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="goodsTable">
+                                        <c:choose>
+                                            <c:when test="${not empty goodsUnits}">
+                                                <c:forEach items="${goodsUnits}" var="goodsUnit" varStatus="status">
+                                                    <tr id="tr_goods_unit_${status.index}">
+                                                <input type="hidden" name="goodsUnits[${status.index}].id" value="${goodsUnit.id}" />
+                                                <input type="hidden" id="input_mcp_sales_details_${goodsUnit.id}" name="goodsUnits[${status.index}].deletedUser" value="${goodsUnit.deletedUser}" />
+
+                                                <td align="center">
+                                                    <label id="unit_name_${status.index}">${goodsUnit.units.name}</label>
+                                                    <input type="hidden" id="unitId_${status.index}" name="goodsUnits[${status.index}].units.id" value="${goodsUnit.units.id}" />
+
+                                                </td>
+                                                <td align="center">
+<!--                                                    <label>${goodsUnit.quantity}</label>-->
+                                                    <input  align="right" id="quantity_${status.index}" type="text" name="goodsUnits[${status.index}].quantity" value="${goodsUnit.quantity}" style="text-align:center; width:150px" onkeyup="restrictInputDoubleOnly(event,this)"/>
+                                                </td>
+                                                <td align="center">
+                                                    <c:set value="${goodsUnit.childUnitIds.id}" var="childUnit"></c:set>
+                                                    <select  id="childUnitId_${status.index}" style="width:170px" class="select2_combo select2-offscreen" onchange="SelectElement(${status.index})" >                                                       
+                                                        <c:forEach items="${unit}" var="item" >
+                                                            <c:choose>                                                               
+                                                                <c:when test="${goodsUnit.childUnitIds.id==item.id}">
+                                                                    <option selected="true"  value="${item.id}">${item.name}</option>
+                                                                </c:when>
+                                                                <c:otherwise>
+                                                                    <option value="${item.id}">${item.name}</option>
+                                                                </c:otherwise>
+                                                            </c:choose>
+                                                        </c:forEach>
+                                                    </select>
+                                                    <input id="input_${status.index}" type="hidden" name="goodsUnits[${status.index}].childUnitIds.id"  value="${childUnit}" />
+
+                                                </td>
+                                                <td align="center">
+                                                    <a href="javascript:deleteGoodsUnit(${status.index});" title=" Xóa "> Xóa </a>
+                                                </td>
+                                    </tr>
+                                </c:forEach>
+                            </c:when>
+                            <c:otherwise>
+                                <tr id="tr_list_empty">
+                                    <td colspan="4" style="height: 25px" align="center">
+                                        <form:errors path="goodsUnits" cssClass="errorMessage" />
+                                    </td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+                        </tbody>
+                        <tr>
+                            <td align="center">
+                                <form:select id="unitId" path="" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">---Đơn vị ---</form:option>
+                                    <form:options items="${unit}" itemValue="id" itemLabel="name" />
+                                </form:select>&#160;&#160;&#160;<form:errors path="unit.units.id" cssClass="errorMessage" />
+                            </td>
+                            <td align="center">
+                                <input  id="goods_quantity" style="text-align:center; width:150px" type="number" min="1" value="1" step="1" onkeyup="restrictInputDoubleOnly(event,this)"/>
+                            </td>
+                            <td align="center">
+                                <form:select id="childUnitIdX" path="" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="">---Đơn vị nhỏ---</form:option>
+                                    <form:options items="${unit}" itemValue="id" itemLabel="name" />
+                                </form:select>&#160;&#160;&#160;
+                            </td>
+                            <td >
+                                <a href="javascript:;" onclick="addGoodsUnit();$(unitId).val(0); $(unitId).select2();$(childUnitIdX).val(0); $(childUnitIdX).select2();$(goods_quantity).val(1);" class="btn-1" title=" Thêm"><span><span> Thêm </span></span></a>
+                            </td>
+                        </tr>
+                    </table>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td><label> <!-- Empty -->
+                            </label></td>
+                        <td>
+
+                            <a href="javascript:;"
+                               onclick="javascript:createGoods();" class="btn-1"
+                               title="Lưu"><span><span> Lưu </span></span></a>
+                            <a href="javascript:;"
+                               onclick="javascript:document.forms[0].reset();" class="btn-1"
+                               title="Làm lại"><span><span>Reset</span></span></a>
+
+                            <a href="${productListURL}" class="btn-1"
+                               title="Danh sách hàng hóa"><span><span> Danh sách hàng hóa</span></span></a>
+                        </td>
+                    </tr> 
+                    </table>
+                </div>
+            </form:form>
+
+        </div>
+    </div>
+</div>

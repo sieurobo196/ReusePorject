@@ -1,0 +1,175 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="newDetailURL" value="/pos/sales" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="newPosListURL" value="/newPos/list" />
+
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript">
+    var contextPath = "${pageContext.request.contextPath}";
+
+    function approveNewPos(posId) {
+        window.location = contextPath + "/pos/sales/" + posId;
+//	if (confirm('Bạn có muốn duyệt điểm bán hàng mới?')) {
+        // Accept new POS
+        //	var url = getAppRootPath()+"/newPos/approve?posId="+posId;
+        //	showLoading();
+        //	$.ajax({type: 'POST', dataType:'json', url: url, success: function(data) {
+        //		if(data.status!='OK') {
+        //			hideLoading();
+        //			alert('ÄBH khÃ´ng tá»n táº¡i hoáº·c cÃ³ lá»i truy cáº­p cÆ¡ sá» dá»¯ liá»u!');
+        //		}
+        //	else {
+        //	window.location=contextPath+"/pos/sales/"+posId;
+        //	}
+        //	}});
+        //}
+    }
+
+    function viewResults() {
+        showLoading();
+        //$('#frmNewPosList').submit();
+        document.forms[0].submit();
+    }
+    </script>
+
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH ĐIỂM MỚI</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" id="frmNewPosList" name="frmNewPosList" commandName="frmNewPosList" action="${newPosListURL}">
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+                    <tr>
+                        <td colspan="2">
+
+                            <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                        </td>
+                        <td><a href="javascript:;" onclick="viewResults()" style="min-width: 150px;"
+                               class="btn-1" title="Xem kết quả"><span><span>&#160;&#160;Xem
+                                        kết quả&#160;&#160;</span></span></a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+
+                            <jsp:include page="../timeSelector.jspx"></jsp:include>
+                            <!-- 	<form:hidden path="pageName" />
+                            <form:hidden path="keHoachId" /> -->
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="5">
+                            <util:pagination maxPages="${maxPages}" page="${page}"
+                                             size="${size}" listingURL="" id="posTopPagination" formSubmit="frmNewPosList" submitMethod="POST" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="12%">Tên nhân viên</td>
+                                        <td>Tên điểm mới</td>
+                                        <td width="12%">Ngày tạo</td>
+                                        <td width="14%">Tên chủ</td>
+                                        <td width="10%">Điện thoại</td>
+                                        <td width="26%" colspan="3">Địa chỉ</td>
+                                        <td width="10%">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <spring:eval var="imagesRoot" expression="@systemPros['system.imagesRoot']" />
+                                    <spring:eval var="posImage" expression="@systemPros['system.posImage']" />
+                                    <c:set var="replaceWith" value="/" />
+                                    <c:set var="findStr" value="\" />
+                                        <c:choose>
+                                        <c:when test="${not empty newPosList}">
+                                        <c:forEach items="${newPosList}" var="posItem" varStatus="status">
+
+                                            <tr>
+                                                    <!--<td align="center">${(page-1)*size+status.count}</td>-->
+                                                <td align="center">${status.count}</td>
+                                                <td><a href="${userDetailURL}/${posItem.userCreated.id}">${posItem.userCreated.lastName} ${posItem.userCreated.firstName}</a></td>
+                                                <td><a href="${newDetailURL}/${posItem.id}">${posItem.name}</a></td>
+
+                                                <td align="center"><fmt:parseDate
+                                                        value="${posItem.createdAt}"
+                                                        pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+                                                        value="${transDate}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+
+                                                <td>${posItem.ownerName}</td>
+                                                <td>${posItem.tel}</td>
+                                                <td>${posItem.address}</td>
+                                                <td>${posItem.quanHuyen}</td>
+                                                <td>${posItem.tinhThanh}</td>
+                                                <td align="center">
+                                                    <c:if test="${posItem.image != null}">
+                                                        <c:set var="filePath" value="${posItem.image}" />
+                                                        <c:set var="filePath" value="${fn:replace(filePath, findStr, replaceWith)}" />
+                                                        <spring:url var="picture1" value="/imagesSource/${posImage}/${filePath}" />
+                                                        <a href="javascript:TINY.box.show({image:'${picture1}',close:false});" class="redTxt">
+                                                            Ảnh chụp
+                                                        </a>
+                                                        &#160;|&#160;
+                                                    </c:if>
+                                                    <c:if test="${not only}">
+                                                    <a href="javascript:approveNewPos('${posItem.id}');" class="redTxt"
+                                                       title="Duyệt Điểm Mới">Duyệt
+                                                    </a>
+                                                    </c:if>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr><td colspan="10" align="center">Không tìm thấy dữ liệu</td></tr>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+
+                        <tr>
+                            <td colspan="5">
+                                <util:pagination maxPages="${maxPages}" page="${page}"
+                                                 size="${size}" listingURL="" id="posBottomPagination" formSubmit="frmNewPosList" submitMethod="POST"/>
+                            </td>
+                        </tr>
+
+                    </table>
+            </form:form>
+        </div>
+    </div>
+</div>

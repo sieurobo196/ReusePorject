@@ -1,0 +1,195 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="imageFolder" value="/resources/images" />
+
+	<div id="userDialog" style="display:none">
+		<![CDATA[
+
+		]]>
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1" name="userDialog">
+					<tr>
+						<td colspan="2" align="center">
+							<div class="infoMessage" id="u_messageInfor">
+								
+							</div>
+							
+							<div class="errorMessage" id="u_messageError">
+								
+							</div>
+						</td>
+					</tr>
+					<tr class="info"><td align="right"><strong>Thông tin đăng nhập</strong></td></tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Họ tên (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+                                                    <input id="u_ten" class="textInput mediumWidth" type="text" onkeyup="generUsername(this)"/>
+                                                </td>
+                                        </tr>
+                                        <tr class="more">
+                                            <td style="text-align: right">
+                                                Mã đăng nhập:
+                                            </td>
+                                            <td>
+                                                <input id="u_maDangNhap" class="textInput" type="text" disabled="true"/>
+                                            </td>
+                                        </tr>
+                                        <tr class="more">
+						<td style="text-align: right">
+							Số thẻ:
+						</td>
+						<td>
+							<input id="u_soThe" class="textInput" type="text"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Mật khẩu đăng nhập (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<input id="u_matKhau" class="textInput" type="password"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Nhập lại mật khẩu (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<input id="u_retypePassword" class="textInput" type="password"/>
+						</td>
+					</tr>
+					<tr class="info"><td align="right"><strong>Thông tin cá nhân</strong></td></tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Ngày sinh:<br/><i>(20/12/2000)</i>
+						</td>
+						<td>
+							<input id="u_birthday" class="textInput" type="text"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Giới tính:
+						</td>
+						<td>
+							<select id="u_gioiTinh" class="select2_combo">
+								<option value="">--- Chọn giới tính ---</option>
+								<option value="M">Nam</option>
+								<option value="F">Nữ</option>
+							</select>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Email (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<input id="u_email" class="textInput mediumWidth" type="text"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Điện thoại di động (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<input id="u_soDienThoai" class="textInput" type="text"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Địa chỉ:
+						</td>
+						<td>
+							<input id="u_diaChi" class="textInput largestWidth" type="text"/>
+						</td>
+					</tr>
+					<tr class="info"><td align="right"><strong>Thông tin Công Ty</strong></td></tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right">
+							<label for="">
+							Tỉnh/thành <c:if test="${dailyListForm.capDaiLy!=4}">quản lý </c:if>(<label class="errorMessage">*</label>):</label></td>
+						<td>
+							<c:set var="selectLevel" scope="request">${dailyListForm.capDaiLy}</c:set>
+							<c:set var="select_province" scope="request">u_provinces</c:set>
+							<c:if test="${selectLevel==4}">
+								<c:set var="select_province" scope="request">u_tinhThanhPho</c:set>
+							</c:if>
+							<jsp:include page="../provinceSelector.jspx"></jsp:include>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Vai trò (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<select id="u_vaiTro" class="select2_combo" style="width:150px" onchange="changeRole(this)">
+								<option value="">--- Chọn Vai trò ---</option>
+							</select>
+						</td>
+					</tr>
+					<tr class="more" style="display:none">
+						<td style="text-align: right">
+							Tổ Trưởng:
+						</td>
+						<td>
+							<select id="u_nhanVienGiamSat" class="select2_combo" style="width:150px">
+							</select>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							Nhà Phân Phối (<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<select id="u_nppId" class="select2_combo" style="width:150px">
+								<c:forEach items="${nppList}" var="item">
+								<option value="${item.id}">${item.name}</option>
+								</c:forEach>
+							</select>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							<label for="u_nhanVienBanhTuoi">Nhân Viên Bánh Tươi:</label>
+						</td>
+						<td>
+							<input id="u_nhanVienBanhTuoi" type="checkbox"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right">
+							<label for="u_locked">Đang bị khóa:</label>
+						</td>
+						<td>
+							<input id="u_locked" type="checkbox"/>
+						</td>
+					</tr>
+					<!--<tr class="more">
+						<td style="text-align: right">
+							Gửi email kích hoạt:
+						</td>
+						<td>
+							<input id="u_sendEmail" type="checkbox"/>
+						</td>
+					</tr>
+					--><tr>
+						<td colspan="6" align="center">
+							<a href="javascript:;" onclick="createUser();" class="btn-1"><span><span style="width:50px">Tạo mới</span></span></a>
+							<a href="javascript:;" onclick="tb_remove();" class="btn-1"><span><span style="width:50px">Hủy bỏ</span></span></a>
+						</td>
+					</tr>
+				</table>
+				
+	</div>
+</div>
+

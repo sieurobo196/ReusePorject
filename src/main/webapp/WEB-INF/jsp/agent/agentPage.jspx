@@ -1,0 +1,322 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:url var="posSaleURL" value="/pos/sales" />
+	<spring:url var="addPosURL" value="/agent/addPos" />
+	<spring:url var="agentPosListURL" value="/agent/listPos" />
+	<spring:url var="agentStaffListURL" value="/agent/listStaff" />
+        <spring:url var="addIN" value="/agent/addIN" />
+	<spring:url var="addManager" value="/agent/addManager" />
+	<spring:url var="agentDetails" value="/agent/edit" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="editUserURL" value="/user/detail" />
+        <spring:url var="channelURL" value="/channel/list?id=1" />
+        <spring:url var="jsFolder" value="/resources/js" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <div id="inner-content">
+		<![CDATA[
+                <script type="text/javascript" src="${jsFolder}/channelsearch.js"></script>
+                <script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		function saveAgent(){
+			if ($('#provinces').length==0) {
+				alert("Phải chọn ít nhất 1 tỉnh/thành.");
+				return;
+			}
+			document.getElementById('agentForm').submit();
+		}
+		
+		function saveAgentIN(){
+			document.getElementById('inUpdate').submit();
+		}
+		function getBalance(){
+			window.location = "${agentDetails}/${agentForm.id}"
+		}
+		
+		
+		function viewExtended() {
+			if ($('#grExtended').is(':hidden')) {
+				$('.extended').show();
+				$('.more').hide();
+			} else {
+				$('.extended').hide();
+
+			}
+		}
+		
+		function viewEdit() {
+			if ($('#Vedit').is(':hidden')) {
+				$('.more').show();
+				$('.extended').hide();
+				
+			} else {
+				$('.more').hide();
+
+			}
+		}
+		
+	</script>
+	]]>
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>THÔNG TIN VÙNG MIỀN</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="agentForm">
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td width="20%">
+							<!-- Empty -->
+						</td>
+						<td width="20%">
+							<!-- Empty -->
+						</td>
+						<td width="10%">
+							<!-- Empty -->
+						</td>
+						<td width="20%"><c:if test="${not empty success}">
+								<c:choose>
+									<c:when test="${success}">
+										<div class="infoMessage" id="messageArea">
+											<p>Thông tin được cập nhật thành công.</p>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="errorMessage" id="messageArea">
+											<p>Xảy ra lỗi khi lưu dữ liệu</p>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if></td>
+						<td width="10%">
+							<!-- Empty -->
+						</td>
+						<td width="20%">
+							<!-- Empty -->
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+						<!-- <c:choose>
+							<c:when test="${not empty posList}">
+								<a href="javascript:;" onclick="viewExtended()" class="btn-1" title="">
+									<span><span>Xem ĐBH</span></span>
+								</a>
+							</c:when>
+						</c:choose>
+						 
+						 <c:choose>
+							<c:when test="${not empty id}">
+								<a href="${agentPosListURL}/${id}" class="btn-1" title="">
+									<span><span>Xem ĐBH</span></span>
+								</a>
+								</c:when>
+						</c:choose>
+						
+						 <c:choose>
+							<c:when test="${not empty id}">
+								<a href="${agentStaffListURL}/${id}" class="btn-1" title="">
+									<span><span>Xem Nhân Viên</span></span>
+								</a>
+								</c:when>
+						</c:choose>
+						-->
+						<!--
+						<c:if test="${showUpdateForSync!=null and showUpdateForSync}">
+							<a href="${updateSyncURL}/${id}" class="btn-1" title="">
+								<span><span>Cập Nhật Đồng Bộ Kho Hàng</span></span>
+							</a>
+						</c:if>
+						-->
+						<!--   <a href="javascript:;" onclick="viewEdit()" class="btn-1" title="">
+								<span><span>Thông Tin Đại Lý</span></span>
+						</a> -->
+						<!--  
+						<c:choose>
+							<c:when test="${not empty id}">
+								<a href="${addPosURL}/${id}" class="btn-1" title="">
+										<span><span>Thêm ĐBH</span></span>
+								</a>
+							</c:when>
+						</c:choose>
+						-->
+						</td>
+					</tr>
+					<tr>
+						<td align="right"><b>Thông Tin</b><br/></td>
+						<td colspan="5">
+							<form:hidden path="id"/>
+						</td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Tên Vùng Miền (<label class="errorMessage">*</label>):
+						</label></td>
+						<td colspan="5"><form:input path="ten"
+								cssStyle="width:445px;" />
+								<form:errors path="ten" cssClass="errorMessage" />
+						</td>
+					</tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right">Mã viết
+								tắt (<label class="errorMessage">*</label>):</td>
+						<td colspan="5"><form:input path="maVietTat" disabled ="true" cssStyle="width:150px;" />
+							<form:errors path="maVietTat" cssClass="errorMessage" />
+						</td>
+					</tr>
+					<tr>
+						<td align="right">Thời gian làm việc từ:
+						</td>
+						<td colspan="5">
+							<form:select path="hourWorkStart" cssClass="selectBox" width="10px">
+							<form:options items="${am}"/>
+							</form:select>
+							<form:select path="minuteWorkStart" cssClass="selectBox" width="10px">
+								<form:options items="${minute}"/>
+							</form:select> 
+							 đến: 
+							<form:select path="hourWorkEnd" cssClass="selectBox" width="10px">
+							<form:options items="${pm}"/>
+							</form:select>
+							<form:select path="minuteWorkEnd" cssClass="selectBox" width="10px">
+								<form:options items="${minute}"/>
+							</form:select>
+						</td>
+					</tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right"><label for="">Ghi
+								chú:</label></td>
+						<td colspan="5"><form:textarea path="ghiChu"
+								cssStyle="width:735px" rows="3" /></td>
+					</tr>
+					<tr class="more">
+                                            <td valign="top" style="text-align: right"> <label for="">Tỉnh/Thành quản lý (<label class="errorMessage">*</label>):</label></td>
+                                            <td colspan="5">
+							<c:set var="editMode" scope="request">true</c:set>
+							<c:set var="select_province" scope="request">provinces</c:set>
+							<jsp:include page="../provinceSelector.jspx"></jsp:include>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td>&#160;</td>
+						<td colspan="5">
+							<a href="javascript:saveAgent();" class="btn-1"><span><span>Lưu Vùng Miền</span></span></a>
+							&#160;&#160;
+							<a href="${channelURL}${agentForm.id}" class="btn-1"><span><span>Kênh Quản Lý</span></span></a>
+						</td>
+					</tr>
+				</table>
+
+
+			</form:form>
+					
+			<form id="manager" name="manager" method="post" action="${addIN}/${agentForm.id}">
+				<input type="hidden" id="company" value="${companyId}" />
+				<input type="hidden" id="parentId" value="${parentId}" />
+				<input type="hidden" id="parentType" value="1" />
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0" 
+						class="table-1">
+						<tr>
+							<td width="20%">
+								<!-- Empty -->
+							</td>
+							<td width="20%">
+								<!-- Empty -->
+							</td>
+							<td width="10%">
+								<!-- Empty -->
+							</td>
+							<td width="20%">
+								<!-- Empty -->
+							</td>
+							<td width="10%">
+								<!-- Empty -->
+							</td>
+							<td width="20%">
+								<!-- Empty -->
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" align="center">
+							<div class="infoMessage" id="messageArea">  
+								<c:if test="${param.updateSuccess=='m' or updateSuccess=='m'}">
+									<p>Cập nhật người đại diện thành công.</p>
+								</c:if>
+								<c:if test="${param.updateError=='m' or updateError=='m'}">
+									<p>${param.err}</p>
+								</c:if>
+							</div>
+							</td>
+						</tr>
+						
+						<tr>
+							<td align="right"><b>Thông Tin Quản Trị</b><br/></td>
+							<td colspan="5">
+							</td>
+						</tr>
+						
+						<c:choose>
+						<c:when test="${owner != null}">
+						<tr>
+							<td  align="right">
+								Mã đăng nhập:
+							</td>
+							<td colspan="3">
+								<a href="${editUserURL}/${owner.id}">${owner.code}</a>
+							</td>
+						</tr>
+						<tr>	
+							<td align="right">
+								Họ tên:
+							</td>
+							<td colspan="3">
+								<a href="${editUserURL}/${owner.id}">${owner.name}</a>
+							</td>
+						</tr>
+						<tr>
+							<td align="right">
+								Điện thoại: 
+							</td>
+							<td colspan="3">
+								${owner.phoneNumber}
+							</td>
+						</tr>
+						</c:when>
+						<c:otherwise>
+						<tr>
+							<td colspan="4" align="center">
+								<b>Chưa có người đại diện! <a href="javascript:createOwnerUser(1);">Tạo mới</a></b>
+							</td>
+						</tr>
+						</c:otherwise>
+						</c:choose>
+						
+					</table>
+				</form>	
+                                <jsp:include page="../channel/userForm.jspx"></jsp:include>
+
+		</div>
+	</div>
+	<div id="loading" style="display:none;z-index:103">
+	  <img id="loading-image" src="${imagesFolder}/loading.gif" alt="Đang xử lý dữ liệu..." title="Đang xử lý dữ liệu..." width="100px" />
+	</div>
+</div>
+

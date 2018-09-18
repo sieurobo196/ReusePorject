@@ -1,0 +1,175 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="home" value="/" />
+	<fmt:setLocale value="en_US" scope="session" />
+	<![CDATA[
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/commonfilter.js?v=2"></script>
+		
+		
+		<script>
+			function checkForm(type){
+				
+				if($("#agent").val()=="" || $("#agent").val()==0){
+					alert("Chưa chọn vùng miền");
+				}else{
+					if(type=="export")
+						submitExportForm('rpt001Form','export')
+					else
+						submitActionForm('rpt001Form','list')
+						
+				}
+					
+			}
+		</script>
+		
+		]]>
+
+	<div id="inner-content">
+
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>BÁO CÁO DANH SÁCH KHÁCH HÀNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="rpt001Form">
+				<table border="0" cellspacing="5px" cellpadding="0" class="table-1">
+					<tr>
+						<td colspan="3">
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="padding-left: 10px; display: none;">
+										<form:select style="width:150px;" path="company" cssClass="select2_combo"
+											onchange="changeUserCompany($(this) ,$('#agent'), [$('#area'), $('#provinceArea'), $('#employer')]);">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							<div style="display: inline;width:150px;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#employer')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px;padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), $('#employer'));">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province" cssClass="select2_combo"
+									style="width:150px" onchange="changeProvinceList($(this), $('#employer'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="employer" path="employer" cssClass="select2_combo"
+									style="width:150px">
+									<form:options items="${employerList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						</td>
+						<td style="text-align: left; font-weight: bold;"><label
+							for="">Ngày:</label></td>
+						<td><form:input type="text" id="frm_endDate" size="14"
+								path="ngay" cssClass="dateField tcal" cssStyle="width:150px" /></td>
+					</tr>
+
+				</table>
+				<a href="javascript:void(0)"
+					onclick="checkForm('list')" class="btn-1"
+					title="Xem danh sách"><span><span>Xem danh sách</span></span></a>
+
+				<a href="javascript:void(0)"
+					onclick="checkForm('export')" class="btn-1"
+					title="Xuất báo cáo"><span><span>Xuất báo cáo</span></span></a>
+				<c:choose>
+					<c:when test="${objectList.size()>0}">
+						<util:pagination maxPages="${maxPages}" page="${page}"
+							size="${size}" submitMethod="POST" formSubmit="rpt001Form"
+							id="topPagination" />
+
+
+						<table width="100%" border="0" cellspacing="0" cellpadding="0"
+							class="table-2 tablePlaceholder">
+							<thead>
+								<tr>
+									<td rowspan="2">STT</td>
+									<td rowspan="2">Tên Khách Hàng</td>
+									<td colspan="5">Địa Chỉ Khách Hàng</td>
+									<td rowspan="2">Phân loại</td>
+									<td rowspan="2">Tư gia</td>
+									<td rowspan="2">Trưng bày</td>
+									<td rowspan="2">Ghi chú</td>
+								</tr>
+								<tr>
+									<td>Số nhà</td>
+									<td>Địa chỉ</td>
+									<td>Đường</td>
+									<td>Phường/Xã</td>
+									<td>Điện thoại</td>
+
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${objectList}" var="item" varStatus="status">
+									<tr>
+										<td align="center">${(page-1)*size+status.count}</td>
+										<td nowrap="nowrap">${item.tenCuaHang}<label value=" "></label></td>
+										<td>${item.soNha }<label value=" "></label></td>
+										<td>${item.diaChi }<label value=" "></label></td>
+										<td>${item.tuyenDuong }<label value=" "></label></td>
+										<td>${item.phuongXa }<label value=" "></label></td>
+										<td>${item.dienThoai }<label value=" "></label></td>
+										<td align="center">${item.phanLoai }<label value=" "></label></td>
+										<td align="center"><c:if test="${item.trungBayTuGia==1 }">x</c:if>
+											<label value=" "></label></td>
+										<td align="center"><c:if test="${item.trungBayTuGia==0 }">x</c:if><label
+											value=" "></label></td>
+										<td>${item.ghiChu }<label value=" "></label></td>
+									</tr>
+								</c:forEach>
+							</tbody>
+						</table>
+						<util:pagination maxPages="${maxPages}" page="${page}"
+							size="${size}" submitMethod="POST" formSubmit="rpt001Form"
+							id="topPagination" />
+
+						<input type="hidden" id="page" name="page" value="${page}" />
+						<input type="hidden" id="size" name="size" value="${size}" />
+
+					</c:when>
+					<c:when test="${objectList!=null}"><jsp:include
+							page="../../error/noData.jspx"></jsp:include></c:when>
+				</c:choose>
+			</form:form>
+		</div>
+	</div>
+</div>

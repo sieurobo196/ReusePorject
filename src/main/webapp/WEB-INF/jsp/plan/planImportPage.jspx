@@ -1,0 +1,227 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imageFolder" value="/resources/images" />
+        <spring:url var="templateURL" value="/plan/template" />
+	<spring:url var="downTemplateURL" value="/plan/down/template" />
+	
+	<spring:url var="statusURL" value="/plan/import/status" />
+	<spring:url var="rootURL" value="/api/plan/ajax/" />
+	
+	<div id="inner-content">
+		<![CDATA[
+		<script type="text/javascript">
+			var contextPath = "${pageContext.request.contextPath}";
+			function importPlan() {
+				if ($('#province').val()=='0') {
+					alert('Chưa chọn tỉnh thành');
+					return;
+				}
+				submitActionForm('planForm','');
+				updateStatus();
+			}
+			
+			function updateStatus() {
+				setInterval(function() {
+					$.ajax({
+						url : '${statusURL}',
+						dataType : "html",
+						contentType : "text/html; charset=utf-8",
+						success : function(data) {
+							$('.loading-indicator').html(data);
+						}
+				
+					});
+				}, 1000);
+			}
+			
+			function downloadTemplate() {
+				if ($('#province').val()=='0') {
+					alert('Chưa chọn tỉnh thành');
+					return;
+				}
+				submitExportForm('planForm','${downTemplateURL}');
+			}
+			
+			function selectProvince(name) {				
+				var province = $('#'+name).val();
+				province=parseInt(province);
+				if(province==0) return;
+				var urlLink='${rootURL}'+province;				
+				$.ajax({
+					type : 'GET',
+					url : urlLink,
+					dataType: 'json',
+					success : function(data) {							
+						if(data && data!=null && data.length>0){
+							renderComboBoxScope('#salemanId', data, '--Nhân viên--');	
+						}else{
+							renderComboBoxEmptyScope('#salemanId', '--Nhân viên--');							
+						}								
+					}
+				});				
+			}	
+			
+			function renderComboBoxScope(comboBoxSelector, items, label) {
+				if(items && items!=null && items.length>0){
+					var $domCbo = $(comboBoxSelector);
+					renderComboBoxEmptyScope(comboBoxSelector, label);
+					for ( var i = 0; i < items.length; i++) {
+						var item = items[i];
+						var $domOption = $("<option value = '" + item.id + "'>" + item.name
+								+ "</option>");
+						$domCbo.append($domOption);
+					}
+				}
+				
+			}
+			function renderComboBoxEmptyScope(comboBoxSelector, label) {
+				var $domCbo = $(comboBoxSelector);
+				$domCbo.empty();// remove old options
+				var $domOption = $("<option value = '0'>" + label + "</option>");
+				$domCbo.append($domOption);
+				$domCbo.select2();
+			}
+			
+		</script>
+		<style>
+			.loading-indicator {
+				color: black;
+			    font-size: 14px;
+			    font-weight: bold;
+			    line-height: 300px;
+			    text-align: center;
+			}
+		</style>
+		]]>
+		<span class="bor-left"><img src="${imageFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>IMPORT TUYẾN ĐƯỜNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form method="POST" id="planForm" enctype="multipart/form-data">
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td width="10%">
+							<!-- Empty -->
+						</td>
+						<td width="15%">
+							<!-- Empty -->
+						</td>
+						<td width="7%">
+							<!-- Empty -->
+						</td>
+						<td>
+						</td>
+						<td width="12%">
+							<!-- Empty -->
+						</td>
+						<td width="36%">
+							<!-- Empty -->
+						</td>
+					</tr>
+					<tr>
+						<td colspan="8" align="center">
+							<c:if test="${not empty success}">
+								<c:choose>
+									<c:when test="${success}">
+										<div class="infoMessage" id="messageArea">
+											<p>Thông tin được cập nhật thành công.</p>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="errorMessage" id="messageArea">
+											<p>Xảy ra lỗi khi lưu dữ liệu</p>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</td>
+					</tr>
+					<tr>
+						<td style="text-align: right"><label for="">Tỉnh Thành
+								(<label class="errorMessage">*</label>):
+						</label></td>
+						<td><select id="province" name="province" style="width:180px;" class="select2_combo" onchange="selectProvince('province');">
+								<option value="0">--- Tỉnh Thành ---</option>
+								<c:forEach items="${provinceList}" var="item">
+									<c:choose>
+										<c:when test="${item.id==province}">
+											<option value="${item.id}" selected="selected">${item.name}</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${item.id}">${item.name}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</select>
+						</td>
+						<td style="text-align: right"><label for="">Nhân viên
+								(<label class="errorMessage">*</label>):
+						</label></td>
+						<td><select id="salemanId" name="salemanId" style="width:180px;" class="select2_combo">
+								<option value="0">--- Nhân viên ---</option>
+								<c:forEach items="${salemanList}" var="item">
+									<c:choose>
+										<c:when test="${item.id==salemanId}">
+											<option value="${item.id}" selected="selected">${item.name}</option>
+										</c:when>
+										<c:otherwise>
+											<option value="${item.id}">${item.name}</option>
+										</c:otherwise>
+									</c:choose>
+								</c:forEach>
+							</select>
+						</td>
+						<td style="text-align:left" colspan="4">
+							Chọn file: <input type="file" name="importFile" id="importFile"/>
+						</td>
+					</tr>
+					<tr>
+						<td width="10%">&#160;</td>
+						<td colspan="5">
+							<a href="javascript:downloadTemplate();"
+							class="btn-1"><span><span>Tải file mẫu</span></span></a>
+							
+							<a href="javascript:importPlan();"
+								class="btn-1"><span><span>Import dữ liệu</span></span></a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6">
+							<c:if test="${not empty errorList}">
+								<div class="errorMessage" id="messageArea">
+									<c:forEach items="${errorList}" var="list" varStatus="listStatus">
+										<p><b>${titleMap.get(list)} (${list.size()}):</b> 
+											<c:forEach items="${list}" var="item" varStatus="itemStatus">
+												<c:if test="${itemStatus.index > 0}">, </c:if>
+												${item}
+											</c:forEach>
+										</p>
+									</c:forEach>
+								</div>
+							</c:if>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,24 @@
+  NewsBar v1.4
+==============
+ - Added "n_position" variable, allowing easy relative positioning
+
+
+  NewsBar v1.3
+==============
+ - Fixed a style bug in Netscape 4
+
+
+  NewsBar v1.2
+==============
+ - Added support for Opera7+
+
+
+  NewsBar v1.1
+==============
+ - Some fixes
+ - Supports Konqueror2+
+
+
+  NewsBar v1.0
+==============
+ - All :)

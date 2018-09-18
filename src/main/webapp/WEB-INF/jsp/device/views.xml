@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+  
+  <definition extends="default" name="deviceList">
+    <put-attribute name="body" value="/WEB-INF/jsp/device/list.jspx"/>
+  </definition>
+  
+<!--  <definition extends="default" name="deviceDetail">
+    <put-attribute name="body" value="/WEB-INF/jsp/device/details.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="deviceAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/device/add.jspx"/>
+  </definition>-->
+  
+  <definition extends="default" name="deviceDetail">
+    <put-attribute name="body" value="/WEB-INF/jsp/device/deviceForm.jspx"/>
+  </definition>
+</tiles-definitions>

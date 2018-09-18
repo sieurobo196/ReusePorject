@@ -1,0 +1,117 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page import="vn.itt.msales.entity.CustomerCareInformation"/>
+	<jsp:directive.page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url var="imagesFolder" value="/resources/images" />
+	<spring:url var="posDetailURL" value="/pos/details" />
+	<spring:url var="posSaleURL" value="/pos/sales" />
+	<spring:url var="ccDetailsURL" value="/pos/customercare" />
+	<spring:url var="viewPlanURL" value="/plan/view" />
+	<spring:url var="userDetailURL" value="/user/detail" />
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>NHẬT KÝ CHĂM SÓC ĐIỂM BÁN HÀNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="posDetails">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+		
+			<!--<c:if test="${not empty posItem}">-->
+			<table width="100%" border="0" cellspacing="5" cellpadding="0" class="table-1">
+				<thead>
+					<tr>
+						<td width="20%"><!-- Fix for FF --></td>
+						<td width="29%"><!-- Fix for FF --></td>
+						<td width="2%"><!-- Fix for FF --></td>
+						<td width="20%"><!-- Fix for FF --></td>
+						<td width="29%"><!-- Fix for FF --></td>
+					</tr>
+				</thead>
+				<tbody>
+				
+					<tr>
+						<td colspan="5">
+						<a href="${posSaleURL}/${posId}" class="btn-1" title="">
+								<span><span>Thông Tin ĐBH</span></span>
+						</a>
+
+						</td>
+					</tr>
+					
+					
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" listingURL="" submitMethod="POST" formSubmit="posDetails"
+								id="devTopPagination" /></td>
+					</tr>
+					 
+					 
+					<tr>
+						<td colspan="5">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table-2">
+								<thead>
+									<tr>
+										<td width="10%">STT<!-- Fix for FF --></td>
+										<td width="15%">Ngày giờ CSĐBH</td>
+										<td>Nhân viên CSĐBH</td>
+										<td width="10%">Tỉnh thành</td>
+										<td width="5%">Bán hàng</td>
+										<td width="15%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${ccList}" var="ccItem" varStatus="status">
+									<tr>
+										<td align="center">${(page-1)*size+status.count}</td>
+										<td align="center">
+											<fmt:formatDate value="${ccItem.startCustomerCareAt}" type="both" dateStyle="medium" timeStyle="medium" var="formatedDate" pattern="dd/MM/yyyy HH:mm:ss" />
+											${formatedDate}
+										</td>
+										<td><a href="${userDetailURL}/${ccItem.implementEmployees.id}">${ccItem.implementEmployees.lastName} ${ccItem.implementEmployees.firstName}</a></td>
+										<td>${ccItem.implementEmployees.location}</td>
+										<td align="center">
+											<c:choose>
+												<c:when test="${ccItem.isSold == 1}">
+												<input type="checkbox" disabled="disabled" readonly="readonly" checked="checked"/>
+												</c:when>
+												<c:otherwise>
+												<input type="checkbox" disabled="disabled"/>
+												</c:otherwise>
+											</c:choose>
+										</td>
+										<td align="center"><a href="${ccDetailsURL}/${ccItem.id}"
+												class="redTxt" title="Xem chi tiết thông tin CSĐBH">Chi tiết</a><!--&#160;|&#160;
+												<a href="${viewPlanURL}/${ccItem.keHoachCskh}"
+												class="redTxt" title="Xem kế hoạch CSĐBH liên quan">Xem kế hoạch</a>-->
+										</td>
+									</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					
+					 
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="posDetails"
+								page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+					</tr>
+					
+					 
+				</tbody>
+			</table>
+			<!--</c:if>-->
+			</form:form>
+		</div>
+	</div>
+</div>

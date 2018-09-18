@@ -1,0 +1,278 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page import="vn.itt.msales.entity.POS" />
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="posDetailURL" value="/pos/details" />
+    <spring:url var="ccURL" value="/pos/customercare" />
+    <spring:url var="ccDetailsURL" value="/pos/customercare/details" />
+    <spring:url var="updateCustomerCare" value="/pos/customercare/update"/>
+    <![CDATA[
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function exportReport(type) {
+            document.getElementById('ccInfo').action = contextPath + "/report/customercaredetails/${ccInfo.id}?type=" + type;
+            document.getElementById('ccInfo').submit();
+        }
+    </script>
+    ]]>
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>CHI TIẾT BÁN HÀNG &amp; CHĂM SÓC ĐIỂM BÁN HÀNG</span>
+            </h2>
+        </div>
+        <div id="content">
+            <spring:eval var="posImage" expression="@systemPros['system.posImage']" />
+            <spring:eval var="customerCareImage" expression="@systemPros['system.customerCareImage']" />
+            <c:set var="replaceWith" value="/" /> 
+            <form:form method="POST" commandName="ccInfo">
+                <table width="100%" border="0" cellspacing="5" cellpadding="0"
+                       class="table-1">
+                    <colgroup>
+                        <col idth="20%" />
+                        <col width="29%" />
+                        <col width="2%" />
+                        <col width="20%" />
+                        <col width="29%" />
+                    </colgroup>
+                    <tbody>
+                        <c:choose>
+                            <c:when test="${not empty ccInfo}">
+
+                                <c:if test="${not empty update and update}">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center"><label class="infoMessage">Cập nhật thành công.</label></td>
+                                    </tr>  
+                                </c:if>
+                                <c:if test="${not empty update and !update}">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center"><label class="errorMessage">Cập nhật thất bại.</label></td>
+                                    </tr>  
+                                </c:if>
+
+                                <tr>
+                                    <td colspan="5" class="groupHeader"><label for="">Điểm
+                                            Bán Hàng</label></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">ĐBH:</label></td>
+                                    <td>${ccInfo.poss.name}
+                                        (${ccInfo.poss.posCode})</td>
+                                    <td>
+                                        <!-- Empty -->
+                                    </td>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Địa chỉ:</label></td>
+                                    <td>${ccInfo.poss.address}</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Ngày CSĐBH:</label></td>
+                                    <td><fmt:formatDate
+                                            value="${ccInfo.startCustomerCareAt}" type="both"
+                                            dateStyle="medium" timeStyle="medium" var="formatedDate"
+                                            pattern="dd/MM/yyyy HH:mm:ss" /> ${formatedDate}</td>
+                                    <td>
+                                        <!-- Empty -->
+                                    </td>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Điện thoại:</label></td>
+                                    <td>${ccInfo.poss.tel}</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Thời gian kết thúc CSĐBH:</label></td>
+                                    <td><fmt:formatDate
+                                            value="${ccInfo.finishCustomerCareAt}" type="both"
+                                            dateStyle="medium" timeStyle="medium" var="formatedDate"
+                                            pattern="dd/MM/yyyy HH:mm:ss" /> ${formatedDate}</td>
+                                    <td>
+                                        <!-- Empty -->
+                                    </td>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Fax:</label></td>
+                                    <td>${ccInfo.poss.fax}</td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Nhân viên CSĐBH:</label></td>
+                                    <td>${ccInfo.implementEmployees.lastName} ${ccInfo.implementEmployees.firstName}</td>
+                                    <td>
+                                        <!-- Empty -->
+                                    </td>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Email:</label></td>
+                                    <td>${ccInfo.poss.email}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3"><!--  Fix for FF--></td>
+                                    <td style="text-align: right"><label class="field-label"
+                                                                         for="">Vị trí (vĩ độ, kinh độ):</label></td>
+                                    <td><a href="http://maps.google.com/maps?q=${ccInfo.poss.lat},${ccInfo.poss.lng}">(${ccInfo.poss.lat}, ${ccInfo.poss.lng})</a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--  Fix for FF-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="groupHeader"><label for="">Thông tin ĐBH:</label></td>
+                                    <td colspan="2" class="groupHeader"><label for="">Vị trí CSĐBH:</label></td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: right">Trạng thái: ${ccInfo.poss.statuss.name}</td>
+                                    <td style="text-align: left"></td>
+                                    <td><!-- Fix for FF --></td>
+                                    <td style="text-align: right">Vị trí (vĩ độ, kinh độ):</td>
+                                    <td style="text-align: left"><a href="http://maps.google.com/maps?q=${ccInfo.lat},${ccInfo.lng}">(${ccInfo.lat}, ${ccInfo.lng} )</a></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--  Fix for FF-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <!--  Fix for FF-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5" class="groupHeader"><label for="">Thông tin CSĐBH:</label></td>
+                                </tr>
+                                <c:forEach items="${webCustomerCareList}" var="items">  
+                                    <c:choose>
+                                        <c:when test="${items.list.size()>0 and items.list[0].workflows.isImage == 1}">
+                                            <tr>
+                                                <td colspan="5" class="subGroupHeader">${items.list[0].workflows.workflowTypes.name}</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="5">
+                                                    <c:forEach items="${items.list}" var="item">
+                                                        <c:set var="filePath" value="${fn:replace(item.content, findStr, replaceWith)}" />
+                                                        <spring:url var="picture1" value="/imagesSource/${customerCareImage}/${filePath}" />
+                                                        <a style="padding: 1px 0.6666%" href="javascript:TINY.box.show({image:'${picture1}',close:false});">
+                                                            <img src="${picture1}" width="32%" 
+                                                                 alt="${item.workflows.title}" title="${item.workflows.title}"/>
+                                                        </a>
+                                                    </c:forEach>    
+                                                </td>
+                                            </tr>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:choose>
+                                                <c:when test="${items.list.size() > 0 and items.list[0].workflowDetailss.actionType!=2}">
+                                                    <c:choose>
+                                                        <c:when test="${1>items.list[0].customerCareDetailsList.size()}">
+                                                            <tr>
+                                                                <td colspan="5" class="subGroupHeader">${items.list[0].workflows.title}: ${items.list[0].workflowDetailss.content}</td>
+                                                            </tr>   
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <tr>
+                                                                <td colspan="5" class="subGroupHeader">${items.list[0].workflows.title}</td>
+                                                            </tr> 
+                                                            <tr style="vertical-align: top">
+                                                                <td colspan="5" >
+                                                                    <div style="display: block;">
+                                                                        <c:forEach items="${items.list}" var="item">
+                                                                            <div style="width: 32%;min-width: 300px;display: inline-block;float: left;padding: 5px 0.66666%">
+                                                                                <table width="100%" border="0" cellspacing="0" cellpadding="0" class="table-2">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <td colspan="2">${item.workflowDetailss.content}</td>
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <c:set value="-1" var="workflowId" />
+                                                                                        <c:forEach items="${item.customerCareDetailsList}" var="opt">
+                                                                                            <c:if test="${workflowId!=opt.workflows.id}">
+                                                                                                <tr>
+                                                                                                    <td colspan="2" class="subGroupHeader">${opt.workflows.title}</td>
+                                                                                                </tr> 
+                                                                                                <c:set value="${opt.workflows.id}" var="workflowId" />
+                                                                                            </c:if>
+
+                                                                                            <tr>
+                                                                                                <td align="left">${opt.workflowDetailss.content}</td>
+                                                                                                <td align="left" style="min-width: 100px">${opt.content}</td>
+                                                                                            </tr>                                                                                            
+                                                                                        </c:forEach>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            </div>
+                                                                        </c:forEach>                                                          
+                                                                    </div>
+                                                                </td>                                                                
+                                                            </tr>
+
+                                                        </c:otherwise>
+                                                    </c:choose>                                                    
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <tr>
+                                                        <td colspan="5" class="subGroupHeader">${items.list[0].workflows.title}</td>
+                                                    </tr>  
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <table border="0" cellspacing="0" cellpadding="0" class="table-2">                                                                    
+                                                                <c:forEach items="${items.list}" var="item">
+                                                                    <tr>
+                                                                        <td style="min-width: 100px;" align="left">${item.workflowDetailss.content}</td>
+                                                                        <td style="min-width: 100px;" align="left">${item.content}</td>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </table>                                                            
+                                                        </td>
+                                                    </tr>
+                                                    <c:if test="${items.list[0].workflows.code == 'POS_UPDATE'}">
+                                                        <tr>
+                                                            <td colspan="5" >
+                                                                <a title="Cập nhật thông tin ĐBH" class="btn-1"  href="${updateCustomerCare}/${ccInfo.id}" ><span><span>Cập nhật</span></span></a>
+                                                            </td>
+                                                        </tr> 
+                                                    </c:if>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:forEach>
+
+                                <tr>
+                                    <td>
+                                        <!--  Fix for FF-->
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="5">
+                                        <!--<a href="javascript:;" onclick="javascript:exportReport('xls');"
+                                                class="btn-1"
+                                                title="Export XLS"><span><span>Xuáº¥t ra Excel</span></span></a>
+                                        --></td>
+                                </tr>
+                            </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td colspan="5" align="center">Không có dữ liệu.</td>
+                                </tr>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </tbody>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

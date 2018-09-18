@@ -1,0 +1,328 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"
+		pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js"></script>	
+	<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function changeComType (comType) {
+			if (comType.value == 1) {
+				$("select#comPercent").attr('disabled', false);
+				document.getElementById('phanTramHH').disabled = false;
+				document.getElementById('tienHH').disabled = true;
+				document.getElementById('tienHH').value = "";	
+			}
+			else if (comType.value == 2) {
+				$("select#comValue").attr('disabled', false);
+				document.getElementById('tienHH').disabled = false;
+				document.getElementById('phanTramHH').disabled = true;
+				document.getElementById('phanTramHH').value = "";
+			}
+		}
+		
+		/*
+		function changeDef (comDefType) {
+			if (comDefType.val() == 2) {
+				document.getElementById('conTractType').disabled = true;	
+				document.getElementById('comLevel').disabled = true;
+				document.getElementById('goods').disabled = true;
+				document.getElementById('tienHH').disabled = true;
+				document.getElementById('money').disabled = true;
+			}
+			else {
+				document.getElementById('conTractType').disabled = false;	
+				document.getElementById('comLevel').disabled = false;
+				document.getElementById('goods').disabled = false;
+				document.getElementById('tienHH').disabled = false;
+				document.getElementById('money').disabled = false;
+			}
+		}
+		*/
+
+	</script>
+]]>
+	
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imageFolder}/dummy.gif"
+				alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>ĐỊNH NGHĨA HOA HỒNG</span>
+			</h2>
+		</div>
+  
+	<div id="content">
+		<form:form method="POST" id="comDefRedoForm" commandName="comDefRedoForm">
+		<form:hidden path="id" />
+			<table width="100%" cellspacing="5px" cellpadding="0"
+					class="TableThongTinTram">
+				<col width="20%" />
+				<col width="80%" />
+				
+				  
+				<tr>
+					<td></td>
+					<td ><c:if test="${not empty success}">
+							<c:choose>
+								<c:when test="${success}">
+									<div class="infoMessage" id="messageArea">
+										<p>Thông tin được cập nhật thành công.</p>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<div class="errorMessage" id="messageArea">
+										<p>Xảy ra lỗi khi xử lý dữ liệu</p>
+										<p><form:errors path="id" cssClass="errorMessage" /></p>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:if></td>
+						
+				</tr>
+				
+				<tr>
+					<td align="right"><strong>Tên chính sách Hoa Hồng:</strong></td>
+					<td><form:input path="defName" cssClass="textInput mediumWidth" />
+						<form:errors path="defName" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Mã chính sách Hoa Hồng:</strong></td>
+					<td><form:input path="defCode" cssClass="textInput mediumWidth" />
+						<form:errors path="defCode" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+						<td align="right"><strong>Khu Vực Áp Dụng :</strong>
+						</td>
+						<td>
+							<form:select path="branchId" cssClass="selectBox mediumWidth">
+									<form:options items="${branchList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+						<td align="right"><strong>Định Nghĩa :</strong> (<label class="errorMessage">*</label>)
+						</td>
+						<td>
+							<!-- <form:select path="comDefType" cssClass="selectBox" id="comDefType" onchange="changeDef($('#comDefType'));" /> -->
+							<form:select path="comDefType" cssClass="selectBox mediumWidth" id="comDefType" onchange="selectDiscount(this);" >
+									<form:options items="${comDefTypeList}" itemValue="id" 
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="comDefType" cssClass="errorMessage" />
+						</td>
+				</tr>
+
+				<tr>
+						<td align="right"><strong>Loại :</strong>
+						</td>
+						<td>
+							<form:select path="comContract" cssClass="selectBox mediumWidth" id="conTractType">
+									<form:options items="${contractList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="comContract" cssClass="errorMessage" />
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+						<td style="text-align: right"><label><Strong>Sản Phẩm / Dịch Vụ </Strong> (<label class="errorMessage">*</label>):</label>
+						</td>
+						<td>
+							<form:select path="goodsCatId" cssClass="selectBox mediumWidth" onchange="selectCat(this);" id="goodsCatId">
+									<form:options items="${goodsCatList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							
+							&#160;
+							<form:select path="goodsId" cssClass="selectBox mediumWidth" id="goodsId">
+									<form:options items="${goodsList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="goodsCatId" cssClass="errorMessage" />
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right">
+					<label><strong>Cách Tính</strong> </label>(<label class="errorMessage">*</label>):
+					</td>
+					<td>
+					<form:select path="comType" cssClass="selectBox mediumWidth" id="comTypeId" width="150px">
+									<form:options items="${comTypeList}" itemValue="id"
+										itemLabel="name" />
+					</form:select> 
+					<form:errors path="comType" cssClass="errorMessage" />
+					</td>
+
+				</tr>
+				
+				<tr>
+						<td style="text-align: right"><strong>Cấp Bán Hàng </strong>(<label class="errorMessage">*</label>):
+						</td>
+						<td>
+							<c:choose>
+								<c:when test="${funcEdit==true}">
+									<select class="selectBox mediumWidth">
+										<option>Cấp Bán Hàng C${comDefRedoForm.getComLevel() }</option>
+									</select>
+									<form:hidden path="comLevel"/>
+								</c:when>
+								<c:otherwise>
+									<form:select path="comLevel" cssClass="selectBox mediumWidth" 
+										onchange="selectLevel(this,${comDefRedoForm.channelLevel});" id="comLevel" >
+												<form:options items="${levelList}" itemValue="id"
+													itemLabel="name" />
+									</form:select> 
+								</c:otherwise>
+							</c:choose>
+							
+							<form:errors path="comLevel" cssClass="errorMessage" />
+							<br/>
+						</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				
+				<tbody>
+				<c:choose>
+					<c:when test="${funcEdit==true}">
+						<c:forEach var="i" begin="1" end="${comDefRedoForm.getComLevel()}" varStatus="status">
+							<tr>
+								<td style="text-align: right">Hoa Hồng Cấp ${status.count} (<label class="errorMessage">*</label>):
+								</td>
+								<td>
+									<form:input path="levelValue[${status.count}]" class="textInput numberField" 
+									onkeyup="restrictInputDoubleOnly(event,this)"/>
+									
+									<br/>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<c:forEach var="i" begin="0" end="${comDefRedoForm.channelLevel+1}" varStatus="status">
+							<tr>
+								<td style="text-align: right">Hoa Hồng Cấp ${status.count} (<label class="errorMessage">*</label>):
+								</td>
+								<td>
+								<c:choose>
+									<c:when test="${comDefRedoForm.comLevel ge 1}">
+										<c:choose>
+											<c:when test="${status.count gt comDefRedoForm.comLevel}">
+												<form:input path="levelValue[${status.count}]" class="textInput numberField" 
+													onkeyup="restrictInputDoubleOnly(event,this)" disabled="true"/>
+											</c:when>
+											<c:otherwise>
+												<form:input path="levelValue[${status.count}]" class="textInput numberField" 
+												onkeyup="restrictInputDoubleOnly(event,this)"/>
+											</c:otherwise>
+										</c:choose>
+										<c:if test="${comDefRedoForm.comLevel ge status.count }">
+										</c:if>
+									</c:when>
+									<c:otherwise>
+										<form:input path="levelValue[${status.count}]" class="textInput numberField" 
+											onkeyup="restrictInputDoubleOnly(event,this)"/>
+									</c:otherwise>
+								</c:choose>
+									<br/>
+								</td>
+							</tr>
+						</c:forEach>
+					</c:otherwise>
+				</c:choose>
+				</tbody>
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				
+				<tr>
+					<td align="right"><label><strong>Khoản Tiền :</strong></label></td>
+				</tr>
+				<tr>
+					<td align="right">Từ :</td>
+					<td>
+						<form:input path="fromPrice" class="textInput numberField" 
+						onkeyup="restrictInputDoubleOnly(event,this)"/><label> VND </label>
+						<form:errors path="fromPrice" cssClass="errorMessage" />
+					</td>
+				</tr>
+				<tr>	
+					<td align="right"> Đến :</td>
+					<td>
+						<form:input path="toPrice" class="textInput numberField" 
+						onkeyup="restrictInputDoubleOnly(event,this)"/><label> VND </label>
+						<form:errors path="toPrice" cssClass="errorMessage" />
+					</td>
+				</tr>
+				
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+			
+				<tr>
+					<td align="right"><strong>Ngày bắt đầu:</strong></td>
+					<td>
+						<form:input path="ngayBatDau" cssClass="textInput tcal" value="${comDefRedoForm.ngayBatDau}" /> 
+							&#160;&#160;&#160;(dd/MM/yyyy) 
+						<form:errors path="ngayBatDau" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Ngày kết thúc:</strong></td>
+					<td>
+						<form:input path="ngayKetThuc" cssClass="textInput tcal" value="${comDefRedoForm.ngayKetThuc}"/> 
+							&#160;&#160;&#160;(dd/MM/yyyy) 
+						<form:errors path="ngayKetThuc" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Sử dụng định nghĩa:</strong></td>
+					<td><form:checkbox path="status" /></td>
+				</tr>
+
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				  
+				<tr>
+					<td><label>
+					</label></td>
+					<td>
+						<a href="javascript:;" onclick="javascript:document.forms[0].submit();" class="btn-1" title="Lưu thông tin">
+							<span><span>Lưu</span></span>
+						</a>
+					</td>
+				</tr>
+			</table>
+		</form:form>
+		</div>
+		
+	</div>
+</div>

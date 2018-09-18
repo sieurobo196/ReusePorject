@@ -1,0 +1,376 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="cssFolder" value="/resources/css" />
+	<spring:url var="jsFolder" value="/resources/js" />
+	
+	<spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="supplierDetailURL" value="/npp/detail" />
+	<spring:url var="attendURL" value="/attend/detail" />
+	<spring:url var="attendAddURL" value="/attend/add" />
+	<spring:url var="careDetailURL" value="/plan/view" />
+	<spring:url var="scriptsFolder" value="/scripts" />
+	
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+<script type="text/javascript" src="${scriptsFolder}/transvas.js?v=2"></script>
+<script type="text/javascript">
+	var contextPath = "${pageContext.request.contextPath}";
+
+	function viewResults() {
+		submitActionForm('attendForm', '');
+	}
+	
+	function attendanceReport(){
+	
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		 var dateRegEx = null;
+            dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+			var sdayobj =null ;
+            if (dateRegEx.test(fromDate)){
+            	
+				var sdayfield=fromDate.split("/")[0];
+				var smonthfield=fromDate.split("/")[1];
+				var syearfield=fromDate.split("/")[2];
+				sdayobj = new Date(syearfield, smonthfield-1, sdayfield);
+				
+				// dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+	            var edayobj =null ;
+	            if(dateRegEx.test(toDate)) {
+	            	var edayfield=toDate.split("/")[0];
+					var emonthfield=toDate.split("/")[1];
+					var eyearfield=toDate.split("/")[2];
+					edayobj = new Date(eyearfield, emonthfield-1, edayfield);
+					
+					 var millisecondsPerDay = 86400 * 1000;
+           			 var compDate = (edayobj - sdayobj)/millisecondsPerDay;
+           
+		            if(compDate >= 0){
+		            	if(compDate<=31){
+		            		if((smonthfield == emonthfield)&&(syearfield == eyearfield)){
+								submitExportForm('attendForm', contextPath + "/report/attendList");
+							}else{
+								alert('Ngày bắt đầu, kết thúc phải cùng tháng. Bạn hãy nhập lại.' );
+							}
+		            	} else {
+		            		alert('Sồ ngày làm báo cáo không ược quá 31 ngày. Bạn hãy nhập lại.' );
+		            	}
+                
+            }else {
+                alert('Ngày kết thúc(đến ngày) báo cáo phải lớn hơn hoặc bằng ngày bắt đấu(từ ngày). Bạn hãy nhập lại.' );
+            }
+					
+					
+	            }else{
+	            	alert("Bạn chưa nhập dữ liệu vào ô 'Đến Ngày'. ");
+	            }
+				
+            }else{
+                alert("Bạn chưa nhập dữ liệu vào ô 'Từ Ngày'. ");
+            }
+	
+	}
+	
+	function attendanceSumReport(){
+	
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		 var dateRegEx = null;
+            dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+			var sdayobj =null ;
+            if (dateRegEx.test(fromDate)){
+            	
+				var sdayfield=fromDate.split("/")[0];
+				var smonthfield=fromDate.split("/")[1];
+				var syearfield=fromDate.split("/")[2];
+				sdayobj = new Date(syearfield, smonthfield-1, sdayfield);
+				
+				// dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+	            var edayobj =null ;
+	            if(dateRegEx.test(toDate)) {
+	            	var edayfield=toDate.split("/")[0];
+					var emonthfield=toDate.split("/")[1];
+					var eyearfield=toDate.split("/")[2];
+					edayobj = new Date(eyearfield, emonthfield-1, edayfield);
+					
+					 var millisecondsPerDay = 86400 * 1000;
+           			 var compDate = (edayobj - sdayobj)/millisecondsPerDay;
+           
+		            if(compDate >= 0){
+		            	if(compDate<=31){
+		            		if((smonthfield == emonthfield)&&(syearfield == eyearfield)){
+								submitExportForm('attendForm', contextPath + "/report/attendSum");
+							}else{
+								alert('Ngày bắt đầu, kết thúc phải cùng tháng. Bạn hãy nhập lại.' );
+							}
+		            	} else {
+		            		alert('Sồ ngày làm báo cáo không ược quá 31 ngày. Bạn hãy nhập lại.' );
+		            	}
+                
+            }else {
+                alert('Ngày kết thúc(đến ngày) báo cáo phải lớn hơn hoặc bằng ngày bắt đấu(từ ngày). Bạn hãy nhập lại.' );
+            }
+					
+					
+	            }else{
+	            	alert("Bạn chưa nhập dữ liệu vào ô 'Đến Ngày'. ");
+	            }
+				
+            }else{
+                alert("Bạn chưa nhập dữ liệu vào ô 'Từ Ngày'. ");
+            }
+	
+	}
+	
+	$(document).ready(function() { 
+		$("select").select2(); 
+	});
+	
+</script>
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH CHẤM CÔNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="attendForm" id="attendForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="3px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td colspan="3">
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="width:150px;padding-right:20px;display:none;">
+										<form:select style="width:150px" path="company" 
+											onchange="changeCompany($(this),$('#agent'),$('#employer'));">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							<div style="display: inline;width:150px;padding-right:20px">
+								<form:select path="agent" style="width:150px;"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#employer')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px;padding-right:20px; display: inline;">
+								<form:select path="area"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), $('#employer'));">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province"
+									style="width:150px" onchange="changeProvinceList($(this), $('#employer'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="employer" path="employer"
+									style="width:150px">
+									<form:options items="${employerList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						</td>
+					</tr>
+					
+					<tr>	
+						<td>
+						
+						<div style="width:150px;padding-right:20px;display:inline;">
+							<form:select id="status" path="status" style="width:150px">
+								<form:options items="${statusList}" itemValue="id"
+									itemLabel="name" />
+							</form:select>
+						</div>
+						
+						
+						<div style="padding-left: 10px; display: inline;">
+								<spring:message code="map_filter_from_date" htmlEscape="true" />
+								:
+								<fmt:formatDate value="${frm_startDate}" var="startDate"
+									pattern="dd/MM/yyyy" />
+								<form:input type="text" id="frm_startDate" size="14"
+									path="startDate" cssClass="dateField tcal" />
+						</div>
+						
+						<div style="padding-left: 10px; display: inline;">
+								<spring:message code="map_filter_to_date" htmlEscape="true" />
+								:
+								<fmt:formatDate value="${frm_endDate}" var="endDate"
+									pattern="dd/MM/yyyy" />
+								<form:input type="text" id="frm_endDate" size="14"
+									path="endDate" cssClass="dateField tcal" />
+						</div>
+
+						<div style="padding-left: 10px; display: inline;">
+							<!--  <input name="searchText" value="${fn:escapeXml(searchText)}" onkeypress="if(event.keyCode==13) {document.forms[0].submit();}"/> 
+							&#160;&#160;&#160; 
+							-->
+							<a href="javascript:;" onclick="viewResults()" class="btn-1" title="Tìm">
+								<span><span style="width:70px">Tìm Kiếm</span></span>
+							</a>
+						</div>
+						
+						</td>
+						<td align="right">
+							<a href="${attendAddURL}" class="btn-1" title="Thêm Chấm Công">
+										<span><span>Thêm Chấm Công</span></span>
+									</a>
+						</td> 
+					</tr>
+					<tr>					
+					</tr>
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" submitMethod="POST" listingURL="" formSubmit="attendForm"
+								id="devTopPagination" /></td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="10%">Tên Nhân Viên</td>
+										<td width="10%">Số Thẻ </td>
+										<td width="10%">Tỉnh Thành</td>
+										<td width="10%">Thiết Bị</td>
+										<td width="10%">Giờ Vào</td>
+										<td width="15%">Công Việc Trong Ngày</td>
+										<td width="10%">Giờ Trả Hàng</td>
+										<td width="5%">Trạng Thái</td>							
+									</tr>
+								</thead>
+								<tbody>
+								<c:choose>
+										<c:when test="${not empty attendList}">
+											<c:forEach items="${attendList}" var="item" varStatus="status">
+												<tr id="${item.id }">
+													<td align="center">${(page-1)*size+status.count}</td>	
+													<td><a href="${userDetailURL}/${item.nhanVienId}">${item.tenNhanVien}</a></td>
+													<td>${item.soThe}</td>													 
+													<td>${item.tinhThanh}</td>
+													<td align="center">
+														<c:choose>
+															<c:when test="${not empty item.loaiThietBi}">${item.loaiThietBi}</c:when>
+															<c:otherwise></c:otherwise>
+														</c:choose>
+													</td>
+													<td align="center">
+														<fmt:formatDate value="${item.gioBatDau}" 
+															type="both" dateStyle="medium" timeStyle="medium" 
+															var="formatedDate" pattern="dd/MM/yyyy HH:mm:ss" />
+														${formatedDate}
+													</td>
+													<td>
+														<c:choose>
+														<c:when test="${item.khId!=null}">
+														<a href="${careDetailURL}/${item.khId}">${item.note}</a>
+														</c:when>
+														<c:otherwise>
+														</c:otherwise>
+														</c:choose>
+													</td>
+													<td><!-- Giờ Trả Hàng --></td>
+													<td align="center">
+													
+													<!--  <a href="javascript:void(0)" onclick="openDetailForm();">-->
+														<c:choose>
+															
+															<c:when test="${item.status == 1}">
+															<a href="${attendURL}/${item.id}">
+																ĐÚNG GIỜ
+															</a>
+															</c:when>
+															
+															<c:when test="${item.status == 0}">
+															<a href="${attendURL}/${item.id}" class="redTxt">TRỄ GIỜ</a>
+															</c:when>											
+															<c:otherwise>
+															<label style="color:red">VẮNG MẶT</label>
+															</c:otherwise>
+															
+														</c:choose>
+													<!--  </a> -->
+													
+													</td>
+														
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<spring:url value="13" var="col"></spring:url>
+												<td colspan="${col}" align="center">Không có dữ liệu</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+								<tr>
+								<td colspan="3"><strong>Tổng Nhân Viên: ${total}</strong></td> 
+								<td colspan="2">Đúng Giờ: ${onTime}</td> 
+								<td colspan="2">Đi Trễ: ${late}</td>
+								<td colspan="2">Vắng Mặt: ${abs}</td>
+								
+							</tr>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="attendForm"
+								page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+					</tr>
+					
+					<tr>
+						<td colspan="4">	
+							<a href="javascript:attendanceReport();" class="btn-1" title="Export XLS">
+								<span><span>Báo Cáo Chấm Công Nhân Viên</span></span>
+							</a>
+							<a href="javascript:attendanceSumReport();" class="btn-1" title="Export XLS">
+								<span><span>Báo Cáo Tổng Hợp Tháng</span></span>
+							</a>
+						</td>
+					</tr>
+					
+				</table>
+			</form:form>
+		</div>
+	</div>
+</div>

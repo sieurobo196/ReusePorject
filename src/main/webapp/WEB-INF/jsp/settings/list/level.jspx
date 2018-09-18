@@ -1,0 +1,136 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="levelDetailURL" value="/settings/list/levelDetail" />
+	<spring:url var="levelAddURL" value="/settings/list/levels/add" />
+	
+	<div id="inner-content">
+	
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>	
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function deleteLevel(levelId) {
+			if (confirm('Bạn có thật sự muốn xóa cấp Đại Lý Kênh ?')) {
+				// Delete selected level
+				var url = contextPath +"/settings/list/levels/delete?levelId="+levelId;
+				$.ajax({type: 'POST', dataType:'json', url: url, success: function(data) {
+					if(data.status!='OK') {
+						alert('Cấp đại lý không tồn tại hoặc lỗi truy cập cơ sở dữ liệu !');
+					}
+					else {
+						$('#'+levelId).hide();
+					}
+					}
+				});
+			}
+		}
+		
+	</script>
+	]]>
+	
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH CẤP ĐẠI LÝ KÊNH</span>
+			</h2>
+		</div>
+		
+		
+				
+		<div id="content">
+		<c:choose>
+			<c:when test="${permission == 1}">
+				<div style="padding-left: 10px; display: inline;">
+					<a href="${levelAddURL}" class="btn-1">
+						<span><span>Thêm Cấp</span></span>
+					</a>
+				</div>
+			</c:when>
+			<c:otherwise>
+			</c:otherwise>
+		</c:choose>
+		
+		<!--
+			<c:if test="${user.vaiTro=='ROLE_ADMIN'}">
+				<div style="padding-left: 10px; display: inline;">
+					<a href="${levelAddURL}" class="btn-1">
+						<span><span>Thêm Cấp</span></span>
+					</a>
+				</div>
+			</c:if>
+		-->
+			<br/><br/>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0"
+				class="table-2">
+				<thead>
+					<tr>
+						<td width="5%">STT</td>
+						<td width="20%">Mã Viết Tắt</td>
+						<td width="20%">Tên Cấp</td>
+						<td width="20%">Cấp Cha</td>
+						<!--  <td width="20%">Cấp Bán Hàng</td> -->
+						
+						<c:choose>
+							<c:when test="${permission == 1}">
+								<td width="15%">Hành Động</td>
+							</c:when>
+							<c:otherwise>
+							</c:otherwise>
+						</c:choose>
+						
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${levelList}" var="item" varStatus="status">
+						<tr id="${item.id}">
+							<td align="center">${(page-1)*size+status.count}</td>
+							<td align="center">${item.maVietTat}</td>
+							<td align="center">${item.ten}</td>
+							<td align="center">${item.parentName}</td>
+							<!--
+							<c:choose>
+								<c:when test="${item.comLevel == 1}">
+									<td align="center"> TÃ´Ìng ÄaÌ£i LyÌ </td>
+								</c:when>
+								<c:when test="${item.comLevel == 2}">
+									<td align="center"> ÄiÃªÌm BaÌn LeÌ </td>
+								</c:when>
+								<c:when test="${item.comLevel == 3}">
+									<td align="center"> Trung Gian </td>
+								</c:when>
+								<c:otherwise>
+									<td align="center"></td>
+								</c:otherwise>
+							</c:choose>
+							-->
+							<c:choose>
+								<c:when test="${permission == 1}">
+									<td align="center"><a href="${levelDetailURL}/${item.id}"
+										class="redTxt" title="Xem chi tiếp cấp">Sửa</a>&#160;|&#160;
+										<a href="javascript:deleteLevel('${item.id}');" class="redTxt"
+										title="Xóa Cấp">Xoá</a>
+									</td>
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose>
+							
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+
+			</div>
+	</div>
+</div>

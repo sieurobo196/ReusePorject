@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+ 
+<hibernate-configuration>
+    <session-factory>
+        <mapping class="vn.itt.msales.entity.User" />
+        <mapping class="vn.itt.msales.entity.TableName" />
+        <mapping class="vn.itt.msales.entity.Property" />
+        <mapping class="vn.itt.msales.entity.PropertyValue" />
+        <mapping class="vn.itt.msales.entity.Status" />
+        <mapping class="vn.itt.msales.entity.StatusType" />
+        <mapping class="vn.itt.msales.entity.GoodsCategory" />
+        <mapping class="vn.itt.msales.entity.GoodsSeri" />
+        <mapping class="vn.itt.msales.entity.GoodsUnit" />
+        <mapping class="vn.itt.msales.entity.Goods" />
+        <mapping class="vn.itt.msales.entity.UserGoodsCategory" />
+        <mapping class="vn.itt.msales.entity.Unit" />
+        <mapping class="vn.itt.msales.entity.Channel" />
+        <mapping class="vn.itt.msales.entity.ChannelLocation" />
+        <mapping class="vn.itt.msales.entity.POSImg" />
+        <mapping class="vn.itt.msales.entity.POS" />
+        <mapping class="vn.itt.msales.entity.ChannelType" />
+        <mapping class="vn.itt.msales.entity.Company" />
+        <mapping class="vn.itt.msales.entity.CustomerCareInformation" />
+        <mapping class="vn.itt.msales.entity.CustomerCareDetails" />
+        <mapping class="vn.itt.msales.entity.Location" />
+        <mapping class="vn.itt.msales.entity.SalesOrder" />
+        <mapping class="vn.itt.msales.entity.SalesOrderDetails" />        
+        <mapping class="vn.itt.msales.entity.SalesStock" />
+        <mapping class="vn.itt.msales.entity.SalesStockGoods" />
+        <mapping class="vn.itt.msales.entity.SalesStockGoodsSerial" />        
+        <mapping class="vn.itt.msales.entity.SalesTrans" />
+        <mapping class="vn.itt.msales.entity.SalesTransDetails" />
+        <mapping class="vn.itt.msales.entity.SalesTransSeri" />
+        <mapping class="vn.itt.msales.entity.MCP" />
+        <mapping class="vn.itt.msales.entity.MCPSalesDetails" />
+        <mapping class="vn.itt.msales.entity.MCPDetails" />
+        <mapping class="vn.itt.msales.entity.UserRoleChannel" />
+        <mapping class="vn.itt.msales.entity.UserRole" />
+        <mapping class="vn.itt.msales.entity.UserRoute" />
+        <mapping class="vn.itt.msales.entity.Workflow" />
+        <mapping class="vn.itt.msales.entity.WorkflowDetails" />
+        <mapping class="vn.itt.msales.entity.WorkflowType" />
+        <mapping class="vn.itt.msales.entity.Session" />
+        <mapping class="vn.itt.msales.entity.Version" />
+        <mapping class="vn.itt.msales.entity.Equipment" />
+        <mapping class="vn.itt.msales.entity.CompanyConfig" />
+        <mapping class="vn.itt.msales.entity.CompanyConfigDetails" />
+        <mapping class="vn.itt.msales.entity.CompanyHoliday" />
+        <mapping class="vn.itt.msales.entity.CompanyConstant" />
+        <mapping class="vn.itt.msales.entity.MsalesCompany" />
+        <mapping class="vn.itt.msales.entity.GoodsChannelFocus" />
+        <mapping class="vn.itt.msales.entity.Promotion" />
+        <mapping class="vn.itt.msales.entity.PromotionAccumulationRetailer" />
+        <mapping class="vn.itt.msales.entity.PromotionAwardOther" />
+        <mapping class="vn.itt.msales.entity.PromotionAwardRef" />
+        <mapping class="vn.itt.msales.entity.PromotionAward" />
+        <mapping class="vn.itt.msales.entity.PromotionChannel" />
+        <mapping class="vn.itt.msales.entity.PromotionConditional" />
+        <mapping class="vn.itt.msales.entity.PromotionConditionalRef" />
+        <mapping class="vn.itt.msales.entity.PromotionGoodsMinRef" />
+        <mapping class="vn.itt.msales.entity.PromotionGoodsRef" />
+        <mapping class="vn.itt.msales.entity.PromotionOrderRetailer" />
+        <mapping class="vn.itt.msales.entity.PromotionRangeAward" />
+        <mapping class="vn.itt.msales.entity.PromotionTransRetailer" />
+        <mapping class="vn.itt.msales.entity.CompanyConfigKpi" />
+    </session-factory>
+</hibernate-configuration>

@@ -1,0 +1,116 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="distListURL" value="/settings/list/districts" />
+	<![CDATA[
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/commonfilter.js?v=2"></script>
+	]]>
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH MỤC TỈNH - THÀNH PHỐ</span>
+			</h2>
+		</div>
+		<div id="content">
+		<form:form method="POST" name="listForm" commandName="listForm">
+			<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>						
+						<td colspan="3">
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="padding-right:20px; display: none;">
+										<form:select style="width:140px;" path="company" cssClass="select2_combo"
+											onchange="changeUserCompany($(this) ,$('#agent'), [$('#area')]);">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							<div style="display: inline;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'));">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;float:right">
+								<form:input id="searchText" path="searchText" onkeypress="if(event.keyCode==13) {submitActionForm('listForm','');}"
+									value="${fn:escapeXml(searchText)}" style="width: 150px;" />
+							</div>
+							
+						</td>
+						<td>
+							<a href="javascript:void(0)"
+							onclick="submitActionForm('listForm', '')" class="btn-1"
+							title="Xem danh sách"><span><span>Xem danh sách</span></span></a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<util:pagination maxPages="${maxPages}" page="${page}"  id="topPagination"
+								size="${size}" listingURL="" submitMethod="POST" formSubmit="listForm" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="50%">Tên Tỉnh/Thành phố</td>
+										<td width="10%">Mã Viết Tắt</td>
+										<td width="20%">Miền</td>
+										<td width="20%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${provinceList}" var="item" varStatus="status">
+										<tr>
+											<td align="center">${(page-1)*size+status.count}</td>
+											<td>${item.getTenTinh()}</td>
+											<td>${item.getMaVietTat()}</td>
+											<td>${item.getTenMien()}</td>
+											<td><a href="${distListURL}?province=${item.getId()}"
+												class="redTxt" title="Xem các quận huyện">Xem Quận/Huyện</a> </td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<util:pagination maxPages="${maxPages}" page="${page}"  id="bottomPagination"
+								size="${size}" listingURL=""  submitMethod="POST" formSubmit="listForm"/>
+						</td>
+					</tr>
+				</table>
+			</form:form>	
+			</div>
+	</div>
+</div>

@@ -1,0 +1,859 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="defaults" value="/kpi/config?default=102"/>
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/jscolor.js"></script>
+    <script type="text/javascript">
+        function isNumberKey(evt)
+        {
+            var charCode = (evt.which) ? evt.which : evt.keyCode;
+            if (charCode != 46 && charCode > 31
+                    && (charCode < 48 || charCode > 57))
+                return false;
+
+            return true;
+        }
+
+
+        function changeMedium()
+        {
+            $('#minPoint').val($('#mediumPoint').val());
+        }
+
+        function loadURL(u) {
+            $.ajax({
+                url: u,
+                cache: false
+            }).done(function (data) {
+                $("#content").html(data);
+            });
+        }
+
+        function setDefault()
+        {
+            $('#period1').val(2);
+            $('#periodPoint1').val(100);
+            $('#period2').val(6);
+            $('#periodPoint2').val(50);
+            $('#percentPos1').val(50);
+            $('#percentPosPoint1').val(100);
+            $('#percentPos2').val(75);
+            $('#percentPosPoint2').val(50);
+            $('#percentTarget1').val(30);
+            $('#percentTargetPoint1').val(100);
+            $('#percentTarget2').val(50);
+            $('#percentTargetPoint2').val(50);
+            $('#maxPoint').val(200);
+            $('#maxCorlor').val("FF0000");
+            $('#mediumPoint').val(100);
+            $('#mediumCorlor').val("FFFF33");
+            $('#minPoint').val(100);
+            $('#minCorlor').val("008000");
+            
+            $('#maxCorlor').css("background-color",'rgb(255, 0, 0)');
+            $('#mediumCorlor').css("background-color",'rgb(255, 255, 51)');
+            $('#minCorlor').css("background-color",'rgb(0, 128, 0)');
+        }
+
+        function checkInput($e)
+        {
+            if ($e.val() == '' || $e.val().trim() == '' || $e.val() <= 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        function validate()
+        {
+            var flag = true;
+            if (!checkInput($('#period1')))
+            {
+                flag = false;
+                $('#period1Error').text('Chưa nhập giờ hoặc nhập số nhỏ hơn 0');
+                $('#period1Error').show();
+            }
+            else {
+                $('#period1Error').hide();
+            }
+
+            if (!checkInput($('#periodPoint1')))
+            {
+                flag = false;
+                $('#periodPoint1Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#periodPoint1Error').show();
+            }
+            else {
+                $('#periodPoint1Error').hide();
+            }
+
+
+            if (!checkInput($('#period2')))
+            {
+                flag = false;
+                $('#period2Error').text('Chưa nhập giờ hoặc nhập số nhỏ hơn 0');
+                $('#period2Error').show();
+            }
+            else {
+                $('#period2Error').hide();
+            }
+
+
+            if (!checkInput($('#periodPoint2')))
+            {
+                flag = false;
+                $('#periodPoint2Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#periodPoint2Error').show();
+            }
+            else {
+                $('#periodPoint2Error').hide();
+            }
+
+            if (!checkInput($('#percentPos1')))
+            {
+                flag = false;
+                $('#percentPos1Error').text('Chưa nhập % hoặc nhập số nhỏ hơn 0');
+                $('#percentPos1Error').show();
+            }
+            else {
+                $('#percentPos1Error').hide();
+            }
+
+            if (!checkInput($('#percentPosPoint1')))
+            {
+                flag = false;
+                $('#percentPosPoint1Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#percentPosPoint1Error').show();
+            }
+            else {
+                $('#percentPosPoint1Error').hide();
+            }
+
+            if (!checkInput($('#percentPos2')))
+            {
+                flag = false;
+                $('#percentPos2Error').text('Chưa nhập % hoặc nhập số nhỏ hơn 0');
+                $('#percentPos2Error').show();
+            }
+            else {
+                $('#percentPos2Error').hide();
+            }
+
+            if (!checkInput($('#percentPosPoint2')))
+            {
+                flag = false;
+                $('#percentPosPoint2Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#percentPosPoint2Error').show();
+            }
+            else {
+                $('#percentPosPoint2Error').hide();
+            }
+
+            if (!checkInput($('#percentTarget1')))
+            {
+                flag = false;
+                $('#percentTarget1Error').text('Chưa nhập % hoặc nhập số nhỏ hơn 0');
+                $('#percentTarget1Error').show();
+            }
+            else {
+                $('#percentTarget1Error').hide();
+            }
+
+            if (!checkInput($('#percentTargetPoint1')))
+            {
+                flag = false;
+                $('#percentTargetPoint1Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#percentTargetPoint1Error').show();
+            }
+            else {
+                $('#percentTargetPoint1Error').hide();
+            }
+
+            if (!checkInput($('#percentTarget2')))
+            {
+                flag = false;
+                $('#percentTarget2Error').text('Chưa nhập % hoặc nhập số nhỏ hơn 0');
+                $('#percentTarget2Error').show();
+            }
+            else {
+                $('#percentTarget2Error').hide();
+            }
+
+            if (!checkInput($('#percentTargetPoint2')))
+            {
+                flag = false;
+                $('#percentTargetPoint2Error').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#percentTargetPoint2Error').show();
+            }
+            else {
+                $('#percentTargetPoint2Error').hide();
+            }
+
+            if (!checkInput($('#maxPoint')))
+            {
+                flag = false;
+                $('#maxPointError').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#maxPointError').show();
+            }
+            else {
+                $('#maxPointError').hide();
+            }
+
+            if (!checkInput($('#maxCorlor')))
+            {
+                flag = false;
+                $('#maxCorlorError').text('Chưa chọn màu hoặc nhập số nhỏ hơn 0');
+                $('#maxCorlorError').show();
+            }
+            else {
+                $('#maxCorlorError').hide();
+            }
+
+            if (!checkInput($('#mediumPoint')))
+            {
+                flag = false;
+                $('#mediumPointError').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#mediumPointError').show();
+            }
+            else {
+                $('#mediumPointError').hide();
+            }
+
+            if (!checkInput($('#mediumCorlor')))
+            {
+                flag = false;
+                $('#mediumCorlorError').text('Chưa chọn màu hoặc nhập số nhỏ hơn 0');
+                $('#mediumCorlorError').show();
+            }
+            else {
+                $('#mediumCorlorError').hide();
+            }
+
+            if (!checkInput($('#minPoint')))
+            {
+                flag = false;
+                $('#minPointError').text('Chưa nhập điểm hoặc nhập số nhỏ hơn 0');
+                $('#minPointError').show();
+            }
+            else {
+                $('#minPointError').hide();
+            }
+
+            if (!checkInput($('#minCorlor')))
+            {
+                flag = false;
+                $('#minCorlorError').text('Chưa chọn màu hoặc nhập số nhỏ hơn 0');
+                $('#minCorlorError').show();
+            }
+            else {
+                $('#minCorlorError').hide();
+            }
+
+            if (checkInput($('#period1'))
+                    && checkInput($('#period2')))
+            {
+                if (parseInt($('#period1').val()) >= parseInt($('#period2').val()))
+                {
+                    flag = false;
+                    $('#period1Error').text('Thời gian làm việc thứ 1. phải nhỏ hơn thứ 2.');
+                    $('#period1Error').show();
+                    $('#period1\\.errors').hide();
+                }
+                else {
+                    $('#period1Error').hide();
+                }
+            }
+
+            if (checkInput($('#percentPos1'))
+                    && checkInput($('#percentPos2')))
+            {
+                if (parseInt($('#percentPos1').val()) >= parseInt($('#percentPos2').val()))
+                {
+                    flag = false;
+                    $('#percentPos1Error').text('Phần trăm chăm sóc thứ 1. phải nhỏ hơn thứ 2.');
+                    $('#percentPos1Error').show();
+                    $('#percentPos1\\.errors').hide();
+                }
+                else {
+                    $('#percentPos1Error').hide();
+                }
+            }
+
+
+
+            if (checkInput($('#percentTarget1'))
+                    && checkInput($('#percentTarget2')))
+            {
+                if (parseInt($('#percentTarget1').val()) >= parseInt($('#percentTarget2').val()))
+                {
+                    flag = false;
+                    $('#percentTarget1Error').text('Phần trăm doanh số thứ 1. phải nhỏ hơn thứ 2.');
+                    $('#percentTarget1Error').show();
+                    $('#percentTarget1\\.errors').hide();
+                }
+                else {
+                    $('#percentTarget1Error').hide();
+                }
+            }
+
+            if (checkInput($('#periodPoint1'))
+                    && checkInput($('#periodPoint2')))
+            {
+                if (parseInt($('#periodPoint1').val()) <= parseInt($('#periodPoint2').val()))
+                {
+                    flag = false;
+                    $('#periodPoint1Error').text('Số điểm thời gian làm việc thứ 1. phải lớn hơn thứ 2.');
+                    $('#periodPoint1Error').show();
+                    $('#periodPoint1\\.errors').hide();
+                }
+                else {
+                    $('#periodPoint1Error').hide();
+                }
+            }
+
+            if (checkInput($('#percentPosPoint1'))
+                    && checkInput($('#percentPosPoint2')))
+            {
+                if (parseInt($('#percentPosPoint1').val()) <= parseInt($('#percentPosPoint2').val()))
+                {
+                    flag = false;
+                    $('#percentPosPoint1Error').text('Số điểm Phần trăm chăm sóc thứ 1. phải lớn hơn thứ 2.');
+                    $('#percentPosPoint1Error').show();
+                    $('#percentPosPoint1\\.errors').hide();
+                }
+                else {
+                    $('#percentPosPoint1Error').hide();
+                }
+            }
+
+            if (checkInput($('#percentTargetPoint1'))
+                    && checkInput($('#percentTargetPoint2')))
+            {
+                if (parseInt($('#percentTargetPoint1').val()) <= parseInt($('#percentTargetPoint2').val()))
+                {
+                    flag = false;
+                    $('#percentTargetPoint1Error').text('Số điểm phần trăm doanh số thứ 1. phải lớn hơn thứ 2.');
+                    $('#percentTargetPoint1Error').show();
+                    $('#percentTargetPoint1\\.errors').hide();
+                }
+                else {
+                    $('#percentTargetPoint1Error').hide();
+                }
+            }
+
+            if (checkInput($('#maxPoint'))
+                    && checkInput($('#mediumPoint')))
+            {
+                if (parseInt($('#maxPoint').val()) <= parseInt($('#mediumPoint').val()))
+                {
+                    flag = false;
+                    $('#maxPointError').text('Số điểm thứ 1. phải lớn hơn thứ 2.');
+                    $('#maxPointError').show();
+                    $('#maxPoint\\.errors').hide();
+                }
+                else {
+                    $('#maxPointError').hide();
+                }
+            }
+
+            return flag;
+        }
+
+        function submitForm()
+        {
+            if (validate())
+            {
+                document.forms[0].submit();
+            }
+        }
+
+    </script>
+    ]]>
+
+    <style type="text/css">
+        table.tableizer-table {
+            border: 0px solid #CCC; font-family: Arial, Helvetica, sans-serif;
+        }
+        .tableizer-table td {
+            padding: 4px;
+            margin: 0px;
+            border: 0px solid #ccc;
+        }
+        .tableizer-table th {
+            background-color: #104E8B;
+            color: #FFF;
+            font-weight: bold;
+        }
+        ::-webkit-input-placeholder {
+            text-align: center;
+        }
+
+        :-moz-placeholder { /* Firefox 18- */
+            text-align: center;
+        }
+
+        ::-moz-placeholder {  /* Firefox 19+ */
+            text-align: center;
+        }
+
+        :-ms-input-placeholder {
+            text-align: center;
+        }
+        input{
+            text-align:center;
+        }
+        .bold15{
+            font-weight: bold;
+            font-size: 15px;
+            text-align: right;
+        }
+        .rightText{
+            text-align: right;
+        }
+
+        td{
+            border:1px solid black;
+        }
+    </style>
+
+    <div id="inner-content">
+        <div class="content-title">
+            <h2>
+                <span>Thông số KPI</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form id="form_pos" method="POST" modelAttribute="kpiConFigForm">
+                <form:hidden path="id" />
+                <form:hidden path="companyId" />
+                <table  class="tableizer-table"  width="800px" border="1" cellspacing="0px" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td colspan="8" style="font-size: 14px;">
+                                <c:if test="${not empty newKPI and newKPI and empty updatedSuccess and empty error}">
+                                    <div class="infoMessage" style="color:orange;">
+                                        Công ty chưa có Thông số KPI (đang sử dụng dữ liệu mặc định).
+                                    </div>
+                                </c:if>
+
+
+                                <c:if test="${not empty submit and submit}">
+                                    <c:choose>
+                                        <c:when test="${not empty error and error}">
+                                            <div class="errorMessage" id="a_messageInfor">
+                                                Lỗi dữ liệu.
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:choose>
+                                                <c:when test="${updatedSuccess}">
+                                                    <c:choose>
+                                                        <c:when test="${not empty newKPI and newKPI}">
+                                                            <div class="infoMessage" id="a_messageInfor">
+                                                                Lưu thành công.
+                                                            </div>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <div class="infoMessage" id="a_messageInfor">
+                                                                Cập nhật thành công.
+                                                            </div>
+                                                        </c:otherwise>
+                                                    </c:choose>                                                    
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <div class="errorMessage" id="a_messageError">
+                                                        Cập nhật thất bại.
+                                                    </div>
+                                                </c:otherwise>
+                                            </c:choose>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </td>
+                        </tr>
+                        <tr><td colspan="8" ><strong>1. Thời gian làm việc:</strong></td></tr>
+                        <tr>
+                            <td style="width:20px;"></td>
+                            <td style="width:20px;">1.</td>
+                            <td style="width:10px;" class="bold15">
+                                &lt;
+                            </td>
+                            <td style="width:60px;">
+                                <form:input class="textInput mediumWidth" type="text" path="period1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td style="width:200px;" >
+                                Giờ
+                            </td>
+                            <td style="width:30px;">
+
+                            </td>
+                            <td width="60">
+                                <form:input class="textInput mediumWidth" type="text" path="periodPoint1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" /> 
+                            </td>
+                            <td >
+                                Điểm
+                            </td>
+                        </tr>
+                        <tr>
+                            <td ></td>
+                            <td ></td>
+                            <td >
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="period1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="period1Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="periodPoint1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="periodPoint1Error"></span>
+                                </td>
+                            </tr>
+
+
+
+
+                            <tr>
+                                <td></td>
+                                <td>2.</td>
+                                <td class="bold15">
+                                    &lt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="period2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td colspan="2">Giờ</td>
+                            <td>
+                                <form:input class="textInput mediumWidth" type="text" path="periodPoint2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td>Điểm</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="period2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="period2Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="periodPoint2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="periodPoint2Error"></span>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td colspan="8"></td>
+                            </tr>
+
+                            <tr>
+                                <td  colspan="8"><strong>2. Phần trăm chăm sóc Điểm bán hàng:</strong></td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>1.</td>
+                                <td class="bold15">
+                                    &lt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentPos1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td colspan="2">%</td>
+                            <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentPosPoint1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td>Điểm</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="percentPos1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentPos1Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="percentPosPoint1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentPosPoint1Error"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>2.</td>
+                                <td class="bold15">
+                                    &lt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentPos2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+
+                            </td>
+                            <td colspan="2">
+                                %
+                            </td>
+                            <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentPosPoint2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+
+                            </td>
+                            <td>
+                                Điểm
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="percentPos2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentPos2Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="percentPosPoint2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentPosPoint2Error"></span>
+                                </td>
+                            </tr>
+
+
+                            <tr><td colspan="8"></td></tr>
+
+                            <tr><td  colspan="8"><strong>3. Phần trăm đạt doanh số chỉ tiêu theo ngày:</strong></td></tr>
+
+                            <tr>
+                                <td></td>
+                                <td>1.</td>
+                                <td class="bold15">
+                                    &lt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentTarget1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+                            </td>
+                            <td colspan="2">
+                                %
+                            </td>
+                            <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentTargetPoint1"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />                                
+                            </td>
+                            <td>
+                                Điểm
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="percentTarget1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentTarget1Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="percentTargetPoint1" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentTargetPoint1Error"></span>
+                                </td>
+                            </tr>
+
+
+
+                            <tr>
+                                <td></td>
+                                <td>2.</td>
+                                <td class="bold15">
+                                    &lt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentTarget2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+
+                            </td>
+                            <td colspan="2">
+                                %
+                            </td>
+                            <td>
+                                <form:input class="textInput mediumWidth" type="text" path="percentTargetPoint2"  cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />                                
+
+                            </td>
+                            <td>
+                                Điểm
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="3">
+                                <form:errors path="percentTarget2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentTarget2Error"></span>
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="percentTargetPoint2" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="percentTargetPoint2Error"></span>
+                                </td>
+                            </tr>
+
+
+                            <tr><td colspan="8"></td></tr>
+
+                            <tr><td  colspan="8"><strong>4. Thông số màu hiển thị:</strong></td></tr>
+
+                            <tr>
+                                <td></td>
+                                <td>1.</td>
+                                <td class="bold15">
+                                    &gt;
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="maxPoint" cssStyle="width: 60px" onkeypress="return isNumberKey(event)" />
+
+                            </td>
+                            <td>                               
+                                Điểm
+                            </td>
+                            <td class="rightText" width="30">
+                                Màu:
+                            </td>
+                            <td>
+                                <form:input class="jscolor" path="maxCorlor" cssStyle="border: 0px solid; width: 60px;"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="2">
+                                <form:errors path="maxPoint" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="maxPointError"></span>
+                                </td>
+                                <td class="rightText" width="30">
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="maxCorlor" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="maxCorlorError"></span>
+                                </td>
+                            </tr>
+
+
+                            <tr>
+                                <td></td>
+                                <td>2.</td>
+                                <td class="bold15">
+                                    &gt;  
+                                </td>
+                                <td>
+                                <form:input class="textInput mediumWidth" type="text" path="mediumPoint" id="mediumPoint" cssStyle="width: 60px" onkeypress="return isNumberKey(event);" onchange="changeMedium();"  />
+
+                            </td>
+                            <td>
+                                Điểm 
+                            </td>
+                            <td class="rightText">
+                                Màu:
+                            </td>                                
+                            <td>                                
+                                <form:input class="jscolor" path="mediumCorlor" cssStyle="border: 0px solid; width: 60px;"/>
+
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="2">
+                                <form:errors path="mediumPoint" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="mediumPointError"></span>
+                                </td>
+                                <td class="rightText">
+                                </td>                                
+                                <td colspan="2">      
+                                <form:errors path="mediumCorlor" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="mediumCorlorError"></span>
+                                </td>
+                            </tr>
+
+
+
+
+                            <tr>
+                                <td></td>
+                                <td>3.</td>
+                                <td class="bold15">
+                                    &lt;=  
+                                </td>
+                                <td>
+                                <form:input readonly="true" class="textInput mediumWidth" type="text" path="minPoint" id="minPoint" cssStyle="width: 60px;" onkeypress="return isNumberKey(event)"/>
+                            </td>
+                            <td>                          
+                                Điểm
+                            </td>
+                            <td class="rightText">
+                                Màu:
+                            </td>
+                            <td >
+                                <form:input class="jscolor" path="minCorlor" cssStyle="border: 0px solid; width: 60px;"/>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td class="bold15">
+                            </td>
+                            <td colspan="2">
+                                <form:errors path="minPoint" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="minPointError"></span>
+                                </td>
+                                <td class="rightText">
+                                </td>
+                                <td colspan="2">
+                                <form:errors path="minCorlor" cssClass="errorMessage"></form:errors>
+                                    <span class="errorMessage" id="minCorlorError"></span>
+                                </td>
+                            </tr>
+
+
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr><td colspan="8"></td></tr>
+                            <tr>
+                                <td></td><td></td>
+                                <td colspan="3">
+                                    <a href="javascript:setDefault();" class="btn-1"><span><span>Mặc định</span></span></a>
+                                </td>
+                                <td colspan="3">
+                                <c:choose>
+                                    <c:when test="${not empty newKPI and newKPI and not updatedSuccess}">
+                                        <a href="javascript:submitForm();"  class="btn-1"><span><span>Lưu</span></span></a>
+                                                </c:when>
+                                                <c:otherwise>
+                                        <a href="javascript:submitForm();"  class="btn-1"><span><span>Cập Nhật</span></span></a>
+                                                </c:otherwise>
+                                            </c:choose>                                
+                            </td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody></table>
+                </form:form>
+        </div>
+    </div>
+</div>

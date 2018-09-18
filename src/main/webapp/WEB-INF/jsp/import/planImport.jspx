@@ -1,0 +1,184 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="downloadTemplet" value="/plan/download.do" />
+    <spring:url var="imports" value="/plan/import" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/workflow.js"></script>
+    <script type="text/javascript" src="${jsFolder}/import.js"></script>
+
+    <style type="text/css">
+        fieldset {
+            display: block;
+            margin-left: 2px;
+            margin-right: 2px;
+            padding-top: 0.35em;
+            padding-bottom: 0.625em;
+            padding-left: 0.75em;
+            padding-right: 0.75em;
+            width: 500px;
+            text-align: left !important;
+        }
+    </style>
+    ]]>
+
+
+    <div id="inner-content">
+        <div class="content-title">
+            <h2>
+                <span>Import Tuyến đường</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form id="form_plan" method="POST" action="${imports}" enctype="multipart/form-data">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0" >
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label class="errorMessage" id="file_error">
+                                <c:if test="${error}">
+                                    <fieldset >
+                                        <legend class="errorMessage" >Dữ liệu không hợp lệ</legend>
+                                        <dl>
+                                            <c:if test="${errorSQL}">
+                                                <dt class="errorMessage">
+                                                • Lỗi lúc lưu dữ liệu
+                                                </dt>
+                                            </c:if>
+                                            <c:if test="${required}">
+                                                <dt class="errorMessage">
+                                                • Thiếu dữ liệu bắt buộc nhập
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${requiredList}" var="item">
+                                                    <dd> - ${item}</dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+                                            <c:if test="${userCodeError}">
+                                                <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại mã nhân viên sau.
+                                                <br><label><i>Gợi ý: Nếu nhấn viên chưa có, vui lòng nhập danh sách nhân viên trước khi nhập chỉ tiêu.</i></label></br>
+                                                </dt>
+                                                <c:forEach items="${userList}" var="item">
+                                                    <dd> - ${item}</dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+                                            <c:if test="${posCodeError}">
+                                                <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại mã điểm bán hàng sau.
+                                                <label><i>Gợi ý: Nếu điểm bán hàng chưa có, vui lòng nhập danh sách điểm bán hàng trước khi nhập chỉ tiêu.</i></label><br />
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${postList}" var="item">
+                                                    <dd> - ${item}</dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+
+                                            <c:if test="${repeatPOSExcel}">
+                                                <dt class="errorMessage">
+                                                • Kế hoạch sau bị trùng lặp mã ĐBH. Vui lòng kiểm tra lại:
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${duplicateList}" var="item" varStatus="status">
+                                                    <dd>
+                                                        ${status.index + 1}. ${item.userName} ngày <fmt:formatDate value="${item.dateCare}" pattern="dd/MM/yyyy"/> ĐBH: 
+                                                        <c:forEach items="${item.posCodeRepeatList}" var="posCode">
+                                                            ${posCode};
+                                                        </c:forEach>
+                                                    </dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+
+                                            <c:if test="${duplicatedMCPExcel}">
+                                                <dt class="errorMessage">
+                                                • Kế hoạch trùng nhân viên và ngày chăm sóc. Vui lòng kiểm tra lại:
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${duplicateList}" var="item" varStatus="status">
+                                                    <dd>${status.index + 1}. ${item.userName} ngày <fmt:formatDate value="${item.dateCare}" pattern="dd/MM/yyyy"/></dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+                                                
+                                            <c:if test="${uniqeDayPOS}">
+                                                <dt class="errorMessage">
+                                                • Kế hoạch trùng ĐBH và ngày chăm sóc. Vui lòng kiểm tra lại:
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${duplicateList}" var="item" varStatus="status">
+                                                    <dd>
+                                                        ${status.index + 1}. ${item.userName} ngày <fmt:formatDate value="${item.dateCare}" pattern="dd/MM/yyyy"/> ĐBH: 
+                                                        <c:forEach items="${item.posCodeDuplicate}" var="posCode">
+                                                            ${posCode};
+                                                        </c:forEach>
+                                                    </dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+
+                                            <c:if test="${not empty dublicated and dublicated}">
+                                                <dt class="errorMessage">
+                                                • ĐBH sau đã có kế hoạch trong hệ thống. Vui lòng kiểm tra lại.
+                                                </dt>
+                                                <p></p>
+                                                <c:forEach items="${duplicateList}" var="item" varStatus="status">
+                                                    <dd>
+                                                        ${status.index + 1}. Ngày <fmt:formatDate value="${item.dateCare}" pattern="dd/MM/yyyy"/>, ĐBH:  
+                                                        <c:forEach items="${item.posDuplicateList}" var="posCode">
+                                                            ${posCode};
+                                                        </c:forEach>
+                                                    </dd>
+                                                </c:forEach>
+                                                <br />
+                                            </c:if>
+                                        </dl>
+                                    </fieldset>
+                                </c:if>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&#160;</td>
+                        <td>
+                            <c:if test="${submited}">
+                                <c:if test="${!error}">
+                                    <c:choose>
+                                        <c:when test="${updated}">
+                                            <label class="infoMessage" id="gui_massage">Cập nhật dữ liệu thành công.</label>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <label class="errorMessage" id="gui_massage">Cập nhật dữ liệu thất bại.</label>
+                                        </c:otherwise>
+                                    </c:choose>               
+                                </c:if>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px">
+                            <a href="${downloadTemplet}"  class="btn-1"><span><span>Tải file mẫu</span></span></a>
+                        </td>
+
+                        <td>
+                            <input type="file" style="width:350px" name="file_plan" id="file_plan" onchange="removeError(this);"/>
+                            <a href="javascript:;" onclick="javascript:postPlan();" class="btn-1"><span><span>Import</span></span></a>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="form_error_gui"></label></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>

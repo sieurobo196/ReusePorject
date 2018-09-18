@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RPT005" pageWidth="1840" pageHeight="595" orientation="Landscape" columnWidth="1840" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="20" uuid="2f913e49-1e49-4761-a03f-7158a304f5ad">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<style name="header" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="small header" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table header" mode="Opaque" forecolor="#000000" backcolor="#F0F0F0" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table td" mode="Opaque" forecolor="#000000" fill="Solid" pattern="">
+		<box>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table td_color" mode="Transparent" forecolor="#000000" fill="Solid" pattern="">
+		<box>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{performanceStatus}==1]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FF0000"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{performanceStatus}==2]]></conditionExpression>
+			<style mode="Opaque" backcolor="#FFFF00"/>
+		</conditionalStyle>
+		<conditionalStyle>
+			<conditionExpression><![CDATA[$F{performanceStatus}==3]]></conditionExpression>
+			<style mode="Opaque" backcolor="#33FF00"/>
+		</conditionalStyle>
+	</style>
+	<parameter name="thang_nam" class="java.lang.String"/>
+	<parameter name="tenKhuVuc" class="java.lang.String"/>
+	<parameter name="tenTinhThanh" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="tenGiamSat" class="java.lang.String"/>
+	<field name="tenNVBH" class="java.lang.String"/>
+	<field name="percentTarget" class="java.lang.Float"/>
+	<field name="percentSalePoint" class="java.lang.Float"/>
+	<field name="soLuongChiTieu" class="java.lang.Long"/>
+	<field name="soLuongBan" class="java.lang.Long"/>
+	<field name="targetPointTotal" class="java.lang.Long"/>
+	<field name="carePointTotal" class="java.lang.Long"/>
+	<field name="soldPointTotal" class="java.lang.Long"/>
+	<field name="startTime" class="java.lang.String"/>
+	<field name="endTime" class="java.lang.String"/>
+	<field name="totalHours" class="java.lang.String"/>
+	<field name="performanceStatus" class="java.lang.Long"/>
+	<field name="supervisorComment" class="java.lang.String"/>
+	<field name="asmComment" class="java.lang.String"/>
+	<field name="hasApprove" class="java.lang.Boolean"/>
+	<field name="ngayBanHang" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="128">
+			<textField>
+				<reportElement x="0" y="0" width="1100" height="21" uuid="2aa4e758-323d-42b3-9ca8-ada1ce5edc5d"/>
+				<textFieldExpression><![CDATA["Ngày xuất báo cáo:  "+(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="header" x="0" y="21" width="1100" height="37" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="4dfad656-acb3-4744-99ff-67d4fa6263a7"/>
+				<textElement markup="none"/>
+				<textFieldExpression><![CDATA["TÌNH HÌNH THỰC HIỆN CHỈ TIÊU BÁN HÀNG THEO THÁNG "+$P{thang_nam}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="small header" x="0" y="58" width="100" height="50" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="7c7fc127-0764-4be2-98c9-d800a6033fc5"/>
+				<text><![CDATA[Khu vực:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="small header" x="600" y="58" width="100" height="50" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="0ccfacb8-2a43-41d9-bc7a-0fbce33bb903"/>
+				<textElement>
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Tỉnh:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="small header" x="300" y="58" width="100" height="50" uuid="834a5c9c-5ccb-4520-b3e2-c26f25945046"/>
+				<text><![CDATA[Giám sát:]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="small header" x="100" y="58" width="200" height="50" uuid="fe854ee9-3d61-4f05-8878-2df1b55bf755"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tenKhuVuc}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="small header" x="400" y="58" width="200" height="50" uuid="c402b10b-98fa-4055-bcd0-54434c9fdfd3"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tenGiamSat}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="small header" x="700" y="58" width="400" height="50" uuid="83ee2a46-1aad-4b9b-96d9-a5b7b45df8e2"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tenTinhThanh}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="50">
+			<staticText>
+				<reportElement style="table header" x="0" y="30" width="200" height="20" uuid="349ac5c7-7ac3-4aa7-9f0e-3ec160c2b87a"/>
+				<text><![CDATA[Tên NVBH]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="200" y="30" width="100" height="20" uuid="6972f1fa-7df1-49d7-a529-a54e1b3aa9c1"/>
+				<text><![CDATA[% đạt doanh thu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="300" y="30" width="100" height="20" uuid="57983a2b-d6b3-40f8-892f-24ee79f7169f"/>
+				<text><![CDATA[% đạt tuyến đường]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="400" y="30" width="100" height="20" uuid="ed3e9b41-1995-4f20-8b85-30244d701d4a"/>
+				<text><![CDATA[Mục tiêu DT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="500" y="30" width="100" height="20" uuid="e55af438-8a2c-4714-b3e7-ffdde1db35f7"/>
+				<text><![CDATA[Doanh thu]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="600" y="30" width="100" height="20" uuid="32f8378e-2a99-404e-9624-837c76a44bf8"/>
+				<text><![CDATA[DB cần CS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="700" y="30" width="100" height="20" uuid="e909d32c-5659-45b1-9ef8-bdaa983d5cfe"/>
+				<text><![CDATA[DB Đã CS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="800" y="30" width="100" height="20" uuid="0154149c-5593-4312-9f95-a171d7b8c49c"/>
+				<text><![CDATA[DB đã bán hàng]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="900" y="30" width="100" height="20" uuid="87d50d65-dcbd-4cf6-996f-1d4d7d6504b0"/>
+				<text><![CDATA[Tổng TG làm việc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="1000" y="30" width="100" height="20" uuid="032549d6-e149-4027-912d-cc4a5aa8ae8e"/>
+				<text><![CDATA[Đánh giá]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table header" x="1100" y="30" width="250" height="20" uuid="7b782e54-687e-4c17-83cb-2cd8c4d874e1"/>
+				<text><![CDATA[Giải thích]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25">
+			<textField>
+				<reportElement style="table td" x="0" y="0" width="200" height="20" uuid="e5e57c61-e001-4463-b9da-0cc874d56cbb"/>
+				<textFieldExpression><![CDATA[$F{tenNVBH}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %">
+				<reportElement style="table td" x="200" y="0" width="100" height="20" uuid="262fd0f0-fb4e-4166-9620-1513e226e2ae"/>
+				<textFieldExpression><![CDATA[$F{percentTarget}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 %">
+				<reportElement style="table td" x="300" y="0" width="100" height="20" uuid="16e28475-4cf0-4e84-b945-6e1c2c9cca3e"/>
+				<textFieldExpression><![CDATA[$F{percentSalePoint}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="table td" x="400" y="0" width="100" height="20" uuid="867dff68-10b3-4e85-9886-4f8703e20777"/>
+				<textFieldExpression><![CDATA[$F{soLuongChiTieu}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="table td" x="500" y="0" width="100" height="20" uuid="67a8ef82-f347-4a05-be95-4b86c421009a"/>
+				<textFieldExpression><![CDATA[$F{soLuongBan}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="table td" x="600" y="0" width="100" height="20" uuid="223d682d-40ea-42e1-8912-4b179e5b67b4"/>
+				<textFieldExpression><![CDATA[$F{targetPointTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="table td" x="700" y="0" width="100" height="20" uuid="ce16c3cf-8895-4a19-9fb1-e6878d2cc604"/>
+				<textFieldExpression><![CDATA[$F{carePointTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement style="table td" x="800" y="0" width="100" height="20" uuid="d4c3ed86-cde1-4dbf-a7d1-bc8d31c12433"/>
+				<textFieldExpression><![CDATA[$F{soldPointTotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table td" x="900" y="0" width="100" height="20" uuid="1c90a303-16ab-46bb-b6ce-53f11b9f3172"/>
+				<textFieldExpression><![CDATA[$F{totalHours}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table td_color" x="1000" y="0" width="100" height="20" uuid="78bdd01f-07aa-4215-aa45-e2cde54c1f74"/>
+				<textFieldExpression><![CDATA[$F{performanceStatus}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement style="table td" x="1100" y="0" width="250" height="20" uuid="d53d8b16-6358-4d3f-aba5-a3dca6943516"/>
+				<textFieldExpression><![CDATA[$F{asmComment}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

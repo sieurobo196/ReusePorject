@@ -1,0 +1,173 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="posDetailURL" value="/pos/details" />
+    <spring:url var="ccURL" value="/pos/customercare" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="googleDirURL" value="https://www.google.com/maps/dir" />
+    <spring:url var="googlePlaceURL" value="https://www.google.com/maps/place" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=3"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function exportReport(type) {
+            submitExportForm('frmDiaryList', contextPath + "/report/customercarediary?type=" + type);
+        }
+
+        function viewResults() {
+            showLoading();
+            $('#frmDiaryList').submit();
+        }
+
+        $(document).ready(function() { 
+            document.getElementById('statusDiv').style.display = 'none';
+        });
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>NHẬT KÝ CHĂM SÓC ĐIỂM BÁN HÀNG</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="frmDiaryList" id="frmDiaryList">
+            <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                   class="table-1">
+                
+                <tr>
+                    <td colspan="2">
+
+                        <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                        </td>
+                        <td style="min-width: 150px" ><a  href="javascript:;"  onclick="viewResults()"
+                               class="btn-1" title="Xem kết quả"><span><span>&#160;&#160;Xem
+                                        kết quả&#160;&#160;</span></span></a></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+
+                        <jsp:include page="../timeSelector.jspx"></jsp:include>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><util:pagination maxPages="${maxPages}"
+                                     page="${page}" size="${size}" id="diaryTopPagination"
+                                     formSubmit="frmDiaryList" submitMethod="POST" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                               class="table-2">
+                            <thead>
+                                <tr>
+                                    <td width="4%">STT</td>
+                                    <td width="6%">Mã ĐBH</td>
+                                    <td width="8%">Tên ĐBH</td>
+                                    <td>Địa chỉ ĐBH</td>
+                                    <td width="12%">Nhân viên CSĐBH</td>
+                                    <td width="6%">Tỉnh thành</td>
+                                    <td width="6%">Ngày giờ bắt đầu</td>
+                                    <td width="6%">Ngày giờ kết thúc</td>
+                                    <td width="5%">Thời gian</td>
+                                    <td width="5%">Bán hàng</td>
+                                    <td width="6%">Khoảng cách(m)</td>
+                                    <td width="10%">Hành động</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty posDiary}">
+                                        <c:forEach items="${posDiary}" var="item" varStatus="status">
+                                            <tr>
+                                                <td align="center">${(page-1)*size+status.count}</td>
+                                                <td><a href="${ccURL}/${item.id}">${item.poss.posCode}</a></td>
+                                                <td><a href="${ccURL}/${item.id}">${item.poss.name}</a></td>
+                                                <td>
+                                                    <a target="_blank" href="${googlePlaceURL}/${item.poss.lat},${item.poss.lng}">
+                                                        ${item.poss.address}
+                                                    </a>
+                                                </td>
+                                                <td><a href="${userDetailURL}/${item.implementEmployees.id}">${item.implementEmployees.lastName} ${item.implementEmployees.firstName}</a></td>
+                                                <td>${item.implementEmployees.location}</td>
+                                                <td align="center"><fmt:formatDate
+                                                        value="${item.startCustomerCareAt}" type="both"
+                                                        dateStyle="medium" timeStyle="medium"
+                                                        pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                                <td align="center"><fmt:formatDate
+                                                        value="${item.finishCustomerCareAt}" type="both"
+                                                        dateStyle="medium" timeStyle="medium"
+                                                        pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                                <td align="center">${item.timeDiff}</td>
+                                                <td align="center">
+                                                    <c:choose>
+                                                        <c:when test="${item.isSold == 1}">
+                                                            <input type="checkbox" disabled="disabled" checked="checked"/>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <input type="checkbox" disabled="disabled"/>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                </td>
+                                                <td align="right">
+                                                    <a target="_blank" href="${googleDirURL}/${item.lat},${item.lng}/${item.poss.lat},${item.poss.lng}">
+                                                        <fmt:formatNumber type="number" pattern="###,###" value="${item.distance}" />
+                                                    </a>
+                                                </td>
+                                                <td align="center"><a href="${ccURL}/${item.id}" class="redTxt"
+                                                                      title="Xem chi tiếCSĐBH">Xem</a>&#160;|&#160; <a
+                                                                      href="${posDetailURL}/${item.poss.id}"
+                                                                      class="redTxt" title="Xem ĐBH">Xem BH</a></td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td colspan="12" align="center">Không tìm thấy dữ liệu</td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="3"><util:pagination maxPages="${maxPages}"
+                                     page="${page}" size="${size}" id="diaryBottomPagination"
+                                     formSubmit="frmDiaryList" submitMethod="POST" /></td>
+                </tr>
+                <tr>
+                    <td colspan="3">
+                        <!-- 
+                        <a href="javascript:exportReport('xls');"
+                                class="btn-1" title="Export XLS"><span><span>Xuất
+                                                        ra Excel</span></span></a> &#160;&#160;&#160; 
+                                <a href="javascript:exportReport('pdf');" 
+                                        class="btn-1" 
+                                        title="Export PDF"><span><span>&#160;Xuáº¥t ra PDF&#160;</span></span></a>
+                        --></td>
+                </tr>
+            </table>
+            </form:form>
+        </div>
+    </div>
+</div>

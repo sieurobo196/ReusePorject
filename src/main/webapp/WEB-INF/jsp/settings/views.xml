@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+	<definition extends="default" name="changePassword">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/changePassword.jspx" />
+	</definition>
+
+	<definition extends="default" name="changePasswordSuccess">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/changePasswordSuccess.jspx" />
+	</definition>
+
+	<definition extends="default" name="deviceGPS">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/gpsSetting.jspx" />
+	</definition>
+
+	<definition extends="default" name="locationWards">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/list/wards.jspx" />
+	</definition>
+
+	<definition extends="default" name="locationWardForm">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/list/wardForm.jspx" />
+	</definition>
+	<definition extends="default" name="wardEditForm">
+		<put-attribute name="body"
+			value="/WEB-INF/jsp/settings/list/wardEditForm.jspx" />
+	</definition>
+        <definition extends="default" name="listUnits">
+            <put-attribute name="body"
+                           value="/WEB-INF/jsp/settings/units/listUnits.jspx" />
+        </definition>
+        <definition extends="default" name="units">
+            <put-attribute name="body"
+                           value="/WEB-INF/jsp/settings/units/units.jspx" />
+        </definition>
+
+        <definition extends="default" name="sendMail">
+            <put-attribute name="body"
+                           value="/WEB-INF/jsp/settings/sendMail.jspx" />
+        </definition>
+        <definition extends="default" name="kpiConfig">
+            <put-attribute name="body"
+                           value="/WEB-INF/jsp/settings/kpiConfig.jspx" />
+        </definition>
+</tiles-definitions>

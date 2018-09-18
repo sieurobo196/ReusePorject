@@ -1,0 +1,157 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="orderViewURL" value="/order/view" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="posSaleURL" value="/pos/sales" />
+    <spring:url var="orderListURL" value="/order/list" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+
+        function viewResults() {
+            showLoading();
+            document.forms[0].submit();
+        }
+        $(window.location).change(function () {
+            alert('change');
+        });
+    </script>
+    ]]>
+    <style>
+        .wait_row{color:red;}
+    </style>
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>Danh Sách Đơn Hàng </span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" modelAttribute="filterModel" action="${orderListURL}">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+
+                    <tr>
+                        <td colspan="3">
+
+                            <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                            </td>
+                            <td><a style="min-width: 150px;" href="javascript:;" onclick="viewResults()"
+                                   class="btn-1" title="Xem kết quả" ><span><span>&#160;&#160;Xem
+                                            kết quả&#160;&#160;</span></span></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4">
+
+                            <jsp:include page="../timeSelector.jspx"></jsp:include>
+
+                            </td>
+                        </tr>
+
+
+                    <!--
+                                                            <tr>
+                                                                    <td colspan="4" style="text-align: left;"><form:errors
+                        path="filter_message"></form:errors></td>
+</tr>
+                        -->
+                        <tr>
+                            <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catTopPagination"
+                                         formSubmit="filterModel" submitMethod="POST" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="4%">STT</td>
+                                        <td width="13%">Nơi Đặt Hàng</td>
+                                        <td>Địa Chỉ</td>
+                                        <td width="6%">Số Lượng</td>
+                                        <td width="6%">Số Thẻ</td>
+                                        <td width="13%">Nhân Viên CS</td>
+                                        <td width="8%">Tỉnh Thành</td>
+                                        <td width="13%">Ngày Đặt</td>
+                                        <td width="7%">Ngày Giao</td>
+                                        <td width="7%">Trạng thái</td>
+                                        <td width="7%">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    <c:choose>
+                                        <c:when test="${not empty orderList}">
+                                            <c:forEach items="${orderList}" var="item" varStatus="status">
+                                                <c:set var="wcl"></c:set>
+                                                <c:if test="${item.status.id==13}"><c:set var="wcl">wait_row</c:set></c:if>
+                                                <tr class="${wcl}">
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td>
+                                                        <a href="${posSaleURL}/${item.pos.id}">${item.pos.name}</a>
+                                                    </td>
+                                                    <td align="left">${item.pos.address}</td>
+                                                    <td align="right"><fmt:formatNumber type="number"
+                                                                      pattern="###,###" value="${item.quantity}" /></td>
+                                                    <td align="center"><a href="${userDetailURL}/${item.createdUsers.id}">${item.createdUsers.userCode}</a></td>
+                                                    <td align="left"><a href="${userDetailURL}/${item.createdUsers.id}">${item.createdUsers.lastName} ${item.createdUsers.firstName} </a></td>
+                                                    <td align="left">${item.createdUsers.location}</td>
+                                                    <td align="center"><fmt:parseDate value="${item.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" var="createdAt"/> <fmt:formatDate value="${createdAt}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                                    <td align="center"><fmt:parseDate value="${item.salesTransDate}" pattern="yyyy-MM-dd HH:mm:ss" var="transDate"/> <fmt:formatDate value="${transDate}" pattern="dd/MM/yyyy" /></td>
+                                                    <td align="center">${item.statuss.name}</td>
+                                                    <td align="center">
+                                                        <a href="${orderViewURL}/${item.id}" class="redTxt" title="Xem">
+                                                            Xem
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="11" align="center">Không tìm thấy dữ liệu.</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catBottomPagination"
+                                         formSubmit="filterModel" submitMethod="POST" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <!--<a href="javascript:exportReport('xls');"
+                            class="btn-1" title="Export XLS"><span><span>Xuất
+                                                    ra Excel</span></span></a> &#160;&#160;&#160;
+                            --></td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

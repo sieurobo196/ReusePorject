@@ -1,0 +1,99 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="posDetailURL" value="/pos/sales" />
+	<spring:url var="agentDetailURL" value="/agent/edit" />
+	<spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="ccURL" value="/pos/customercare" />
+	<spring:url var="stockExporterURL" value="/stock/exporter/"/>
+	<spring:url var="ajaxURL" value="/ajax" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+
+	<![CDATA[
+
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>Tra Cứu Lịch Sử Giao Dịch</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="salesTransForm" id="salesTransForm">
+				<table  border="0" cellspacing="0" cellpadding="0"
+					class="table-1">
+						<tr>
+							<td>
+								Serial: <form:input path="serial" style="width: 150px;"/>
+								&#160;&#160;
+								<a href="javascript:" onclick="javascript:document.forms[0].submit();"
+										class="btn-1"
+										title="Tra Cứu Giao Dịch"><span><span>Tra Cứu Giao Dịch</span></span></a>
+							</td>
+							
+						</tr>
+						<tr>
+							<td>
+								&#160;&#160;
+							</td>
+						</tr>
+				</table>
+				
+				<table  border="0" cellspacing="0" cellpadding="0"
+					class="table-2">
+					<thead>
+						<tr>
+							<td width="40px">STT</td>
+							<td width="70px">Mã GD</td>
+							<td width="250px">Từ ĐL/ĐBH/NV </td>
+							<td width="250px">Đến ĐL/ĐBH/NV </td>
+							<td width="250px">Dải Serial </td>
+							<td width="130px">Ngày GD</td>
+						</tr>
+					</thead>
+					<tbody>
+						<c:choose>
+							<c:when test="${not empty listTran}">
+								<c:forEach items="${listTran}" var="item" varStatus="status">
+									
+									<tr>
+										<td align="center">${(page-1)*size+status.count}</td>
+										<td align="center">
+												${item[0]}
+										</td>
+										<td align="left">${item[8]} - ${item[7]}</td>
+										<td align="left">${item[10]} -${item[9]}</td>
+										<td align="center">${item[5]} - ${item[6]}</td>
+										<td align="center">
+											${item[2]}
+										</td>
+									</tr>
+								</c:forEach>
+							</c:when>
+							<c:otherwise>
+								<tr>
+									<td colspan="11" align="center">Không tìm thấy lịch sử giao dịch.</td>
+								</tr>
+							</c:otherwise>
+						</c:choose>
+					</tbody>
+				</table>
+			</form:form>
+		</div>
+	</div>
+</div>

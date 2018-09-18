@@ -1,0 +1,115 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>THÊM THIẾT BỊ MỚI</span>
+                <spring:url value="/device/add" var="deviceFormLink" scope="request">            
+                </spring:url>
+            </h2>
+        </div>
+
+        <div id="content">
+            <form:form action="${requestScope.deviceFormLink}" method="GET"
+                       commandName="equipment">
+                <form:hidden path="id" />
+
+                <div class="formContent">
+                    <table width="100%" cellpadding="0" cellspacing="5"
+                           class="TableThongTinTram">
+                        <col width="20%" />
+                        <col width="80%" />
+                        <tr>
+                            <td></td>
+                            <td>
+                                <c:if test="${not empty success}">
+                                    <c:choose>
+                                        <c:when test="${success}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>Lưu thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Lưu thất bại.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Số IMEI (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:input path="imei" cssClass="textInput mediumWidth"/> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Subscriber ID (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:input path="subscriberId" cssClass="textInput mediumWidth"/>(IMSI) 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Số điện thoại (<label class="errorMessage">*</label>):
+                            </td>
+                            <td><form:input path="telNo" cssClass="textInput mediumWidth"/> 
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Tên thiết bị:</td>
+                            <td><form:input path="name" cssClass="textInput largerWidth" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Nhân viên sử dụng (<label
+                                    class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:select id="userId" path="userId" style="width:170px">
+                                    <form:option value="0">---Nhân viên ---</form:option>
+                                    <form:options items="${userList}" itemValue="id" itemLabel="name"/>
+                                    &#160;&#160;&#160;
+                                    <form:errors path="userId" cssClass="errorMessage" />
+                                </form:select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Kích hoạt:</td>
+                            <td>
+                                <form:checkbox path="isActive"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&#160;</td>
+                        </tr>
+                        <tr>
+                            <td><label> <!-- Empty -->
+                                </label></td>
+                            <td><a href="javascript:;"
+                                   onclick="javascript:document.forms[0].submit();" class="btn-1"
+                                   title="Lưu thông tin thiết bị này"><span><span>Lưu</span></span></a>
+                                <a href="javascript:;"
+                                   onclick="javascript:document.forms[0].reset();" class="btn-1"
+                                   title="Làm lại"><span><span>Reset</span></span></a></td>
+                        </tr>
+                    </table>
+                </div>
+            </form:form>
+
+        </div>
+    </div>
+</div>

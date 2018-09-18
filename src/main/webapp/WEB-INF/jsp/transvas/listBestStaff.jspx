@@ -1,0 +1,227 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="salesDetailURL" value="/topSalesman/bestSales/details" />
+	<spring:url var="careDetailURL" value="/topSalesman/bestCare/details" />
+
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+<script type="text/javascript">
+	var contextPath = "${pageContext.request.contextPath}";
+	
+	function viewResults() {
+		showLoading();
+		$('#topStaffForm').submit();
+	}
+	
+	function goToUrl(url){
+		showLoading();
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		window.location = url + "?fromDate=" + fromDate + "&toDate=" + toDate;
+	}
+</script>
+]]>
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH NHÂN VIÊN GIỎI NHẤT</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="topStaffForm" commandName="topStaffForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td>
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="width:150px;padding-right:20px;display:none;">
+										<form:select style="width:150px" path="company" cssClass="select2_combo" 
+											onchange="changeCompany($(this),$('#agent'),$('#employer'));">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							<div style="display: inline;width:150px;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#employer')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), $('#employer'));">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style=" padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province" cssClass="select2_combo"
+									style="width:150px" onchange="changeProvinceList($(this), $('#employer'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style=" padding-right:20px; display: inline;">
+								<form:select id="employer" path="employer" cssClass="select2_combo"
+									style="width:150px">
+									<form:options items="${employerList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+						
+							<div style="padding-right: 20px; display: inline;">
+								<form:select path="bestListOrder" cssStyle="width:150px" cssClass="select2_combo">
+									<form:options items="${listTopFilter}" itemValue="id"
+										itemLabel="name"/>
+								</form:select>
+							</div>
+							
+							<div style="padding-right: 20px; display: inline;">
+									<spring:message code="map_filter_from_date" htmlEscape="true" />
+									:
+									<fmt:formatDate value="${frm_startDate}" var="startDate"
+										pattern="dd/MM/yyyy" />
+									<form:input type="text" id="frm_startDate" size="14"
+										path="startDate" cssClass="dateField tcal" />
+							</div>
+						
+							<div style="padding-right: 20px; display: inline;">
+									<spring:message code="map_filter_to_date" htmlEscape="true" />
+									:
+									<fmt:formatDate value="${frm_endDate}" var="endDate"
+										pattern="dd/MM/yyyy" />
+									<form:input type="text" id="frm_endDate" size="14"
+										path="endDate" cssClass="dateField tcal" />
+							</div>
+						
+							<div style="padding-right: 20px; display: inline;float:right">
+								
+								<a href="javascript:;" onclick="viewResults()" class="btn-1" title="TÃ¬m">
+									<span><span style="width:70px">Tìm Kiếm</span></span>
+								</a>
+							</div>
+							
+						</td>
+					</tr>
+
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" 
+							page="${page}" size="${size}" listingURL="" 
+							id="posTopPagination" formSubmit="topStaffForm" submitMethod="POST" />
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="6%">Số Thẻ</td>
+										<td>Tên Nhân Viên</td>
+										<td width="10%">Tỉnh Thành</td>
+										<td width="17%">Tỉ Lệ Định Mức Bán Hàng</td>
+										<td width="17%">Tỉ Lệ Viếng Thăm Tuyến Bán Hàng</td>
+										<td width="15%">Tỉ Lệ Bán Hàng Thành Công</td>
+										<td width="15%">Tổng Lượng Hàng Bán (gói)</td>	
+									
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty listBestStaff}">
+											<c:forEach items="${listBestStaff}" var="posItem" varStatus="status">
+											 
+												<tr>
+												
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td><a href="${userDetailURL}/${posItem.nhanVienThucHien}">${posItem.soThe}</a></td>								
+													<td><a href="${userDetailURL}/${posItem.nhanVienThucHien}">${posItem.tenNhanVienSuDung}</a></td>								
+													<td>${posItem.tenTinh}</td>								
+													<td align="center">
+														<a href="javascript:;" onclick="goToUrl('${salesDetailURL}/${posItem.nhanVienThucHien}');">
+														<lable><strong><fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${posItem.phanTramChiTieu}"/> %</strong>
+            											</lable>
+            											</a>
+            										</td>
+																	
+													<td align="center">
+														<a href="${careDetailURL}/${posItem.nhanVienThucHien}">
+														<lable><strong><fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${posItem.phanTramHoanThanh}"/> %</strong>
+            											</lable>
+            											</a>
+            										</td>
+													
+													<td align="center">
+														<lable class="errorMessage">
+														<strong>
+															<fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${posItem.tongPhanTram}"/>
+            											</strong>
+            											</lable>
+            										</td>
+            										<td align="center"><lable><strong><fmt:formatNumber type="number" 
+            												pattern="###,###" value="${posItem.soLuongBan}"/></strong></lable></td>	
+												</tr>
+												
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr><td colspan="10" align="center">Không có dữ liệu.</td></tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posBottomPagination" formSubmit="topStaffForm" submitMethod="POST"/>
+						</td>
+					</tr>
+					
+				</table>
+			</form:form>
+			 
+		</div>
+	</div>
+</div>

@@ -1,0 +1,144 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="branchDetailURL" value="/branch/detail" />
+	<spring:url var="agentDetailURL" value="/agent/detail" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+
+	<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH NGƯỜI SỬ DỤNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="userList" commandName="frmUserList">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="3px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td style="text-align: right"><label for="">Tìm kiếm:</label></td>
+						<td>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="branch" path="branch" style="width:140px" onchange="changeBranch($('#branch'),$('#agent'));">
+									<form:options items="${branchList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="agent" path="agent" style="width:140px" onchange="changeAgent($('#branch'),$('#agent'));">
+									<form:options items="${agentList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="role" path="role" style="width:180px">
+									<option value="">--- Chọn vai trò ---</option>
+									<form:options items="${roleList}" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<form:input id="searchText" path="searchText"
+									value="${fn:escapeXml(searchText)}" style="width: 120px;" />
+							</div>
+						</td>
+						<td><a href="javascript:"
+							onclick="javascript:document.forms[0].submit();" class="btn-1"
+							title="Danh Sách NSD"><span><span>Danh sách NSD</span></span></a></td>
+						<td><a href="javascript:" onclick="addNewUser();"
+							class="btn-1"
+							title="Thêm NSD"><span><span>Thêm NSD mới</span></span></a></td>
+
+
+					</tr>
+					<tr>
+						<td colspan="4"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" submitMethod="POST"
+								formSubmit="userList" id="userTopPagination" /></td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="5%">Mã số</td>
+										<td width="20%">Tên</td>
+										<td width="5%">Giới Tính</td>
+										<td width="10%">Email</td>
+										<td width="10%">Số ĐT</td>
+										<td width="10%">Phân loại</td>
+										<td width="10%">Vai trò</td>
+										<td width="5%">Đang bị khóa</td>
+										<td width="20%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${userList}" var="item" varStatus="status">
+										<tr>
+											<td align="center">${(page-1)*size+status.count}</td>
+											<td><a href="${userDetailURL}/${item.id}">${item.maNhanVien}</a></td>
+											<td><a href="${userDetailURL}/${item.id}">${item.ten}</a></td>
+											<td align="center">${item.gioiTinh}</td>
+											<td>${item.email}</td>
+											<td>${item.soDienThoai}</td>
+											<td><c:choose>
+													<c:when test="${item.phanLoai == 1}">
+														NV MBF
+													</c:when>
+													<c:otherwise>
+														NV đại lý
+													</c:otherwise>
+												</c:choose></td>
+											<td>${item.vaiTro}</td>
+											<td id="locked${item.id}"><c:choose>
+													<c:when test="${item.locked==true}">Khóa</c:when>
+													<c:otherwise>Không</c:otherwise>
+												</c:choose></td>
+											<td><a href="${userDetailURL}/${item.id}"  class="redTxt"
+												title="Cập nhật thông tin">Chỉnh sửa</a>
+												<c:if test="${item.maDangNhap!='admin'}">
+												&#160;|&#160; 
+												<a href="javascript:" onclick="lockUser('${item.id}');"
+														class="redTxt" title="Xóa">Khóa</a>
+												</c:if> &#160;|&#160; 
+												<a href="javascript:" onclick="resetPassword('${item.id}');" class="redTxt"
+												title="Xóa mật khẩu">Xóa mật khẩu</a></td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4"><util:pagination maxPages="${maxPages}"
+								submitMethod="POST" formSubmit="userList" page="${page}"
+								size="${size}" id="userBottomPagination" /></td>
+					</tr>
+				</table>
+			</form:form>
+			<!-- 
+			<form id="editUser" action="${pageContext.request.contextPath}/user/detail" method="post" hidden="true">
+				<input type="text" id="userId" name="userId" />
+			</form>
+			 -->
+		</div>
+	</div>
+</div>

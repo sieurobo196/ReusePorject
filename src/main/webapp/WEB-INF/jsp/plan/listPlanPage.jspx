@@ -1,0 +1,224 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:sec="http://www.springframework.org/security/tags">
+
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="imageFolder" value="/resources/images" />
+    <spring:url var="planDetailURL" value="/plan/view" />
+    <spring:url var="editPlanURL" value="/plan/edit" />
+    <spring:url var="copyPlanURL" value="/plan/copy" />
+    <spring:url var="deletePlanURL" value="/plan/delete" />
+    <spring:url var="qrCodeURL" value="/export/plan/barcodeLarge" />
+
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="planListURL" value="/plan/list" />
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function viewResults() {
+            showLoading();
+            document.forms[0].submit();
+            //document.getElementById('listPlanForm').submit();
+        }
+        function DeleteKehoach(id) {
+            if (confirm('Bạn chắc chắn xóa kế hoạch này không?')) {
+                var url = getAppRootPath() + "/plan/delete?id=" + id;
+                showLoading();
+                $.ajax({type: 'POST', dataType: 'json', url: url, success: function (data) {
+                        if (data.status != 'OK') {
+                            hideLoading();
+                            alert('Xóa không thành công!');
+                        }
+                        else {
+                            window.location.reload();
+                        }
+                    }});
+            }
+        }
+        function EditKehoach(keHoachId, trangThaiKeHoach) {
+            //if(trangThaiKeHoach){
+            //	alert('Không thể sửa khi kế hoạch đã hoàn thành');
+            //}else{
+            showLoading();
+            window.location = contextPath + "/plan/edit/" + keHoachId;
+            //}
+        }
+
+        function exportQRCode(id) {
+            submitExportForm('listPlanForm', '${qrCodeURL}?id=' + id);
+        }
+
+        function exportData() {
+            if ($('#frm_startDate').val() == ""
+                    || $('#frm_endDate').val() == "") {
+                alert("Chọn ngày xuất báo cáo");
+                return;
+            } else if ($('#employer').val() == 0) {
+                alert("Chọn nhân viên");
+            } else
+                submitExportForm('listPlanForm', contextPath + "/export/khChamSocDBH");
+        }
+    </script>
+    ]]>
+    <div id="inner-content">
+
+        <span class="bor-left"><img src="${imageFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH TUYẾN ĐƯỜNG</span>
+            </h2>
+        </div>
+        <div id="content" >
+            <form:form method="POST" commandName="listPlanForm" action="${planListURL}">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+
+                    <tr>
+                        <td colspan="2">
+
+                            <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                            </td>
+                            <td><a href="javascript:;" onclick="viewResults()" style="min-width: 150px;"
+                                   class="btn-1" title="Xem kết quả"><span><span>&#160;&#160;Xem
+                                            kết quả&#160;&#160;</span></span></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+
+                            <jsp:include page="../timeSelector.jspx"></jsp:include>
+                            <!-- 	<form:hidden path="pageName" />
+                            <form:hidden path="keHoachId" /> -->
+                        </td>
+                    </tr>
+
+
+
+                    <tr>
+                        <td colspan="3"><strong> <util:pagination
+                                    maxPages="${maxPages}" page="${page}" size="${size}"
+                                    id="posBottomPagination" submitMethod="POST" listingURL=""
+                                    formSubmit="listPlanForm" />
+                            </strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">#</td>
+                                        <td>Tên tuyến</td>
+                                        <td width="8%">Ngày thực hiện</td>
+                                        <td width="8%">Ngày lập</td>
+                                        <td width="12%">Nhân viên</td>
+                                        <td width="8%">Tỉnh thành</td>
+                                        <td width="12%">Người lập</td>
+                                        <td width="6%">Tiến độ chỉ tiêu</td>
+                                        <td width="6%">Tình trạng</td>
+                                        <td width="16%">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty planList}">
+                                            <c:forEach items="${planList}" var="items" varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td><a href="${planDetailURL}/${items.id}"
+                                                           title="Xem kế hoạch">${items.name}</a></td>
+                                                    <td align="center"><fmt:parseDate
+                                                            value="${items.beginDate}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+                                                            value="${transDate}" pattern="dd/MM/yyyy" /></td>
+                                                    <td align="center"><fmt:parseDate
+                                                            value="${items.createdAt}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+                                                            value="${transDate}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                                    <td><a href="${userDetailURL}/${items.implementEmployees.id}">${items.implementEmployees.name}</a></td>
+                                                    <td>${items.implementEmployees.location}</td>
+                                                    <td>${items.nameAdmin}</td>
+                                                    <td align="right">${items.totalPOSComplete}/${items.totalPOS}</td>
+                                                    <td style="text-align: center">
+                                                        <c:choose>
+                                                            <c:when test="${items.isComplete == 1}">
+                                                                <input type="checkbox" disabled="disabled"
+                                                                       checked="checked" />
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <input type="checkbox" disabled="disabled"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td align="center"><a href="${planDetailURL}/${items.id}"
+                                                                          class="redTxt" title="Xem kế hoạch">Xem</a>
+                                                        <c:if test="${not only}">
+                                                            &#160;|&#160;
+                                                            <a	href="${editPlanURL}/${items.id}"
+                                                               class="redTxt" title="Chỉnh sửa kế hoạch">Sửa</a>&#160;|&#160;
+                                                            <a href="javascript:DeleteKehoach('${items.id}');"
+                                                               class="redTxt" title="Xóa kế hoạch">Xóa</a>&#160;|&#160;
+                                                            <a href="${copyPlanURL}/${items.id}"
+                                                               class="redTxt" title="Copy kế hoạch">Sao chép</a>&#160;
+                                                               
+                                                               <c:if test="${items.totalPOS > 0}">
+                                                                    |&#160; <a href="javascript:exportQRCode('${items.id}');"
+                                                               class="redTxt" title="Print QRCode">Print QRCode</a>
+                                                               </c:if>
+                                                           
+                                                        </c:if>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="10" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><strong> <util:pagination
+                                    maxPages="${maxPages}" page="${page}" size="${size}"
+                                    id="posBottomPagination" submitMethod="POST" listingURL=""
+                                    formSubmit="listPlanForm" />
+                            </strong></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3"><a
+                                href="${pageContext.request.contextPath}/plan/create"
+                                class="btn-1" title="Lập Kế Hoạch Mới"><span><span>Lập
+                                        Kế Hoạch Mới</span></span></a>
+                            <!--
+                            <a href="javascript:exportData()"
+                   class="btn-1" title="Export Lịch Công Tác">
+                   <span><span>Export Lịch Công Tác</span></span></a> &#160;&#160;&#160;
+                            -->
+                        </td>
+
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

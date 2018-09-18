@@ -1,0 +1,149 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="jsFolder" value="/resources/js" />
+	
+	<![CDATA[
+		
+		
+	]]>		
+	<style type="text/css">
+		.box{
+			padding:8px;
+			border-bottom:1px solid #6699ff;
+			border-left:1px solid #6699ff;
+			margin-bottom:8px;
+			height:200px;
+			overflow-y:scroll;
+		}
+		.newbox{
+			padding:8px;
+			border:1px solid red;
+			margin-bottom:8px;
+			height:50px;
+		}
+	</style>
+	<div id="searchDialog1" style="display:none;">
+		<table width="100%" cellpadding="0" cellspacing="5"
+						class="TableThongTinTram" border="0">
+			
+			<tr>
+				<td colspan="2" >
+					<div id="titleDepositForm" style="display:none;">
+						<b>Nạp tiền cho nhân viên:</b>
+					</div>
+					<div id="titleCommissionForm" style="display:none;">
+						<b>Chuyển hoa hồng sang tiền cho nhân viên:</b>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td width="150px" align="right">
+					Tên Nhân Viên: 
+				</td>
+				<td>
+					<div id="tennv"></div> 
+				</td>
+			</tr>
+			<tr>
+				<td align="right">
+					Số Điện Thoại: 
+				</td>
+				<td>
+					<div id="sdtnv"></div> 
+				</td>
+			</tr>
+			<tr>
+				<td align="right">
+					Email: 
+				</td>
+				<td>
+					<div id="emailnv"></div> 
+				</td>
+			</tr>
+			<tr>
+				<td align="right">
+					Chi Nhánh: 
+				</td>
+				<td>
+					<div id="chinhanhnv"></div> 
+				</td>
+			</tr>
+			<tr>
+				<td align="right">
+					Đại Lý/Điểm Bán Hàng: 
+				</td>
+				<td>
+					<div id="dailynv"></div> 
+				</td >
+			</tr>
+			<tr>
+				<td align="right">
+					Số Dư: 
+				</td>
+				<td>
+					<div id="sodunv"></div> 
+				</td >
+			</tr>
+			<tr>
+				<td align="right">
+					Hoa Hồng:
+				</td>
+				<td>
+					<div id="hoahongnv"></div> 
+				</td >
+			</tr>
+			<tr>
+				<td align="right">
+					Điểm Thưởng: 
+				</td>
+				<td>
+					<div id="diemthuongnv"></div> 
+				</td >
+			</tr>
+			
+			<tr>
+				<td align="right">
+					Số Tiền: 
+				</td>
+				<td>
+					<input type="text" name="soTien" id="soTien" value="" />vnd
+				</td >
+			</tr>
+			<tr>
+				<td align="right">
+					Nội Dung: 
+				</td>
+				<td>
+			<textarea rows="3" cols="25" name="noidung" id="noidung">noi dung</textarea>
+			</td >
+			</tr>
+			<tr>
+				<td colspan="2">
+					<input type="hidden" name="userId" id="userId" value="" />
+					<div id="buttonDepositForm" style="display:none;">
+					<a href="javascript:;" onclick="deposit();" class="btn-1"><span><span>Nạp Tiền</span></span></a>
+					</div>
+					<div id="buttonCommissionForm" style="display:none;">
+					<a href="javascript:;" onclick="transCommission();" class="btn-1"><span><span>Chuyển Hoa Hồng</span></span></a>
+					</div>
+					<a href="javascript:;" onclick="tb_remove();" class="btn-1"><span><span>Hủy</span></span></a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="loading" style="display:none;z-index:103">
+	  <img id="loading-image" src="${imagesFolder}/loading.gif" alt="Đang xử lý dữ liệu..." title="Đang xử lý dữ liệu..." width="100px" />
+	</div>
+</div>

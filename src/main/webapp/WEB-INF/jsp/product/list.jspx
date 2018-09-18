@@ -1,0 +1,190 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="productViewURL" value="/product/view" />
+    <spring:url var="productListURL" value="/product/list/" />
+    <spring:url var="productAddURL" value="/product/add/" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/product.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function exportReport(type) {
+            if ($('#frm_startDate').val() == ""
+                    || $('#frm_endDate').val() == "") {
+                alert("Chọn ngày xuất báo cáo.");
+                return;
+            }
+            var action = document.getElementById('productListForm').action;
+            document.getElementById('productListForm').action = contextPath + "/report/transvaslist?type=" + type;
+            document.getElementById('productListForm').submit();
+            document.getElementById('productListForm').action = action;
+        }
+
+        function viewResults() {
+            $('#productListForm').submit();
+        }
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>Danh Sách Hàng Hóa</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="productListForm" id="productListForm" action="${productListURL}">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+                    <tr>
+                        <td>
+                            <div style="padding-left: 10px; display: inline;">
+                                <form:select path="goodsCategoryId" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="">--Danh sách loại hàng hóa--</form:option>
+                                    <form:options items="${goodsCatList}" itemValue="id"
+                                                  itemLabel="name" />
+                                </form:select>
+                            </div>
+                            <div style="padding-left: 10px; display: inline;">
+                                <form:select path="statusId" style="width:110px" class="select2_combo select2-offscreen">
+                                    <form:option value="">--Trạng Thái--</form:option>
+                                    <form:options items="${statusList}" itemValue="id" itemLabel="name"/>
+                                </form:select>
+                            </div>
+                            <div style="padding-left: 10px; display: inline;">
+                                <label>
+                                    Tìm theo mã:
+                                </label>
+                                <form:input path="searchText" cssStyle="width: 160px" />
+                            </div>
+                        </td>
+                        <td>
+
+
+                        </td>
+                    </tr>
+                    <tr>
+
+                        <td></td>
+                        <td><a href="javascript:;" onclick="viewResults()"
+                               class="btn-1" title="Xem kết quả"><span><span>Xem kết quả</span></span></a>
+
+                            <a href="${productAddURL}" class="btn-1"
+                               title="Thêm mới"><span><span>Thêm mới</span></span></a>
+
+                        </td>
+                    </tr>
+
+
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="productTopPagination"
+                                         formSubmit="productListForm" submitMethod="POST" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="4%">STT</td>
+                                        <td width="14%">Mã HH</td>
+                                        <td>Tên hàng hóa</td>
+                                        <td width="14%">Loại Hàng hóa</td>
+                                        <td width="8%">Trạng thái</td>
+                                        <td width="8%">Giá</td>
+                                        <td width="8%">Được thu hồi</td>
+                                        <td width="8%"> Sp trọng tâm</td>
+                                        <td width="10%">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty goodsList}">
+                                            <c:forEach items="${goodsList}" var="goods"  varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td>
+                                                        <a href="${productViewURL}/${goods.id}" title="Xem">
+                                                            ${goods.goodsCode}
+                                                        </a>
+                                                    </td>
+                                                    <td>
+                                                        <a href="${productViewURL}/${goods.id}" title="Xem">
+                                                            ${goods.name}
+                                                        </a>
+                                                    </td>
+                                                    <td>${goods.goodsCategorys.name}</td>
+                                                    <td>${goods.statuss.name}</td>
+                                                    <td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${goods.price}" /></td>
+                                                    <td align="center">
+                                                        <c:choose>
+                                                            <c:when test="${goods.isRecover}">
+                                                                <input type="checkbox"  checked="checked" disabled="true"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <input type="checkbox"  disabled="true"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td align="center">
+                                                        <c:choose>
+                                                            <c:when test="${goods.isFocus}">
+                                                                <input type="checkbox" checked="checked" disabled="true"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <input type="checkbox" disabled="true"/>
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <a href="${productViewURL}/${goods.id}" class="redTxt" title="Xem"> Xem </a>
+                                                        <c:if test="${not only}">
+                                                        |
+                                                        <a href="javascript:;" onclick="javascript:deleteProduct(${goods.id})" class="redTxt" title="Xóa"> Xóa </a>
+                                                        </c:if>
+                                                    </td>
+
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="9" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+
+
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="productTopPagination"
+                                         formSubmit="productListForm" submitMethod="POST" /></td>
+                    </tr>
+
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

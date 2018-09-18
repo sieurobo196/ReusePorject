@@ -1,0 +1,261 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags" 
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<jsp:directive.page import="java.util.Arrays"/>
+	<jsp:directive.page import="java.util.ArrayList"/>
+	<jsp:directive.page import="java.util.List"/>
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+    <spring:url var="imageFolder" value="/resources/images" />
+	<spring:url var="posDetailsURL" value="/pos/details" />
+	<spring:url var="planListURL" value="/plan/list" />
+	<spring:url var="googlePlaceURL"
+		value="https://www.google.com/maps/place" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=1"></script>
+	<script type="text/javascript" src="${scriptsFolder}/device.js"></script>
+	<script type="text/javascript">
+	
+	var contextPath = "${pageContext.request.contextPath}";
+
+	$(document).ready(function() { 
+	$("select").select2(); 
+	});
+
+	function submitActionForm(formId, url) {	
+		$("#" + formId).attr("action", url);
+		$("#" + formId).submit();
+	};
+
+</script>
+]]>
+	<style>
+		.wait_row{color:red;}	
+	</style>
+	
+	<div id="inner-content">
+       	<span class="bor-left"><img src="${imageFolder}/dummy.gif" alt="" /></span>                    
+                    <div class="content-title">
+                        <h2><span>XEM TUYẾN ĐƯỜNG</span></h2>
+                    </div>
+                    <div id="content">
+                    	<form:form method="POST" commandName="requestDetailsForm" id="requestDetailsForm">
+                        	<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+							<thead>
+								<tr>
+									<td width="15%"></td>
+									<td width="16%"></td>
+									<td width="2%"></td>
+									<td width="15%"></td>
+									<td width="16%"></td>
+									<td width="2%"></td>
+									<td width="15%"></td>
+									<td width="16%"></td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align:right"><label class="field-label" for="">Tên Kế hoạch:</label></td>
+									<td>${kehoach.name}</td>
+									<td></td>
+									<td style="text-align:right"><label class="field-label" for="">Người Lập:</label></td>
+									<td>${kehoach.nameAdmin} </td>
+									<td></td>
+									<td style="text-align:right"><label class="field-label" for="">Ngày Lập:</label></td>
+									<td><fmt:parseDate value="${kehoach.createdAt}"
+													   pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+													   value="${transDate}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+								</tr>
+								<tr>
+									<td style="text-align:right"><label class="field-label" for="">Người thực hiện:</label></td>
+									<td>${kehoach.implementEmployees.name}</td>
+									<td></td>
+									<td style="text-align:right"><label class="field-label" for="">Ngày thực hiện:</label></td>
+									<td><fmt:parseDate value="${kehoach.beginDate}" pattern="yyyy-MM-dd HH:mm:ss" var="beginDate"/>
+										<fmt:formatDate value="${beginDate}" pattern="dd/MM/yyyy"/>
+									</td>
+									<td></td>
+									<td style="text-align:right"><label class="field-label" for="">Trạng thái:</label></td>
+
+									<td>
+										${kehoach.statuss.name}									
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:right"><label class="field-label" for="">Người cập nhật:</label></td>
+									<td>${kehoach.nameUpdatedUser}</td>
+									<td></td>
+									<td style="text-align:right" ><label class="field-label" for="">Ngày cập nhật:</label></td>
+									<td><fmt:parseDate value="${kehoach.updatedAt}" pattern="yyyy-MM-dd HH:mm:ss" var = "updatedAt" />
+										<fmt:formatDate value="${updatedAt}" pattern="dd/MM/yyyy HH:mm:ss"/>
+									</td>
+									<td></td>
+									<td style="text-align:right"><label class="field-label" for="">Ngày hoàn thành:</label></td>
+									<td><fmt:parseDate value="${kehoach.finishTime}" pattern="yyyy-MM-dd HH:mm:ss" var="finishTime"/>
+										<fmt:formatDate value="${finishTime}" pattern="dd/MM/yyyy"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:right" valign="Top"><label class="field-label" for="">Danh sách chỉ tiêu:</label></td>
+									<td colspan="7" valign="Top" >
+                                        <table width="45%" border="0" cellspacing="0" cellpadding="0" class="table-2" style="display: inline-block;margin-right: 5px;">
+                                            <c:if test="${not empty kehoach}">
+												<tr>
+												    <td align="right" width="30%"><b>Chỉ tiêu doanh số/tháng</b></td>
+													<td align="right" width="20%"><fmt:formatNumber pattern="#,###" value="${kehoach.salesPerMonth}"/></td>
+													
+												</tr>
+												<tr>
+												    <td align="right"><b>Chỉ tiêu DS trọng tâm/tháng</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.salesFocusPerMonth}"/></td>
+													
+												</tr>
+												<tr>
+												    <td align="right"><b>Doanh số đã bán/tháng</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.dsPerMonth}"/></td>
+													
+												</tr>
+												<tr>
+												    <td align="right"><b>Doanh số trọng tâm đã bán/tháng</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.dsFocusPerMonth}"/></td>
+												</tr>
+												
+											</c:if>	 
+                                        </table>
+                                        
+                                         <table valign="Top" width="45%" border="0" cellspacing="0" cellpadding="0" class="table-2" style="display: inline-block;" >
+                                            <c:if test="${not empty kehoach}">
+												<tr>
+													<td align="right" width="30%"><b>Chỉ tiêu doanh số/ngày</b></td>
+													<td align="right" width="20%"><fmt:formatNumber pattern="#,###" value="${kehoach.dsTargetPerDate}"/></td>
+												</tr>
+												<tr>
+													<td align="right"><b>Chỉ tiêu DS trọng tâm/ngày</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.dsTargetFocusPerDate}"/></td>
+												</tr>
+												<tr>											  
+													<td align="right"><b>Doanh số đã bán/ngày</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.dsPerDate}"/></td>
+												</tr>
+												<tr>		  
+													<td align="right"><b>Doanh số trọng tâm đã bán/ngày</b></td>
+													<td align="right"><fmt:formatNumber pattern="#,###" value="${kehoach.dsFocusPerDate}"/></td>
+												</tr>
+											</c:if>	 
+                                        </table>
+                                    </td>
+								</tr>
+								<tr>
+									<td style="text-align:right" valign="Top"><label class="field-label" for="">Chỉ tiêu điểm mới/tháng:</label></td>
+									<td colspan="7" align="left">
+										<fmt:formatNumber pattern="#,###" value="${kehoach.newPOSComplete}"/> 
+										 / <fmt:formatNumber pattern="#,###" value="${kehoach.newPOS}"/>
+									</td>
+								</tr>
+								<tr>
+									<td style="text-align:right" valign="Top"><label class="field-label" for="">Danh sách tuyến đường:</label></td>
+									<td colspan="7" align="left"><fmt:formatNumber pattern="#,###" value="${kehoach.totalPOSComplete}"/>/
+														<fmt:formatNumber pattern="#,###" value="${kehoach.totalPOS}"/></td>
+								</tr>
+								
+					    </tbody>
+					    </table>	
+						<tr>
+                           	 <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catTopPagination"
+                                         formSubmit="requestDetailsForm" submitMethod="POST" /></td>
+                   	     </tr>
+						<tr>
+							<td colspan="8">
+								<table width="99%" border="0" cellspacing="0" cellpadding="0"
+									class="table-2">
+									<thead>
+										<tr>
+											<td width="5%">STT</td>
+											<td width="5%">Mã ĐBH</td>
+											<td width="25%">Tên ĐBH</td>
+											<td width="30%">Địa chỉ</td>
+											<td width="15%">Chủ cửa hàng</td>
+											<td width="5%">Thứ tự thực hiện</td>
+											<td width="5%">Hoàn thành</td>
+											<td width="10%">Ngày CSĐBH</td>
+										</tr>
+									</thead>
+									<tbody>
+										<c:choose>
+											<c:when test="${not empty kehoachchitiets}">
+												<c:forEach items="${kehoachchitiets}" var="kehoachchitiet"
+													varStatus="status">
+													<tr>
+														<td>${(page-1)*size+status.count}</td>
+														<td><a
+															href="${posDetailsURL}/${kehoachchitiet.poss.id}"
+															title="Xem điểm bán hàng">${kehoachchitiet.poss.posCode}</a></td>
+														<td><a
+															href="${posDetailsURL}/${kehoachchitiet.poss.id}"
+															title="Xem điểm bán hàng">${kehoachchitiet.poss.name}</a></td>
+														<td><a target="_blank"
+															href="${googlePlaceURL}/${kehoachchitiet.poss.lat},${kehoachchitiet.poss.lng}">
+																${kehoachchitiet.poss.address} </a></td>
+														<td>${kehoachchitiet.poss.ownerName}</td>
+														<td align="center">${(page-1)*size+status.count}</td>
+														<td align="center"><c:choose>
+																<c:when test="${kehoachchitiet.isCSDBH == 1}">
+																	<input type="checkbox" disabled="disabled"
+																		checked="checked" />
+																</c:when>
+																<c:otherwise>
+																	<input type="checkbox" disabled="disabled" />
+																</c:otherwise>
+															</c:choose></td>
+														<td><fmt:parseDate
+																value="${kehoachchitiet.ngayCSDBH}"
+																pattern="yyyy-MM-dd HH:mm:ss" var="ngayCSDBH" /> <fmt:formatDate
+																value="${ngayCSDBH}" pattern="dd/MM/yyyy" /></td>
+													</tr>
+												</c:forEach>
+											</c:when>
+											<c:otherwise>
+												<tr align="center">
+													<td align="center" colspan="8">Không có dữ liệu.</td>
+												</tr>
+											</c:otherwise>
+										</c:choose>
+									</tbody>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4"><util:pagination maxPages="${maxPages}"
+									page="${page}" size="${size}" id="catBottomPagination"
+									formSubmit="requestDetailsForm" submitMethod="POST" /></td>
+						</tr>
+					
+                                <!--
+                                <tr>
+                                    <td colspan="5"><a href="${pageContext.request.contextPath}/plan/create" class="btn-1" title="Danh sách kế hoạch"><span><span>Lập kế hoạch</span></span></a></td>
+                                </tr>
+                                -->
+							
+                     
+                     <div align="left">
+								<table width="80%" border="0" cellspacing="0" cellpadding="0" class="table-3">
+									<tr>	
+										<td>&#160;
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3"></td>
+									</tr>
+									<tr><td colspan="3"><a href="${planListURL}" class="btn-1" title="Quay lại danh sách tuyến đường"><span><span>&#160;&#160;Quay Lại&#160;&#160;</span></span></a></td></tr>
+								</table>
+					</div>
+				</form:form>
+             </div>
+	</div>                    
+</div>                    

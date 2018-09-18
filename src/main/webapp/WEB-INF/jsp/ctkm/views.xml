@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    
+  <definition extends="default" name="ctkm_list_rp">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/list_rp.jspx"/>
+  </definition>  
+    
+  <definition extends="default" name="ctkm_range_add">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/addRangeAward.jspx"/>
+  </definition> 
+  
+  <definition extends="default" name="ctkm_range_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/listRangeAward.jspx"/>
+  </definition>
+    
+  <definition extends="default" name="ctkm_config">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/configKPI.jspx"/>
+  </definition>   
+    
+  <definition extends="default" name="ctkm_salepoint_edit">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/ctkm_salepoint_view.jspx"/>
+  </definition>  
+  
+  <definition extends="default" name="promotion_salepointaccumulation_view">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/promotion_salepointaccumulation_view.jspx"/>
+  </definition>
+    
+  <definition extends="default" name="ctkm_salepoint_approve_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/listApproveSalePoint.jspx"/>
+  </definition>    
+    
+  <definition extends="default" name="ctkm_salepoint_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/listSalePoint.jspx"/>
+  </definition>  
+  
+  <definition extends="default" name="ctkm_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/list.jspx"/>
+  </definition>
+    
+  <definition extends="default" name="ctkm_add">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/add.jspx"/>
+  </definition>
+  
+   <definition extends="default" name="ctkm_edit">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/edit.jspx"/>
+  </definition>
+  <definition extends="default" name="ctkm_salepoint_approveaccumulation_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/listAccumulationApproveSalePoint.jspx"/>
+  </definition>    
+    
+  <definition extends="default" name="ctkm_salepointaccumulation_list">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/listAccumulationSalePoint.jspx"/>
+  </definition> 
+  <definition extends="default" name="ctkmKiemTra">
+    <put-attribute name="body" value="/WEB-INF/jsp/ctkm/ctkmKiemTra.jspx"/>
+  </definition> 
+</tiles-definitions>

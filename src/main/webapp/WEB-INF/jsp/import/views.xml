@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+    <definition extends="default" name="planImport">
+        <put-attribute name="body" value="/WEB-INF/jsp/import/planImport.jspx"/>
+    </definition>
+    <definition extends="default" name="posImport">
+        <put-attribute name="body" value="/WEB-INF/jsp/import/posImport.jspx"/>
+    </definition>
+    <definition extends="default" name="channelImport">
+        <put-attribute name="body" value="/WEB-INF/jsp/import/channelImport.jspx"/>
+    </definition>
+    <definition extends="default" name="userImport">
+        <put-attribute name="body" value="/WEB-INF/jsp/import/userImport.jspx"/>
+    </definition>
+    <definition extends="default" name="goodsImport">
+        <put-attribute name="body" value="/WEB-INF/jsp/import/goodsImport.jspx"/>
+    </definition>
+</tiles-definitions>

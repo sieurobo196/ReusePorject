@@ -1,0 +1,403 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:spring="http://www.springframework.org/tags" version="2.0"
+     class="navigationBar"
+     xmlns:sec="http://www.springframework.org/security/tags">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    
+    <spring:url var="imageFolder" value="/resources/images" />
+    <spring:url var="home" value="/" />
+    <spring:url var="adminPage" value="/admin/company" />
+    <spring:url var="adminEquipmentPage" value="/admin/equipment" />
+    <spring:url var="posListURL" value="/pos/list" />
+    <spring:url var="newPosListURL" value="/newPos/list" />
+    <spring:url var="nppListURL" value="/npp/list" />
+    <spring:url var="posPrintURL" value="/pos/printQR" />
+    <spring:url var="planListURL" value="/plan/list" />
+    <spring:url var="createPlanURL" value="/plan/create" />
+    <spring:url var="deviceListURL" value="/device/list" />
+    
+    <spring:url var="userListURL" value="/user/list" />
+    <spring:url var="addUserURL" value="/user/add" />
+    <spring:url var="myplansURL" value="/plan/myplans" />
+    <spring:url var="addUserURL" value="/user/add" />
+    <spring:url var="customerCareURL" value="/pos/diary" />
+    <spring:url var="mapURL" value="/map/salesman" />
+    <spring:url var="mapSupervisorURL" value="/map/supervisor" />
+    <spring:url var="superviseURL" value="/supervise/list" />
+    <spring:url var="agentListURL" value="/agent/list" />
+    <spring:url var="upcomingURL" value="/upcoming" />
+    <spring:url var="channelURL" value="/channel/list" />
+    <spring:url var="revenueURL" value="/revenue/list/" />
+    <spring:url var="exportURL" value="/stock/exporter/" />
+    <spring:url var="createTargetURL" value="/planofsales/create"  />
+    <spring:url var="lisTargetURL" value="/planofsales/list/"  />
+    <spring:url var="processTargetURL" value="/planofsales/process/"  />
+    <spring:url var="settingsURL" value="/settings" />
+    <spring:url var="levelURL" value="/settings/list/levels" />
+    <spring:url var="roleURL" value="/settings/list/roles" />
+    <spring:url var="provListURL" value="/settings/list/provinces" />
+    <spring:url var="distListURL" value="/settings/list/districts" />
+    <spring:url var="wardListURL" value="/settings/list/wards" />
+    <spring:url var="wardFormURL" value="/settings/list/wardForm" />
+    <spring:url var="streetListURL" value="/settings/list/streets" />
+    <spring:url var="companiesListURL" value="/settings/list/company" />
+    <spring:url var="perfSettingsURL" value="/performance/setting" />
+    <spring:url var="sendSmsURL" value="/version/detail" />
+    <spring:url var="changePasswdURL" value="/settings/changepasswd" />
+    <spring:url var="logoutURL" value="/resources/j_spring_security_logout" />
+    <spring:url var="inventoryListURL" value="/store/inventory/" />
+    <spring:url var="orderListURL" value="/order/list/" />
+    <spring:url var="requestListURL" value="/order/requestGoods/list" />
+    <spring:url var="recoveryListURL" value="/recovery/list" />
+    <spring:url var="stockTransExportURL" value="/stock/trans/" />
+    <spring:url var="stockTransImportURL" value="/stock/trans/im/" />
+    <spring:url var="digitalGoodsURL" value="/stock/digitalGoods" />
+    <spring:url var="importInventoryForStaffURL" value="/stock/ImportInventoryForStaff" />
+    <spring:url var="importInventoryForAgentURL" value="/stock/ImportInventoryForAgent" />
+    <spring:url var="stockTransImportFromOtherURL" value="/stock/trans/importFromOther/" />
+    <spring:url var="transVasURL" value="/salestrans/list/" />
+    <spring:url var="commissionVasURL" value="/vascommission/list/" />
+    <spring:url var="commissionURL" value="/commission/list/" />
+    <spring:url var="rewardListURL" value="/reward/list" />
+    <spring:url var="comDefListURL" value="/commissionDef/list" />
+    <spring:url var="rewardDefListURL" value="/rewardDef/list" />
+    <spring:url var="catListURL" value="/category/list/" />
+    <spring:url var="productListURL" value="/product/list/" />
+    <spring:url var="discountURL" value="/discount/list" />
+
+    <spring:url var="customerInforURL" value="/customer/inforRegisterList" />
+    <spring:url var="comDefRedoListURL" value="/commissionDefRedo/list" />
+    <spring:url var="salesTransHistories" value="/salestrans/histories/" />
+    <spring:url var="attendURL" value="/attendance/list" />
+    <spring:url var="gpsURL" value="/device/GPSsetting" />
+
+    <spring:url var="bestPosURL" value="/topPos/bestQuantity" />
+    <spring:url var="bestCareURL" value="/topSalesman/bestCare" />
+    <spring:url var="bestSalesURL" value="/topSalesman/bestSales" />
+    <spring:url var="bestStaffURL" value="/topSalesman/bestStaff" />
+
+
+    <spring:url var="rpt001URL" value="/report/rpt001/list" />
+    <spring:url var="rpt002URL" value="/report/rpt002/list" />
+    <spring:url var="rpt003URL" value="/report/rpt003/list" />
+    <spring:url var="rpt005URL" value="/report/rpt005/list" />
+    <spring:url var="rpt006URL" value="/report/rpt006/list" />
+
+    <spring:url var="CTKM_LIST_URL" value="/promotion/list" />
+    <spring:url var="CTKM_POINT_LIST_URL" value="/promotion/salepointlist" />
+    <spring:url var="CTKM_APPROVE_LIST_URL" value="/promotion/salepointapprovelist" />
+    <spring:url var="KPI_CONFIG_URL" value="/promotion/config" />
+    <spring:url var="CTKM_RP_URL" value="/promotion/rp/list" />
+    <spring:url var="setGoodsOrderURL" value="/setOrder/create" />
+    <spring:url var="WebLogout" value="/WebLogout" />
+    <spring:url var="workflow" value="/workflow" />
+    <spring:url var="userRoleListURL" value="/userRole/list"/>
+    <spring:url var="channelTypeURL" value="/channelType/list"/>
+    <spring:url var="listUnits" value="/unit/list"/>
+    <spring:url var="companyInfo" value="/company/detail" />
+    <spring:url var="loTrinhGiamSat" value="/map/salesSup"/>
+    <spring:url var="channeldistribution" value="/channel/distribution"/>
+    <spring:url var="importPlan" value="/plan/import"/>
+    <spring:url var="posImport" value="/pos/import"/>
+    <spring:url var="userImport" value="/user/import"/>
+    <spring:url var="channelImport" value="/channel/import"/>
+    <spring:url var="goodsImport" value="/product/import" />
+    <spring:url var="ctkmKiemTraURL" value="/promotion/searchsalepointlist"/>
+    <spring:url var="CTKM_DIRECT_LIST_URL" value="/promotion/salepointlist" />
+    <spring:url var="CTKM_DIRECT_APPROVE_LIST_URL" value="/promotion/salepointapprovelist" />
+    <spring:url var="CTKM_ACCU_LIST_URL" value="/promotion/accumulationsalepointlist" />
+    <spring:url var="CTKM_ACCU_APPROVE_LIST_URL" value="/promotion/accumulationsalepointapprovelist" />
+    <spring:url var="urlKPI" value="/kpi/config"/>
+
+    <![CDATA[
+    <script type="text/javascript">
+        var flag = 0;
+        jQuery(document).ready(function ($) {
+
+            /*var url = "${pageContext.request.contextPath}/channel/getAgentLevel";
+             $.ajax({
+             type : 'GET',
+             dataType : 'json',
+             url : url,
+             success : function(data) {
+             fillChannelMenu(data);
+             }
+             });*/
+            checkHCSLaboratory()
+
+        });
+
+        function fillChannelMenu(data) {
+            var list = data.levelList;
+            var menu = $('#channelMenu');
+            var ul = '<ul style="display:none">';
+            for (i = 0; i < list.length; i++) {
+                var item = list[i];
+                ul += '<li><a href="${channelURL}?level=' + item.id + '" title="Kênh bán hàng cấp ' + item.id + '">' + item.name + '</a></li>';
+            }
+            ul += '</ul>';
+            menu.append(ul);
+            /*if (data.showDigitalStock) {
+             menu = $('#inventoryMenu');
+             menu.append('<li><a href="${stockTransImportFromOtherURL}" title="Nhập Hàng Từ Ngoài">Nhập Hàng Từ Trung Tâm Khác</a></li>');
+             menu.append('<li><a href="${digitalGoodsURL}" title="Danh Sách Kho Số">Danh Sách Kho Số</a></li>');
+             if(data.showStaffImportInventory){
+             menu.append('<li><a href="${importInventoryForStaffURL}" title="Nhập Hàng Tồn Cho Nhân Viên Phát Triển Thị Trường">Nhập Hàng Tồn Cho NVPTTT</a></li>');
+             }
+             
+             if(data.showAgentImportInventory){
+             menu.append('<li><a href="${importInventoryForAgentURL}" title="Nhập Hàng Tồn Cho Tổng Đại Lý">Nhập Hàng Tồn Cho TĐL</a></li>');
+             }
+             menu = $('#salesMenu');
+             menu.append('<li><a href="${customerInforURL}" title="Danh Sách ĐK Thông Tin Thuê Bao Trả Trước">Danh Sách ĐK Thuê Bao</a></li>');
+             }*/
+
+
+            checkHCSLaboratory();
+        }
+
+        function checkHCSLaboratory() {
+            HCSLaboratory.init();
+            var currentLink = $('div.navigationBar a[href^="' + document.location.pathname + '"]');
+            var len = currentLink.length;
+            if (len == 1) {
+                currentLink = $(currentLink[0]);
+                currentLink.html('<b>' + currentLink.html() + '</b>');
+            } else {
+                //currentLink = $('div.navigationBar a[href!="#"]');
+                for (var i = 0; i < len; i++) {
+                    if (currentLink[i].href.indexOf(document.location.search) != -1) {
+                        currentLink = $(currentLink[i]);
+                        currentLink.html('<b>' + currentLink.html() + '</b>');
+                        break;
+                    }
+                }
+                if (currentLink.length > 1) {
+                    currentLink = $(currentLink[0]);
+                }
+            }
+            currentLink = currentLink.parents();
+            for (var i = 0; i < currentLink.length; i++) {
+                if (currentLink[i].getAttribute('class') == 'block-nav-left') {
+                    currentLink = currentLink[i];
+                    break;
+                }
+            }
+            try {
+                if (currentLink != null && currentLink.firstChild != null) {
+                    $(currentLink.firstChild.firstChild).click();
+                }
+            } catch (e) {
+            }
+        }
+
+
+    </script>
+    ]]>
+    
+    <c:choose>
+        <c:when test="${userLogin.isAdminMaster}">
+            <div id="sidebar-left" class="context-block">
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="" >
+                            <img src="${imageFolder}/dummy.gif"
+                                 class="ui-icon icon-05" alt="" /> <span>Admin Page</span> <img
+                                 src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul>
+                        <li><a href="${adminPage}" title="Quản lý công ty">Quản lý công ty</a></li> 
+                        <li><a href="${adminEquipmentPage}" title="Quản lý thiết bị">Quản lý thiết bị</a></li>
+                    </ul>
+                </div>                
+            </div>      
+        </c:when>
+        <c:otherwise>
+            <div id="sidebar-left" class="context-block">
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="" >
+                            <img src="${imageFolder}/dummy.gif"
+                                 class="ui-icon icon-05" alt="" /> <span>Trang Chủ</span> <img
+                                 src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul>
+                        <li><a href="${home}" title="Trang chủ">Trang Chủ</a></li>
+                    </ul>
+                </div>
+
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="">
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-07" alt="" />
+                            <span>Quản Lý Nhân Viên Bán Hàng</span> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul style="display: none">
+                        <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')  or (userRole == 'USER_ROLE_SALES_SUPERVISOR')}">
+                            <li><a href="${createTargetURL}" title="Lập chỉ tiêu">Giao chỉ tiêu</a></li>
+                            </c:if>
+                        <li><a href="${lisTargetURL}" title="Danh sách chỉ tiêu">Danh sách chỉ tiêu</a></li>
+
+                        <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')  or (userRole == 'USER_ROLE_SALES_SUPERVISOR')}">
+                            <li><a href="${createPlanURL}" title="Lập tuyến đường">Lập Tuyến đường mới</a></li>
+                            </c:if>
+
+                        <li><a href="${planListURL}" title="Danh sách các tuyến đường">Danh sách Tuyến đường</a></li>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')  or (userRole == 'USER_ROLE_SALES_SUPERVISOR')}">
+                            <li><a href="${loTrinhGiamSat}" title="Xem lộ trình Giám sát">Lộ trình Giám sát</a></li>
+                            </c:if>
+
+
+                        <li><a href="${mapURL}" title="Xem lộ trình NVBH">Lộ trình nhân viên</a></li>
+                            <c:if test="${(userRole != 'USER_ROLE_SALES_LEADER')}">
+                            <li><a href="${orderListURL}" title="Danh Sách Đơn Hàng">Danh Sách Đơn Hàng</a></li>
+                            </c:if>
+
+
+                        <li><a href="${setGoodsOrderURL}" title="Đặt hàng qua điện thoại">Đặt hàng qua điện thoại</a></li>
+                        <li><a href="${requestListURL}" title="Danh Sách Yêu Cầu Nhận Hàng">Theo dõi nhận hàng của NVBH</a></li>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${importPlan}" title="Import Tuyến đường">Import Tuyến đường</a></li>
+                            </c:if>
+
+                    </ul>
+                </div>
+
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="">
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-08" alt="" />
+                            <span>Hệ Thống Kênh Phân Phối</span> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul style="display: none">
+                        <li style="display: none"><a href="${nppListURL}" title="Danh sách nhà phân phối">Danh sách Nhà Phân Phối</a></li>
+                            <c:if test="${(userRole != 'USER_ROLE_SALES_LEADER')}">
+                            <li><a href="${posListURL}" title="Danh sách điểm bán hàng">Danh sách Điểm Bán Hàng</a></li>
+                            <li><a href="${newPosListURL}" title="Danh sách điểm mới">Danh sách Điểm mới</a></li>
+                            </c:if>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${posImport}" title="Import điểm bán hàng">Import điểm bán hàng</a></li>
+                            </c:if>
+
+                    </ul>
+                </div>
+                <div class="block-nav-left" id="channelMenu">
+                    <p class="title-1">
+                        <a href="#" title="">
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-08" alt="" />
+                            <span>Hệ Thống Kênh Quản Lý</span> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul>
+                        <li><a href="${channelTypeURL}" title="Danh mục loại kênh">Danh mục loại kênh</a></li>
+                        <li><a href="${channeldistribution}" title="Danh sách kênh quản lý">Danh sách kênh quản lý</a></li>
+                        <li><a href="${channelURL}" title="Hệ thống kênh quản lý">Hệ thống kênh quản lý</a></li>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${channelImport}" title="Import kênh">Import kênh</a></li>
+                            </c:if>
+
+                    </ul>
+                </div>
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title=""> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-06" alt="" /> <span>Báo Cáo và Thống Kê</span>
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul style="display: none" id="">
+                        <li><a href="${customerCareURL}" title="Nhật ký CS ĐBH">Nhật ký Chăm Sóc</a></li>
+                        <li><a href="${transVasURL}" title="Danh sách Giao dịch">Nhật ký Bán Hàng</a></li>
+                        <sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ">
+                            <li><a href="${rpt005URL}" title="Báo cáo KPI">Báo cáo KPI</a></li>
+                            <li><a href="${rpt006URL}" title="Báo cáo chỉ tiêu tháng">Báo cáo chỉ tiêu tháng</a></li>
+                        </sec:authorize>
+                    </ul>
+                </div>
+                <div  class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="">
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-09" alt="" />
+                            <span>Thông tin khuyến  mãi</span> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+                    <ul>
+                        <li><a href="${CTKM_DIRECT_LIST_URL}"
+                               title="Khuyến mãi tích lũy">Khuyến mãi trực tiếp  </a></li>
+                        <li><a href="${CTKM_DIRECT_APPROVE_LIST_URL}"
+                               title="Khuyến mãi tích lũy kiểm duyệt"> Khuyến mãi trực tiếp (Kiểm duyệt)</a></li>
+                        <li><a href="${CTKM_ACCU_LIST_URL}"
+                               title="Khuyến mãi tích lũy">Khuyến mãi tích lũy  </a></li>
+
+<!--                <li><a href="${CTKM_ACCU_APPROVE_LIST_URL}"
+title="Khuyến mãi tích lũy kiểm duyệt"> Khuyến mãi tích lũy (Kiểm duyệt)</a></li>-->
+
+                        <li><a href="${ctkmKiemTraURL}" title="CTKM Kiểm tra">CTKM Kiểm tra</a></li>
+                        <sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ,ROLE_RSM">
+                            <li><a href="${CTKM_LIST_URL}" title="Danh sách CTKM">Danh sách CTKM</a></li>
+                            <li><a href="${CTKM_RP_URL}" title="Báo cáo CTKM">Báo cáo CTKM</a></li>
+
+                        </sec:authorize>
+                    </ul>
+                </div>
+
+                <div class="block-nav-left">
+                    <p class="title-1">
+                        <a href="#" title="">
+                            <img src="${imageFolder}/dummy.gif" class="ui-icon icon-09" alt="" />
+                            <span>Tiện Ích và Hệ thống</span> <img src="${imageFolder}/dummy.gif" class="ui-icon icon-03" alt="" />
+                        </a>
+                    </p>
+
+                    <ul style="display: none">
+
+                        <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${companyInfo}" title="Cập nhật thông tin công ty">Cập nhật thông tin công ty</a></li>
+                            <li><a href="${workflow}" title="Danh mục workflow">Danh mục workflow</a></li>
+                            <li><a href="${listUnits}" title="Danh mục đơn vị tính">Danh mục đơn vị tính</a></li>
+                            </c:if>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')}">
+                            <li><a href="${wardListURL}" title="Danh mục Địa Điểm">Danh mục địa điểm</a></li>
+                            <li><a href="${catListURL}" title="Danh sách loại hàng hóa">Danh sách loại hàng hóa</a></li>
+                            <li><a href="${productListURL}" title="Danh sách hàng hóa">Danh sách hàng hóa</a></li>
+                            </c:if>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${goodsImport}" title="Danh sách hàng hóa">Import hàng hóa</a></li>
+                            </c:if>
+
+
+                        <li><a href="${userRoleListURL}" title="Danh sách người sử dụng "> Danh mục vai trò người dùng </a></li>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')}">
+                            <li><a href="${userListURL}" title="Danh sách người sử dụng">Danh sách Người sử dụng</a></li>
+                            </c:if>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${userImport}" title="Import người sử sụng">Import người sử sụng</a></li>
+                            </c:if>
+                        <li><a href="${deviceListURL}" title="Danh mục thiết bị">Danh mục Thiết bị</a></li>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY') or (userRole == 'USER_ROLE_ADMIN_CHANNEL')}">
+                            
+                            <li><a href="${gpsURL}" title="Cập nhật Thông số lộ trình">Thông số lộ trình</a></li>
+                            <li><a href="${sendSmsURL}" title="Cập nhật Version cho điện thoại">Cập nhật Version</a></li>
+                            </c:if>
+                            <c:if test="${(userRole == 'USER_ROLE_ADMIN_COMPANY')}">
+                            <li><a href="${urlKPI}" title="Cập nhật Thông số KPI">Thông số KPI</a></li>
+                            </c:if>
+
+
+
+                        <li style="display: none"><a href="${KPI_CONFIG_URL}" title="Cập nhật tham số KPI">Cập nhật tham số KPI</a></li>
+
+                        <li><a href="${changePasswdURL}" title="Thay đổi mật khẩu">Thay đổi Mật khẩu</a></li>
+                        <li><a href="${WebLogout}" title="Thoát">Thoát</a></li>
+                    </ul>
+                </div>
+            </div>    
+        </c:otherwise>
+    </c:choose>
+</div>

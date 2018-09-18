@@ -1,0 +1,154 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:spring="http://www.springframework.org/tags" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+  <jsp:output omit-xml-declaration="yes" />
+
+  <jsp:directive.attribute name="maxPages" type="java.lang.Integer" required="true" rtexprvalue="true" description="The maximum number of pages available (ie tableRecordCount / size)" />
+  <jsp:directive.attribute name="page" type="java.lang.Integer" required="false" rtexprvalue="true" description="The current page (not required, defaults to 1)" />
+  <jsp:directive.attribute name="size" type="java.lang.Integer" required="false" rtexprvalue="true" description="The number of records per page (not required, defaults to 10)" />
+  <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+  <jsp:directive.attribute name="pageParamName" type="java.lang.String" required="false" rtexprvalue="true" description="Provide the param name to get current page" />
+  <jsp:directive.attribute name="sizeParamName" type="java.lang.String" required="false" rtexprvalue="true" description="Provide the param name to get total item" />
+  <jsp:directive.attribute name="listMustReplaceElement" type="java.lang.String" required="true" rtexprvalue="true" description="List HTML element's ID will be replace when submit pages"/>
+  <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="elementId" />
+  <jsp:directive.attribute name="listAdditionElementAsParam" type="java.lang.String" required="false" rtexprvalue="true" description="List all html elements' id, which seperator by comma, will be commit with paging actions" />
+  <jsp:directive.attribute name="submitMethod" type="java.lang.String" required="false" rtexprvalue="true" description="Submit method" />
+
+  <c:if test="${empty render or render}">
+
+    <c:if test="${empty page || page lt 1}">
+      <c:set var="page" value="1" />
+    </c:if>
+
+    <c:if test="${empty size}">
+      <c:set var="size" value="10" />
+    </c:if>
+    
+    <c:if test="${empty pageParamName}">
+    	<c:set var="pageParamName" value="page" />
+    </c:if>
+    
+    <c:if test="${empty sizeParamName}">
+    	<c:set var="sizeParamName" value="size" />
+    </c:if>
+    
+    <c:if test="${empty submitMethod}">
+    	<c:set value="Post" var="submitMethod"/>
+    </c:if>
+	
+	<div class="pagination" id="${id}">
+	
+		<div class="listPage">
+			<!-- First page -->
+			<spring:message code="list_first" var="first_label" htmlEscape="false" />
+			<c:choose>
+				<c:when test="${page ne 1}">
+			      <spring:url value="" var="first">
+			        <spring:param name="${pageParamName}" value="1" />
+			        <spring:param name="${sizeParamName}" value="${size}" />
+			      </spring:url>
+			      <spring:url value="/resources/images/resultset_first.png" var="first_image_url" />
+			      <a class="image" href="javascript:;" title="${fn:escapeXml(first_label)}" onclick="submitAjax${submitMethod}ReplaceListElement('${first}', getListElementIdArrays('${listMustReplaceElement}'), getListElementArrays('${listAdditionElementAsParam}'));">
+			        <img alt="${fn:escapeXml(first_label)}" src="${first_image_url}" />
+			      </a>
+			    </c:when>
+			    <c:otherwise>
+			    	<spring:url value="/resources/images/resultset_first_disable.png" var="first_image_url" />
+				    <img alt="${fn:escapeXml(first_label)}" src="${first_image_url}" title="${fn:escapeXml(first_label)}"/>
+			    </c:otherwise>
+			</c:choose>
+		    
+		    <!-- Previous page -->
+		    <spring:message code="list_previous" var="previous_label" htmlEscape="false" />
+		    <c:choose>
+			    <c:when test="${page gt 1}">
+			      <spring:url value="" var="previous">
+			        <spring:param name="${pageParamName}" value="${page - 1}" />
+			        <spring:param name="${sizeParamName}" value="${size}" />
+			      </spring:url>
+			      <spring:url value="/resources/images/resultset_previous.png" var="previous_image_url" />
+			      <a class="image" href="javascript:;" title="${fn:escapeXml(previous_label)}" onclick="submitAjax${submitMethod}ReplaceListElement('${previous}', getListElementIdArrays('${listMustReplaceElement}'), getListElementArrays('${listAdditionElementAsParam}'));">
+			        <img alt="${fn:escapeXml(previous_label)}" src="${previous_image_url}" />
+			      </a>
+			    </c:when>
+			    <c:otherwise>
+			    	  <spring:url value="/resources/images/resultset_previous_disable.png" var="previous_image_url" />
+				      <img alt="${fn:escapeXml(previous_label)}" src="${previous_image_url}" title="${fn:escapeXml(previous_label)}" />
+			    </c:otherwise>
+			</c:choose>
+		    
+		    <!-- Display number of page -->
+		    <c:out value=" " />
+		    <label><spring:message code="list_page" arguments="${page},${maxPages}" argumentSeparator="," /></label>
+		    <c:out value=" " />
+		    
+		    <!-- Next page -->
+		    <spring:message code="list_next" var="next_label" htmlEscape="false" />
+		    <c:choose>
+			    <c:when test="${page lt maxPages}">
+			      <spring:url value="" var="next">
+			        <spring:param name="${pageParamName}" value="${page + 1}" />
+			        <spring:param name="${sizeParamName}" value="${size}" />
+			      </spring:url>
+			      <spring:url value="/resources/images/resultset_next.png" var="next_image_url" />
+			      <a class="image" href="javascript:;" title="${fn:escapeXml(next_label)}" onclick="submitAjax${submitMethod}ReplaceListElement('${next}', getListElementIdArrays('${listMustReplaceElement}'), getListElementArrays('${listAdditionElementAsParam}'));">
+			        <img alt="${fn:escapeXml(next_label)}" src="${next_image_url}" />
+			      </a>
+			    </c:when>
+			    <c:otherwise>
+			    	<spring:url value="/resources/images/resultset_next_disable.png" var="next_image_url" />
+				    <img alt="${fn:escapeXml(next_label)}" src="${next_image_url}" title="${fn:escapeXml(next_label)}"/>
+			    </c:otherwise>
+		    </c:choose>
+		    
+		    <!-- Last page -->
+		    <spring:message code="list_last" var="last_label" htmlEscape="false" />
+		    <c:choose>
+		    	<c:when test="${page ne maxPages}">
+			      <spring:url value="" var="last">
+			        <spring:param name="${pageParamName}" value="${maxPages}" />
+			        <spring:param name="${sizeParamName}" value="${size}" />
+			      </spring:url>
+			      <spring:url value="/resources/images/resultset_last.png" var="last_image_url"/>
+			      <a class="image" href="javascript:;" title="${fn:escapeXml(last_label)}" onclick="submitAjax${submitMethod}ReplaceListElement('${last}', getListElementIdArrays('${listMustReplaceElement}'), getListElementArrays('${listAdditionElementAsParam}'));">
+			        <img alt="${fn:escapeXml(last_label)}" src="${last_image_url}" />
+			      </a>
+			    </c:when>
+			    <c:otherwise>
+			      <spring:url value="/resources/images/resultset_last_disable.png" var="last_image_url"/>
+			      <img alt="${fn:escapeXml(last_label)}" src="${last_image_url}" title="${fn:escapeXml(last_label)}"/>
+			    </c:otherwise>
+		    </c:choose>
+		    
+		</div>
+
+		<spring:message code="list_size" var="list_size" htmlEscape="false" />		
+		<div class="pageSize">
+    		<label><c:out value="${list_size}: " /></label>
+    		<spring:url value="" var="sizeSelectedLink">
+			     <spring:param name="${pageParamName}" value="${page}" />
+			</spring:url>
+			<select onchange="pagingSizeSelected(this, '${listMustReplaceElement}','${sizeParamName}', '${sizeSelectedLink}', getListElementArrays('${listAdditionElementAsParam}'));">
+				<c:forEach var="i" begin="10" end="50" step="20">
+			      <c:choose>
+			        <c:when test="${size == i}">
+			          <option value="${i}" selected="selected">${i}</option>
+			        </c:when>
+			        <c:otherwise>
+			          <option value="${i}">${i}</option>
+			        </c:otherwise>
+			      </c:choose>
+			    </c:forEach>
+			    <c:choose>
+			        <c:when test="${size == -1}">
+			        	<option value="-1" selected="selected"><spring:message code="app_paging_show_all"/></option>
+			        </c:when>
+			        <c:otherwise>
+			        	<option value="-1"><spring:message code="app_paging_show_all"/></option>
+			        </c:otherwise>
+			    </c:choose>
+			</select>
+		</div>
+		
+	</div>
+
+  </c:if>
+</jsp:root>

@@ -1,0 +1,157 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="editURL" value="/promotion/edit" />
+    <spring:url var="listURL" value="/promotion/list" />    
+    <spring:url var="delURL" value="/ajax/deletePromotion/" />
+    <spring:url var="rootURL" value="/" />
+
+
+    <![CDATA[
+    <script type="text/javascript">
+        function del(id) {
+            var ok = confirm("Bạn có chắc muốn xóa chương trình KM không?");
+            if (!ok)
+                return;
+
+            var url = '${delURL}' + id;
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                success: function (data) {
+                    if (data.success) {
+                        alert("Xóa chương trình KM thành công.");
+                        $("#tr_" + id).remove();
+                    } else {
+                        alert("Xóa chương trình KM thất bại.");
+                    }
+                }
+            });
+
+        }
+
+    </script>
+    <script type="text/javascript" src="${scriptsFolder}/device.js?v=1"></script>
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH CHƯƠNG TRÌNH KHUYẾN MÃI</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form id="frmPromotionList" action="${listURL}" method="POST" modelAttribute="promotionFilter">
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0"
+                       class="table-1">					
+                    <tr>
+                        <td colspan="5" align="right">
+                            <jsp:include page="../promotionSelector.jspx" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="5"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST" listingURL="" formSubmit="frmPromotionList"
+                                         id="devTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="15%">Tên CTKM</td>
+                                        <td width="15%">Mô tả</td>
+                                        <td width="10%">Loại SP</td>
+                                        <td width="15%">Tên SP</td>
+                                        <td width="15%">KM</td>
+                                        <td width="5%">Cần Approve</td>
+                                        <td width="5%">Bắt đầu</td>
+                                        <td width="5%">Kết thúc</td>	
+                                        <td width="5%">Trạng thái</td>	
+                                        <td width="5%">Cập nhật</td>								
+                                    </tr>	
+                                </thead>
+                                <c:choose>
+                                    <c:when test="${not empty promotionList}">
+                                        <spring:eval var="promotionImg" expression="@systemPros['system.promotionImage']" />
+                                        <tbody>
+                                            <c:forEach items="${promotionList}" var="item" varStatus="status">
+                                                <tr id="tr_${item.id}">
+                                                    <td align="center">${(page-1)*size+status.count}</td>											
+                                                    <td><a href="${editURL}/${item.id}">${item.name}</a>
+                                                        <c:if test="${not empty item.urlImage}">
+                                                            <br/>
+                                                            <spring:url value="/imagesSource/${promotionImg}/${item.urlImage}" var="pic"/>
+                                                            <img src="${pic}" width="70" height="30"/>												
+                                                        </c:if>										
+                                                    </td>
+                                                    <td>${item.description}</td>
+                                                    <td>${item.goodsCategorys.name}</td>
+                                                    <td>
+                                                        <c:forEach items="${item.goodsList}" var="goods">
+                                                            ● ${goods.name}<br />
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td>
+                                                        <c:forEach items="${item.conditionString}" var="str">
+                                                            ● ${str}<br />
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td>${item.approveRoles.name}</td>
+                                                    <td><fmt:formatDate value="${item.startDate}" type="both" pattern="dd/MM/yyyy" /></td>
+                                                    <td><fmt:formatDate value="${item.endDate}" type="both" pattern="dd/MM/yyyy" /></td>	
+                                                    <td>
+                                                        ${item.statuss.name}
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${item.statuss.id==22}">														
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a class="redTxt" href="javascript:;" onclick="del(${item.id});">Xóa</a>
+                                                            </c:otherwise>
+                                                        </c:choose>												
+                                                    </td>										
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="11" align="center">Không có dữ liệu</td>
+                                            </tr>
+                                        </tbody>	
+                                    </c:otherwise>
+                                </c:choose>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="11"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="frmPromotionList"
+                                         page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

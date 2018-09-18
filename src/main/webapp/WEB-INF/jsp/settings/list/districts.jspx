@@ -1,0 +1,121 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="wardURL" value="/settings/list/wards" />
+	<spring:url var="districtAddURL" value="/settings/list/districts/add" />
+	<spring:url var="districtEditURL" value="/settings/list/districts/edit" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<div id="inner-content">
+			<![CDATA[
+			<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+			<script type="text/javascript">
+				
+			</script>
+			]]>	
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH MỤC QUẬN/HUYỆN</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" name="listForm" commandName="listForm" >
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+                    <tr>
+                        <td colspan="4" style="text-align:right">
+							<div style="display: inline;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#district'),$('#ward')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), [$('#district'),$('#ward')]);">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province" cssClass="select2_combo"
+									style="width:150px" onchange="changeProvince($(this),$('#district'),$('#ward'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline">
+								<form:input id="searchText" path="searchText" onkeypress="if(event.keyCode==13) {submitActionForm('listForm','');}"
+									value="${fn:escapeXml(searchText)}" style="width: 150px;" />
+							</div>
+							<div style="padding-right:20px; display: inline">
+								<a href="javascript:void(0)"
+									onclick="submitActionForm('listForm', '')"  class="btn-1" title="Xem danh sách"><span><span style="width:100px">Xem danh sách</span></span></a>
+							</div>
+							<div style="padding-right:20px; display: inline">
+								<a href="${districtAddURL}"
+									class="btn-1" title="Thêm Quận/Huyện"><span><span style="width:100px">Thêm Quận/Huyện</span></span></a>
+							</div>
+						</td>
+                    </tr>					
+					<tr>
+						<td colspan="4">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" submitMethod="POST" formSubmit="listForm" id="topPagination" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td>Tên Quận/Huyện</td>
+										<td width="10%">Mã Viết Tắt</td>
+										<td width="15%">Tỉnh/Thành Phố</td>
+										<td width="20%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${townList}" var="item" varStatus="status">
+										<tr>
+											<td align="center">${(page-1)*size+status.count}</td>
+											<td>${item.getTen()}</td>
+											<td>${item.getMaVietTat()}</td>
+											<td>${item.tenTinh}</td>
+											<td align="center"><a href="${wardURL}?district=${item.id}"
+												class="redTxt" title="Xem các danh mục phường xã trong Quận/Huyện">Xem Phường/Xã</a> 
+												| 
+												<a href="${districtEditURL}/${item.id}"
+												class="redTxt" title="Chỉnh sửa Quận/Huyện">Chỉnh sửa</a> 
+											</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" submitMethod="POST" formSubmit="listForm" id="bottomPagination" />
+						</td>
+					</tr>	
+				</table>
+			 </form:form>
+		</div>
+	</div>
+</div>

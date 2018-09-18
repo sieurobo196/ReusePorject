@@ -1,0 +1,134 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <script type="text/javascript">
+        // get list provin
+        getProvince();
+        // get list status for channel
+        getChannelStatus();
+        // get channel type
+        getChannelType(1);
+         
+    </script>
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="imageFolder" value="/resources/images" />
+    <div id="agentDialog" class="formContent" style="display: none">
+        <table  width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1" name="agentDialog" >
+            <col width="20%" />
+            <col width="80%" />
+            <tr><td></td><td><label class="errorMessage" id="channel_type_error"></label></td></tr>
+            <tr>
+                <td align="right">Tên Kênh (<label class="errorMessage">*</label>):
+                </td>
+                <td><input id="channel_name" class="textInput mediumWidth" type="text" autofocus="true"/></td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_name_error"></label></td></tr>
+            <tr>
+                <td align="right">Mã Kênh (<label class="errorMessage">*</label>):
+                </td>
+                <td><input disabled="true"  id="channel_full_code_parent" class="textInput mediumWidth" type="text"/>-
+                    <input id="channel_code" class="textInput mediumWidth" type="text" style="width: 100px"/>
+
+                </td>
+            <tr><td></td><td><label class="errorMessage" id="channel_code_error"></label></td></tr>
+        </tr>
+            <tr>
+                <td align="right">Địa Chỉ :
+                </td>
+                <td><input id="channel_address" class="textInput mediumWidth" type="text"/>
+                </td>
+            </tr>
+            <tr>
+                <td align="right">Tỉnh Thành(<label class="errorMessage">*</label>) :</td>
+                <td>
+                    <select id="channel_province" class="select2_combo" style="width:150px" onchange="getDistrict(this);">
+                        <option value="0">-- Tỉnh Thành --</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_province_error"></label></td></tr>
+            <tr>
+                <td align="right">Quận Huyện(<label class="errorMessage">*</label>) :</td>
+                <td>
+                    <select id="channel_district" class="select2_combo" style="width:150px" onchange="getWard(this);">
+                        <option value="0">-- Quận Huyện --</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_district_error"></label></td></tr>
+            <tr>
+                <td align="right">Phường/Xã(<label class="errorMessage">*</label>) :</td>
+                <td>
+                    <select id="channel_ward" class="select2_combo" style="width:150px" >
+                        <option value="0">-- Phường/Xã --</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_ward_error"></label></td></tr>
+            <tr>
+                <td align="right">Số điện thoại :</td>
+                <td><input id="channel_tel" class="textInput mediumWidth" type="text"/></td>
+            </tr>
+            <tr>
+                <td align="right">Fax :</td>
+                <td><input id="channel_fax" class="textInput mediumWidth" type="text"/></td>
+            </tr>
+            <tr>
+                <td align="right">Email :</td>
+                <td><input class="textInput mediumWidth" type="text" id="channel_email"/></td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_email_error"></label></td></tr>
+            <tr>
+                <td align="right">Người liên hệ :</td>
+                <td><input id="channel_contact_person_name" class="textInput mediumWidth" type="text"/></td>
+            </tr>
+           
+            <tr>
+                <td align="right">Kinh Độ(<label class="errorMessage">*</label>):</td>
+                <td><input id="channel_lat" class="textInput mediumWidth" type="text"/></td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_lat_error"></label></td></tr>
+            <tr>
+                <td align="right">Vĩ Độ(<label class="errorMessage">*</label>):</td>
+                <td><input id="channel_lag" class="textInput mediumWidth" type="text"/></td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_lag_error"></label></td></tr>
+            <tr>
+                <td align="right">Tình trạng(<label class="errorMessage">*</label>) :</td>
+                <td>
+                    <select id="channel_status" class="select2_combo" style="width:150px">
+                        <option value="0">-- Trạng thái --</option>
+                    </select>
+                </td>
+            </tr>
+            <tr><td></td><td><label class="errorMessage" id="channel_status_error"></label></td></tr>
+            <tr style="display: none">
+                <td align="right">Điểm bán hàng :</td>
+                <td><input id="channel_is_sales_point" class="textInput mediumWidth" type="checkbox"/></td>
+            </tr>
+            <tr>
+                <td>&#160;</td><td>&#160;</td>
+            </tr>
+
+            <tr class="more">
+                <td valign="top" style="text-align: right"><label for="">Ghi chú:</label></td>
+                <td><textarea id="channel_note" rows="4" style="width:220px" >Ghi chú</textarea></td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                    <a href="javascript:;" onclick="createChannel(channelSelectedID);" class="btn-1"><span><span style="width:50px">Tạo mới</span></span></a>
+                    <a href="javascript:;" onclick="getProvince();" class="btn-1"><span><span style="width:50px">Làm lại</span></span></a>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+

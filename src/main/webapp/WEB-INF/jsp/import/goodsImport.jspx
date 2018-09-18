@@ -1,0 +1,129 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="downloadTemplet" value="/product/download.do" />
+    <spring:url var="imports" value="/product/import" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/workflow.js"></script>
+    <script type="text/javascript" src="${jsFolder}/import.js"></script>
+
+    <style type="text/css">
+        fieldset {
+            display: block;
+            margin-left: 2px;
+            margin-right: 2px;
+            padding-top: 0.35em;
+            padding-bottom: 0.625em;
+            padding-left: 0.75em;
+            padding-right: 0.75em;
+            width: 500px;
+            text-align: left !important;
+        }
+    </style>
+    ]]>
+
+
+    <div id="inner-content">
+        <div class="content-title">
+            <h2>
+                <span>Import Sản phẩm</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form id="form_goods" method="POST" action="${imports}" enctype="multipart/form-data">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0" >
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label class="errorMessage" id="file_error">
+                                <c:if test="${error}">
+                                    <fieldset >
+                                        <legend class="errorMessage" >Dữ liệu không hợp lệ</legend>
+                                        <dl>
+                                            <c:if test="${!goodsCategoryError}">
+                                                <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại mã loại sản phẩm
+                                                </dt>
+                                                <br>Những loại sản phẩm sau không có trong hệ thống:</br>
+                                                <p></p>
+                                                <c:forEach items="${goodsCategoryList}" var="item">
+                                                    <dd> - ${item.goodsCategoryCode}</dd>
+                                                </c:forEach>
+                                            </c:if>
+                                                    <c:if test="${!goodsUnitError}">
+                                                        <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại mã đơn vị sản phẩm.
+                                                </dt>
+                                                <br>Những đơn vị sản phẩm sau không có trong hệ thống:</br>
+                                                <p></p>
+                                                <c:forEach items="${goodsUnitList}" var="item">
+                                                    <dd> - ${item.unitCode}</dd>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${!goodsStatusError}">
+                                                <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại trạng thái sản phẩm.
+                                                </dt>
+                                                <br>Note: Giá trị trạng thái xin vui lòng xem phần ghi chú.</br>
+                                                <p></p>
+                                                <c:forEach items="${goodsStatusList}" var="item">
+                                                    <dd> - ${item.goodsStatus}</dd>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${duplicatedError}">
+                                                <dt class="errorMessage">
+                                                • Vui lòng kiểm tra lại sản phẩm.
+                                                </dt>
+                                                <br>Những sản phẩm sau đã có trong hệ thống.</br>
+                                                <p></p>
+                                                <c:forEach items="${duplicatedList}" var="item">
+                                                    <dd> - ${item.goodsCode}</dd>
+                                                </c:forEach>
+                                            </c:if>
+                                        </dl>
+                                    </fieldset>
+                                </c:if>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>&#160;</td>
+                        <td>
+                            <c:if test="${submited}">
+                                <c:if test="${!error}">
+                                    <c:choose>
+                                        <c:when test="${updated}">
+                                            <label class="infoMessage" id="gui_massage">Cập nhật dữ liệu thành công.</label>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <label class="errorMessage" id="gui_massage">Cập nhật dữ liệu thất bại.</label>
+                                        </c:otherwise>
+                                    </c:choose>               
+                                </c:if>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px">
+                            <a href="${downloadTemplet}"  class="btn-1"><span><span>Tải file mẫu</span></span></a>
+                        </td>
+
+                        <td>
+                            <input type="file" style="width:350px" name="file_goods" id="file_goods" onchange="removeError(this);"/>
+                            <a href="javascript:;" onclick="javascript:postGoods();" class="btn-1"><span><span>Import</span></span></a>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="form_error_gui"></label></td></tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>

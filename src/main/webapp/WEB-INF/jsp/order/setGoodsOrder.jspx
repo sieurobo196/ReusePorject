@@ -1,0 +1,257 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="scriptsFolder" value="/resources/scripts" />
+	<spring:url var="jsFolder" value="/resources/js" />
+	<spring:url var="imagesFolder" value="/resources/images" />
+	<spring:url var="createOrderURL" value="/setOrder/create" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+	<script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/utils.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/l10n.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/lib.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/plugin.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/start.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/util.js"></script>
+    <script type="text/javascript" src="${jsFolder}/location.js"></script>
+    <script type="text/javascript" src="${jsFolder}/script.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+    </script>
+     <script type="text/javascript">
+         function calculate() {
+    		var myBox1 = document.getElementById('goods_quantity').value; 
+    		var myBox2 = document.getElementById('goods_price').value;
+    		var result = document.getElementById('totalPrice'); 
+    		var result2 = document.getElementById('totalPriceShow'); 
+    		
+    		var result3 = document.getElementById('priceOfGoods'); 
+    		var myResult2 = formatNumber(myBox2);
+    		result3.innerHTML = myResult2;
+    		var myResult = myBox1 * myBox2;
+    		myResult = formatNumber(myResult);
+    		result.innerHTML = myResult;
+    		result2.innerHTML = myResult;
+    	}
+    </script>
+	]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img alt=""
+			src="${imagesFolder}/dummy.gif" /></span>
+		<div class="content-title">
+			<h2>
+				<span>ĐẶT HÀNG QUA ĐIỆN THOẠI</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="setOrderForm"
+				modelAttribute="setOrderForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<div class="formContent">
+
+					<div align="center" class="infoMessage" id="a_messageInfor">${infoMessage}</div>
+					<div align="center" class="errorMessage" id="a_messageError">${errorMessage}</div>
+					<div align="center" class="errorMessage" id="a_messageErrorUser">${errorCreatedUser}</div>
+					<table width="100%" cellpadding="0" cellspacing="5" class="infoPOS"
+						border="0">
+						<!-- Nơi đặt hàng list POS -->
+						<tr>
+							<td align="right"><strong>Nơi đặt hàng(<label
+									class="errorMessage">*</label>):
+							</strong></td>
+							<td><form:select id="posId" path="posId"
+									cssClass="select2_combo" cssStyle="width:180px;"
+									onchange="getAddressAndName(); getGoods();">
+									<form:option value="0" label="--- Chọn điểm bán hàng ---" />
+									<form:options items="${listPOS}" itemValue="id"
+										itemLabel="name" />
+								</form:select></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td align="left"><label class="errorMessage"
+								id="errorOrderPOS">${errorOrderPOS}</label></td>
+						</tr>
+						<tr>&#160;
+						</tr>
+						<!-- Địa chỉ -->
+						<tr>
+							<td align="right"><strong>Địa chỉ: </strong></td>
+							<td><form:input id="address" path="address"
+									cssStyle="width:350px;" readonly="true"/></td>
+						</tr>
+						<tr>&#160;
+						</tr>
+						<tr>
+							<td align="right"><strong>Nhân viên chăm sóc: </strong></td>
+							<td><form:input id="nameNVCS" path="nameNVCS"
+									cssStyle="width:350px;" readonly="true"/></td>
+						</tr>
+						<tr>&#160;
+						</tr>
+						<tr>
+							<td align="right"><strong>Ngày giao(<label
+									class="errorMessage">*</label>):
+							</strong></td>
+							<td><fmt:formatDate type="date" value="${frm_startDate}"
+									var="startDate" pattern="dd/MM/yyyy" /> <form:input
+									type="text" value="${startDate}" id="frm_startDate"
+									path="salesTransDate" cssClass="dateField tcal"
+									pattern="dd/MM/yyyy" /></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td align="left"><label class="errorMessage"
+								id="errorSalesTransDate">${errorDateSalesTrans}</label></td>
+						</tr>
+						
+						<!-- Khoảng cách -->
+						<tr>&#160;
+						</tr>
+						
+						<tr>&#160;
+						</tr>
+
+					</table>
+					<table align="center" width="90%" border="0" cellspacing="0"
+						cellpadding="0" class="table-1">
+						<tr>
+							&#160;
+							<td>&#160;</td>
+						</tr>
+						<tr>
+							<td align="left"><strong>Danh sách hàng đăt(<label
+									class="errorMessage">*</label>):
+							</strong></td>
+							<td align="left"><label class="errorMessage"
+								id="errorStockGoods">${errorStockGoods}</label></td>
+							<td></td>
+							<td></td>
+						</tr>
+						<tr>
+							&#160;
+							<td>&#160;</td>
+						</tr>
+					</table>
+					<table align="center" width="90%" border="0" cellspacing="0"
+						class="table-2">
+						<thead>
+							<tr>
+								<td align="center" width="23%">Tên sản phẩm</td>
+								<td align="center" width="10%">Số lượng</td>
+								<td align="center" width="23%">Đơn vị</td>
+								<td align="right" width="16%">Giá tiền</td>
+								<td align="right" width="16%">Thành tiền</td>
+								<td align="center" width="12%">Hành động</td>
+								<td style="display: none" align="center">Trạng thái</td>
+								<td style="display: none" align="center">Hoạt động</td>
+							</tr>
+						</thead>
+						<tbody id="goodsTable">
+							<c:forEach items="${orderDetailsList}" var="mcpSalesDetail"
+								varStatus="status">
+								<tr id="tr_${status.index}">
+									<!-- Tên sản phẩm -->
+									<td align="center"><label>${mcpSalesDetail.goodss.name}</label>
+										<input type="hidden" name="orderDetailsList[${status.index}].goodsId" value="${mcpSalesDetail.goodsId}" />
+										<input type="hidden" name="orderDetailsList[${status.index}].goodss.name"
+										value="${mcpSalesDetail.goodss.name}" /></td>
+									<!-- Số lượng -->
+									<td align="center"><label>${mcpSalesDetail.quantity}</label>
+										<input type="hidden"
+										name="orderDetailsList[${status.index}].quantity"
+										value="${mcpSalesDetail.quantity}" /></td>
+									<!-- Xét đơn vị -->
+									<td align="center"><label>${mcpSalesDetail.goodsUnits.name}</label>
+										<input type="hidden"
+										name="orderDetailsList[${status.index}].goodsUnitId"
+										value="${mcpSalesDetail.goodsUnitId}" /> <input type="hidden"
+										name="orderDetailsList[${status.index}].goodsUnits.name"
+										value="${mcpSalesDetail.goodsUnits.name}" /></td>
+
+									<!-- Xét Price -->
+
+									<td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${mcpSalesDetail.price2}" />
+									<input type="hidden" name="orderDetailsList[${status.index}].price2"
+										value="${mcpSalesDetail.price2}" /></td>
+									<!-- Xét thành tiền -->
+									<td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${mcpSalesDetail.totalPrice}" />
+										<input type="hidden"
+										name="orderDetailsList[${status.index}].totalPrice"
+										value="${mcpSalesDetail.totalPrice}" /></td>
+
+									<!-- Thêm hành động -->
+									<td align="center"><a
+										href="javascript:deleteGoods(${status.index});">Xóa</a></td>
+								</tr>
+							</c:forEach>
+						</tbody>
+						<tr>
+							<td align="center">
+							<select id="goods_name" style="width: 180px; padding: 0px 5px" class="select2_combo" onchange="getGoodsUnit()">
+									<option value="0">-- Sản phẩm --</option>
+									<c:if test="${not empty goodsfList}">
+                          			<c:forEach items="${goodsfList}" var="goods">
+                            			<option value="${goods.id}">${goods.name}</option>
+                          			</c:forEach>
+                       				</c:if>
+							</select></td>
+							<td align="center"><input id="goods_quantity" style="text-align: center; width: 150px" type="number"  title="Số lượng là một số nguyên dương" min="1" value="1" step="1" 
+								onchange="calculate();" onkeyup="calculate();"/></td>
+							<td align="center"><select id="goods_unit"
+								style="width: 150px;" onchange="getPrice();"
+								class="select2_combo">
+									<option value="0">-- Đơn vị --</option>
+							</select></td>
+							<td align="right"><input id="goods_price"
+								style="text-align: right; width: 150px" type="hidden" pattern="###,###" value="0" readonly="true" />
+								<p id="priceOfGoods"></p>
+								</td>
+							<td align="right"><p id="totalPrice" hidden="true"></p><p id="totalPriceShow"></p></td>
+							<td><a href="javascript:;" onclick="addGoods();$(goods_unit).val(0); $(goods_unit).select2();$(goods_name).val(0); $(goods_name).select2();"
+								class="btn-1" title="Thêm"><span><span>Thêm</span></span></a></td>
+
+						</tr>
+					</table>
+				</div>
+				<div align="center">
+					<table width="90%" border="0" cellspacing="0" cellpadding="0"
+						class="table-3">
+						<tr>
+							&#160;
+							<td>&#160;</td>
+						</tr>
+						<tr>
+							<td colspan="3"></td>
+						</tr>
+						<tr>
+							<td colspan="3"><a href="javascript:;"
+								onclick="javascript:createOrder();" class="btn-1"
+								title="Lưu đơn hàng này"><span><span>&#160;&#160;Lưu
+											Đơn Hàng&#160;&#160;</span></span></a></td>
+						</tr>
+					</table>
+				</div>
+			</form:form>
+		</div>
+	</div>
+</div>

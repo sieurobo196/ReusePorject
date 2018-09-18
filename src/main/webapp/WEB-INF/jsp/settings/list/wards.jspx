@@ -1,0 +1,146 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags"
+      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+      xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+      escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="streetsURL" value="/settings/list/streets" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="wardAddURL" value="/settings/list/wardForm" />
+    <spring:url var="wardEditURL" value="/settings/location/wardFormEdit" />
+    <spring:url var="wardListUrl" value="/settings/list/wards"/>
+    <div id="inner-content">
+        <![CDATA[
+        <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+        <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+        <script type="text/javascript" src="${jsFolder}/responsedata.js?v=2"></script>
+        <script type="text/javascript" src="${jsFolder}/location.js"></script>
+        <script type="text/javascript" src="${jsFolder}/agent.js"></script>
+
+        <script type="text/javascript">
+            var contextPath = "${pageContext.request.contextPath}";
+        </script>
+        <script type="text/javascript">
+
+        </script>
+        ]]>
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH MỤC ĐỊA ĐIỂM</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" modelAttribute="locationForm" id="locationForm" action="${wardListUrl}">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       id="table_list_location" class="table-1">
+                    <tr colspan="4" style="text-align: left">
+                        <td colspan="3">
+                            <div style="padding-right: 10px;display: none">
+                                <form:select path="agentId" style="width: 170px;" id="combo_agent"
+                                             onchange="getListCity(this);" class="select2_combo">
+                                    <form:option value="0">-- Vùng Miền --</form:option>
+                                    <form:options items="${agentList}" itemValue="id"
+                                                  itemLabel="name" />
+                                </form:select>
+                            </div>
+
+
+                            <div style="padding-right: 10px;display: inline-block">
+                                <form:select path="provinceId" style="width: 170px;"
+                                             id="combo_province" onchange="getListDistrict(this);" class="select2_combo">
+                                    <form:option value="0">-- Tỉnh/Thành phố --</form:option>
+                                    <form:options items="${provinceList}" itemValue="id"
+                                                  itemLabel="name" />
+                                </form:select>
+
+                            </div>
+
+                            <div style="padding-right: 50px;display: inline-block">
+                                <form:select path="districtId" style="width: 170px;"
+                                             id="combo_district" class="select2_combo">
+                                    <form:option value="0">-- Quận/Huyện --</form:option>
+                                    <form:options items="${dictristList}" itemValue="id"
+                                                  itemLabel="name" />
+                                </form:select>
+                            </div>
+
+                            <div style="padding-right: 10px;display: inline-block">
+                                Tìm theo tên/mã:
+                                <form:input id="searchText" style="width: 150px;"	path="searchText"></form:input>
+                                </div>
+                            </td>
+
+                            <td style="text-align: right;width: 180px;">
+                                <div style="padding-right: 20px">
+                                    <a href="javascript:void(0)" onclick="getFormListWards();"
+                                       class="btn-1" title="Xem Danh Sách"><span><span
+                                                style="width: 100px;display: inline-block">Xem kết quả</span></span></a>
+                                </div>
+                                <div style="padding-right: 20px; display: inline-block;">
+                                    <a href="${wardAddURL}" class="btn-1" title="Thêm Phường/Xã"><span><span
+                                            style="width: 100px">Thêm địa điểm</span></span></a>
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" listingURL="" submitMethod="POST"
+                                         formSubmit="locationForm" id="wardTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td>Tên địa điểm</td>
+                                        <td width="15%">Mã Viết Tắt</td>
+                                        <td width="100px">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodey_list_location">
+                                    <c:choose>
+                                        <c:when test="${not empty wardList}">
+                                            <c:forEach items="${wardList}" var="item" varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td>${item.name}</td>
+                                                    <td>${item.code}</td>
+                                                    <td align="center"><a
+                                                            href="${wardEditURL}/${agentId}/${provinceId}/${districtId}/${item.id}"
+                                                            class="redTxt" title="Chỉnh sửa Phường/Xã">Chỉnh Sửa</a></td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="4" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" listingURL="" submitMethod="POST"
+                                         formSubmit="locationForm" id="wardTopPagination" /></td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+  
+  <definition extends="default" name="listPlanOfSales">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/listPlanOfSales.jspx"/>
+  </definition>
+  <definition extends="default" name="storesList">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/listStore.jspx"/>
+  </definition>
+   <definition extends="default" name="salesProcess">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/listProcess.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="salesDetail">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/details.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="salesAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/add.jspx"/>
+  </definition>
+  <definition extends="default" name="salesUpdate">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/update.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="goodsforuserAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/addGoodsForUser.jspx"/>
+  </definition>
+  <definition extends="default" name="storesDetail">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/storesDetail.jspx"/>
+  </definition>
+  <definition extends="default" name="histories">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/histories.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="salesError">
+    <put-attribute name="body" value="/WEB-INF/jsp/error/prohibited.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="dshhAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/addDshh.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="orderAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/planforsales/addOrder.jspx"/>
+  </definition>
+
+  <definition extends="default" name="planofsales">
+      <put-attribute name="body" value="/WEB-INF/jsp/planforsales/planOfSales.jspx"/>
+  </definition>
+  
+</tiles-definitions>

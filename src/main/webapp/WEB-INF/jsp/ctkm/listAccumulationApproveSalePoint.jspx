@@ -1,0 +1,502 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/scripts" />
+    <spring:url var="imagesFolder" value="/images" />
+    <spring:url var="devDetailURL" value="/device/detail" />	
+    <spring:url var="userDetailURL" value="/user/detail" />
+
+    <spring:url var="addURL" value="/ctkm/add"/>	
+    <spring:url var="editURL" value="/ctkm/listsalepoint/editac" />
+    <spring:url var="urlOptionLink" value="/api/ctkm" />
+    <spring:url var="delURL" value="/ctkm/listsalepoint/rejectaccumulation" />
+    <spring:url var="APPROVE_URL" value="/promotion/accumulationsalepointapprovelist/update" />
+    <spring:url var="urlAjaxGetGoods" value="/ajax/getGoodsByGoodsCategoryId" />
+    <spring:url var="LIST_URL" value="/ctkm/accumulationsalepointapprovelist"/>
+    <spring:url var="URL_view" value="/promotion/view"/>
+
+
+    <![CDATA[
+    <script type="text/javascript">
+        function viewResults() {
+
+            $('#promotionAccumulate').submit();
+
+        }
+        
+         function selectGoodsCategory() {
+            $cbb = $("#cbbGoodsCategory");
+            var categoryIdValue = $cbb.val();
+            $cbbGoods = $("#cbbGoods");
+            if (categoryIdValue != 0)
+            {
+                $.ajax({
+                    type: 'POST',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: '${urlAjaxGetGoods}',
+                    data: JSON.stringify(categoryIdValue),
+                    success: function (data) {
+                        if (data.goodsList.length > 0) {
+                            renderComboBoxScope($cbbGoods, data.goodsList, '--Chọn sản phẩm--');
+                        } else {
+                            renderComboBoxEmptyScope($cbbGoods, '--Chọn sản phẩm--');
+                        }
+                    }
+                });
+            }
+            else {
+                renderComboBoxEmptyScope($cbbGoods, '--Chọn sản phẩm--');
+            }
+        }
+
+        function submitResults() {
+            var valid = true;
+            if (valid) {
+                var url = '${APPROVE_URL}';
+                document.forms['promotionAccumulate'].action = url;
+                $('#promotionAccumulate').submit();
+            }
+        }
+
+        function renderComboBoxScope(comboBoxSelector, items, label) {
+            if (items && items != null && items.length > 0) {
+                var $domCbo = $(comboBoxSelector);
+                renderComboBoxEmptyScope(comboBoxSelector, label);
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var $domOption = $("<option value = '" + item.id + "'>" + item.name
+                            + "</option>");
+                    $domCbo.append($domOption);
+                }
+            }
+
+        }
+        function renderComboBoxEmptyScope(comboBoxSelector, label) {
+            if ('#asmId' == comboBoxSelector) {
+                renderNoneComboBoxEmptyScope(comboBoxSelector, label);
+            } else {
+                var $domCbo = $(comboBoxSelector);
+                $domCbo.empty();// remove old options
+                var $domOption = $("<option value = '0'  disabled='disabled'>" + label + "</option>");
+                $domCbo.append($domOption);
+                $domCbo.select2();
+            }
+
+        }
+
+        function renderNoneComboBoxEmptyScope(comboBoxSelector, label) {
+            var $domCbo = $(comboBoxSelector);
+            $domCbo.empty();// remove old options
+            var $domOption = $("<option value = '0'>" + label + "</option>");
+            $domCbo.append($domOption);
+            $domCbo.select2();
+        }
+
+        function selectCategory(categoryId) {
+            var urlLink = '${urlOptionLink}';
+            var isSubmit = 0;
+            if (categoryId) {
+                var categoryIdValue = $(categoryId).val();
+                if (categoryIdValue != "0") {
+                    isSubmit = 1;
+                    urlLink = urlLink + "/goods/" + categoryIdValue;
+                    if (isSubmit > 0) {
+                        $.ajax({
+                            type: 'GET',
+                            url: urlLink,
+                            dataType: 'json',
+                            success: function (data) {
+                                if (data && data != null && data.length > 0) {
+                                    renderComboBoxScope('#goodsIdList', data, '${good_b}');
+                                } else {
+                                    renderComboBoxEmptyScope('#goodsIdList', '${good_b}');
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+
+        function selectScope(rsmId, asmId, provinceId, nppId) {
+            var urlLink = '${urlOptionLink}';
+            var isSubmit = 0;
+            if (rsmId && asmId && provinceId && nppId) {
+                var multipleProvinceValues = $(provinceId).val() || [];
+                var multipleNppValues = $(nppId).val() || [];
+                multipleProvinceValues = multipleProvinceValues.join(",");
+                multipleNppValues = multipleNppValues.join(",");
+                if (multipleProvinceValues != "" && multipleNppValues != "") {
+                    isSubmit = 5;
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/" + multipleProvinceValues + "/" + multipleNppValues;
+                }
+            } else if (rsmId && asmId && provinceId) {
+                var multipleProvinceValues = $(provinceId).val() || [];
+                if (multipleProvinceValues != "") {
+                    isSubmit = 4;
+                    multipleProvinceValues = multipleProvinceValues.join(",");
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/" + multipleProvinceValues + "/0";
+                }
+            } else if (rsmId && asmId && nppId) {
+                var multipleNppValues = $(nppId).val() || [];
+                if (multipleNppValues != "") {
+                    isSubmit = 3;
+                    multipleNppValues = multipleNppValues.join(",");
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/0/" + multipleNppValues;
+                }
+            } else if (rsmId && asmId) {
+                var rsmIdValue = $(rsmId).val();
+                var asmIdValue = $(asmId).val();
+                if (asmIdValue != "0") {
+                    isSubmit = 2;
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/0/0";
+                }
+            } else if (rsmId) {
+                var rsmIdValue = $(rsmId).val();
+                if (rsmIdValue != "0") {
+                    isSubmit = 1;
+                    urlLink = urlLink + "/" + rsmIdValue + "/0/0/0";
+                }
+
+            }
+            if (isSubmit > 0) {
+                $.ajax({
+                    type: 'GET',
+                    url: urlLink,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (isSubmit == 1) {
+                            if (data.asmList && data.asmList != null && data.asmList.length > 0) {
+                                renderComboBoxScope('#asmId', data.asmList, '${area_b}');
+                                renderComboBoxEmptyScope('#provinceIdList', '${province_b}');
+                                renderComboBoxEmptyScope('#distributorsIdList', '${distributor_b}');
+                                renderComboBoxEmptyScope('#retailerIdList', '${employee_b}');
+                            } else {
+                                renderNoneComboBoxEmptyScope('#asmId', '${area_b}');
+                                renderComboBoxEmptyScope('#provinceIdList', '${province_b}');
+                                renderComboBoxEmptyScope('#distributorsIdList', '${distributor_b}');
+                                renderComboBoxEmptyScope('#retailerIdList', '${employee_b}');
+                            }
+                        } else if (isSubmit == 2) {
+                            if (data.provinceList && data.provinceList != null && data.provinceList.length > 0) {
+                                renderComboBoxScope('#provinceIdList', data.provinceList, '${province_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#provinceIdList', '${province_b}');
+                            }
+                            if (data.nppList && data.nppList != null && data.nppList.length > 0) {
+                                renderComboBoxScope('#distributorsIdList', data.nppList, '${distributor_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#distributorsIdList', '${distributor_b}');
+                            }
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#retailerIdList', data.salemanList, '${employee_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#retailerIdList', '${employee_b}');
+                            }
+                        } else if (isSubmit == 4) {
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#retailerIdList', data.salemanList, '${employee_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#retailerIdList', '${employee_b}');
+                            }
+                            if (data.nppList && data.nppList != null && data.nppList.length > 0) {
+                                renderComboBoxScope('#distributorsIdList', data.nppList, '${distributor_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#distributorsIdList', '${distributor_b}');
+                            }
+                        } else if (isSubmit == 3 || isSubmit == 5) {
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#retailerIdList', data.salemanList, '${employee_b}');
+                            } else {
+                                renderComboBoxEmptyScope('#retailerIdList', '${employee_b}');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        function SelectElement(val)
+        {
+
+            var childUnit = $('#statuss_' + val + '').find(":selected").val();
+            var inputChild = $('input_' + val + '').val();
+
+            inputChild = childUnit;
+            document.getElementById("input_" + val + "").value = inputChild;
+
+        }
+    </script>
+    <script type="text/javascript" src="${scriptsFolder}/device.js?v=1"></script>
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    ]]>
+
+    <div id="inner-content">
+<!--        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>-->
+        <div class="content-title">
+            <h2>
+                <span>danh sách điểm bản cần approve KM</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="promotionAccumulate">
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0"
+                       class="table-1">					
+                    <tr>
+                        <td colspan="5" align="right">
+                            <table width="100%" cellpadding="0" cellspacing="0">
+                                <tr height="28" style="vertical-align: top">
+                                    <td align="right">Nơi áp dụng :</td>					
+                                    <td colspan="4">										
+                                        <jsp:include page="../promotionChannelSelector.jspx" />	
+                                    </td>
+                                    <td></td>
+                                </tr>
+
+                                <tr height="28">						
+                                    <td align="right">Điều kiện :</td>
+                                    <td><form:select path="promotionConditionListId" cssClass="selectBox select2_combo" style="width:200px" multiple="multiple" placeholder="Chọn điều kiện">
+                                            <form:option value="0">--Chọn điều kiện--</form:option>
+                                            <form:options items="${listPromotionCondition}" itemLabel="name" itemValue="id"/>							
+                                        </form:select>						
+                                    </td>
+                                    <td align="right">Cấp xét duyệt:</td>
+                                    <td colspan="2"><form:select path="userRoleId" cssClass="selectBox select2_combo" style="width:200px">
+                                            <form:option value="0">--Chọn cấp xét duyệt--</form:option>						
+                                            <form:options items="${listRole}" itemLabel="name" itemValue="id"/>	
+                                        </form:select>&#160;&#160;
+                                        <form:select path="statusId" cssClass="selectBox select2_combo" style="width:200px">	
+                                            <form:option value="0">--Trạng thái-- </form:option>
+                                            <form:options items="${listStatus}" itemLabel="name"	itemValue="id" />													
+                                        </form:select>
+
+                                    </td>
+
+                                </tr>	
+                                <tr height="28">
+                                    <td align="right">Loại sản phẩm:</td>
+                                    <td>
+                                        <form:select id="cbbGoodsCategory" path="goodsCategoryId" cssClass="selectBox select2_combo" onchange="selectGoodsCategory()" style="width:200px">
+                                            <form:option value="0">--Chọn loại SP--</form:option>
+                                            <form:options items="${listCate}" itemLabel="name" itemValue="id"/>												
+                                        </form:select>
+                                    </td>
+                                    <td align="right">Hình thức tặng</td>
+                                    <td >					
+                                        <form:select placeholder="Chọn hình thức tặng" path="promotionWardId" cssClass="selectBox  select2_combo" style="width:200px" multiple="multiple">
+                                            <form:option value="0">--Chọn hình thức--</form:option>
+                                            <form:options items="${listWard}" itemLabel="promotionAwardName" itemValue="id"/>													
+                                        </form:select>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr height="28">
+                                    <td align="right">Sản Phẩm :</td>
+                                    <td>
+                                        <form:select placeholder="Chọn sản phẩm" id="cbbGoods" path="goodsIdList" cssClass="selectBox select2_combo"   style="width:200px" multiple="multiple">
+                                            <form:option value="0" >--Chọn SP--</form:option>
+                                            <form:options items="${goodsList}" itemLabel="name" itemValue="id"/>
+                                        </form:select>
+                                    </td>
+                                    <td align="right"></td>
+                                    <td >																	
+                                    </td>
+                                    <td></td>
+                                </tr>	
+
+                                <tr height="28">
+                                    <td align="right">Cách tính :</td>
+                                    <td colspan="3">
+                                        <form:select path="calculation" cssClass="selectBox select2_combo" style="width:200px">
+                                            <form:option value="0">--Chọn cách tính --</form:option>
+                                            <form:options items="${calculation}" itemLabel="name" itemValue="id"/>
+
+                                        </form:select>
+                                        &#160;&#160;
+                                       
+                                    </td>									
+                                    <td></td>
+                                </tr>
+
+                                <tr height="28">									
+                                    <td align="right">Ngày bắt đầu:
+                                    </td>
+                                    <td colspan="2">
+                                        <form:input path="beginDate" cssClass="textInput tcal"/>
+                                        &#160;&#160;
+                                        Ngày kết thúc
+                                        &#160;&#160;
+                                        <form:input path="endDate" cssClass="textInput tcal"/>
+                                    </td>	
+                                    <td colspan="2">
+                                        Chọn theo CTKM &#160;
+                                        <form:select path="promotionId" cssClass="selectBox select2_combo" style="width:200px">										
+                                            <form:option value="0">--Chọn CTKM--</form:option>
+                                            <form:options items="${listPromotion}" itemLabel="name" itemValue="id"/>																						
+                                        </form:select>									
+                                        &#160;&#160;&#160;&#160;<a href="javascript:;"
+                                                                   onclick="javascript:viewResults();" class="btn-1"
+                                                                   title="Tìm kiếm"><span><span>Tìm</span></span></a>
+                                    </td>
+                                </tr>	
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                            <td></td>
+                            <td>
+                                <c:if test="${not empty update}">
+                                    <c:choose>
+                                        <c:when test="${update}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p> Cập nhật thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p> Cập nhật thất bại </p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </td>
+                        </tr>
+                    <tr>
+                        <td colspan="5"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST" listingURL="" formSubmit="ctkmForm"
+                                         id="devTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="7%">Mã điểm bán</td>								
+                                        <td width="10%">Tên điểm bán</td>
+                                        <td width="8%">Số điện thoại</td>
+                                        <td width="10%">Địa chỉ</td>	
+                                        <td width="10%">Tặng</td>							
+                                        <td width="5%">Số lượng</td>
+                                        <td width="5%">Tổng tiền</td>
+                                        <td width="15%">Tên KM</td>										
+                                        <td width="10%">Cần approve</td>
+                                        <td width="7%">Ngày tạo</td>
+                                        <td width="4%">Trạng thái</td>	
+                                        <td width="4%">Lý do</td>								
+                                    </tr>	
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty listPromotionAccumulate}">
+
+                                            <c:forEach items="${listPromotionAccumulate}" var="item" varStatus="status">
+                                                <tr>
+                                            <input type="hidden" name ="promotionAcculate[${status.index}].id" value="${item.id}" />
+                                            <td align="center">${(page-1)*size+status.count}</td>
+                                            <td>
+                                                ${item.retailers.posCode}
+
+                                            </td>
+
+                                            <td>
+                                                <a href="${URL_view}/${item.id}">
+                                                ${item.retailers.name}
+                                                </a>
+                                            </td>	
+                                            <td align="right">
+                                                ${item.retailers.tel}
+
+                                            </td>	
+                                            <td>
+                                                ${item.retailers.address}
+
+                                            </td>									
+                                         <td>
+                                                ${item.awardName}
+
+                                            </td>
+                                        <td align="right">
+                                                <fmt:formatNumber type="number" pattern="###,###" value="${item.awardQuantity}"/>
+                                            </td>
+                                            
+                                            <td align="right">
+                                                <fmt:formatNumber type="number" pattern="###,###" value="${item.amount}" /></td>
+                                            <td>${item.promotions.name}</td>
+                                            <td>
+                                                  ${item.promotions.approveRoles.name}                            
+                                            </td>
+                                            <td align="right">
+                                                <fmt:formatDate value="${item.promotions.createdAt}" pattern="dd/MM/yyyy" /></td>												
+                                            <td>
+                                               <c:set value="${item.statuss.id}" var="childUnit"></c:set>
+                                                <select  id="statuss_${status.index}" style="width:120px" class="select2_combo select2-offscreen" onchange="SelectElement(${status.index})" >                                                       
+                                                    <c:forEach items="${statusApprove}" var="flagItem">																							
+							<c:choose>
+							<c:when test="${flagItem.id==item.statuss.id}">
+								<option value="${flagItem.id}" selected="selected">${flagItem.name}</option>
+							</c:when>	
+							<c:otherwise>
+                                                            <option value="${flagItem.id}">${flagItem.name}</option>
+							</c:otherwise>									
+							</c:choose>																	
+						</c:forEach>
+                                                </select>
+                                                <input id="input_${status.index}" type="hidden" name="promotionAcculate[${status.index}].statuss.id"  value="${childUnit}" />
+                                            </td>
+                                            <td>
+                                                
+                                                <input style="width:100px" type="text" name="promotionAcculate[${status.index}].note" value ="${item.note}"/>
+                                            </td>										
+                                </tr>
+                            </c:forEach>
+
+                        </c:when>
+                        <c:otherwise>
+
+                            <tr>
+                                <td colspan="13" align="center">Không có dữ liệu</td>
+                            </tr>
+
+                        </c:otherwise>
+                    </c:choose>
+                    </tbody>
+                </table>
+
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="5"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="listForm"
+                                     page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+                </tr>
+                <tr height="5"><td  colspan="5"></td></tr>
+                <tr>
+                    <td ></td>
+                    <td  colspan="4" align="left"><a href="javascript:;"
+                                                     onclick="javascript:submitResults();" class="btn-1"
+                                                     title="Cập nhật"><span><span>Cập nhật</span></span></a></td>
+                </tr>	
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,80 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="editURL" value="/settings/company/edit"/>
+	<spring:url var="addURL" value="/settings/company/add"/>
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH MỤC CÁC CÔNG TY</span>
+			</h2>
+		</div>
+		<div id="content">
+			<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td colspan="5" align="right">
+							<a href="${addURL}" class="btn-1"><span><span>Thêm
+									</span> </span> </a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="/settings/list/companies" id="provTopPagination" submitMethod="GET"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td>Tên Công Ty</td>
+										<td width="10%">Mã Viết Tắt</td>
+										<td width="55%">Địa chỉ</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty companyList}">
+											<c:forEach items="${companyList}" var="item" varStatus="status">
+												<tr>
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td><a href="${editURL}/${item.id}">${item.ten}</a></td>
+													<td><a href="${editURL}/${item.id}">${item.maVietTat}</a></td>
+													<td>${item.diaChi}</td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td align="center" colspan="5">Không có dữ liệu</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="/settings/list/companies" id="provBottomPagination" submitMethod="GET"/>
+						</td>
+					</tr>
+				</table>
+			</div>
+	</div>
+</div>

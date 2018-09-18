@@ -1,0 +1,744 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page import="vn.itt.msales.entity.POS"/>
+        <jsp:directive.page import="vn.itt.msales.common.OptionItem" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="jsFolder" value="/resources/js" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="cssFolder" value="/resources/css" />
+        <spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="posDetailURL" value="/pos/details" />
+	<spring:url var="posSaleURL" value="/pos/sales" />
+	<spring:url var="editUserURL" value="/user/detail" />
+		
+	<div id="inner-content">
+	<![CDATA[
+	<script type="text/javascript" src="${jsFolder}/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${jsFolder}/ajax.js"></script>
+	<script type="text/javascript" src="${jsFolder}/common.js"></script>
+	<script type="text/javascript" src="${jsFolder}/listAgent.js"></script>	
+	<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js"></script>	
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/channelsearch.js"></script>
+        <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+        <script src="${scriptsFolder}/thickbox-compressed.js"></script>	
+        <script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+             
+		function selectCity(domCity){
+                    
+		var $domCity = $(domCity);
+		var cityUid = $domCity.val();
+                var channelId = 0;
+                                
+                if(!isNaN($("#channelIdList5").val()) && parseInt($("#channelIdList5").val()) != 0){
+                    channelId = $("#channelIdList5").val();
+                    
+                } else if(!isNaN($("#channelIdList4").val()) && parseInt($("#channelIdList4").val()) != 0){
+                    channelId = $("#channelIdList4").val();
+                    
+                } else if(!isNaN($("#channelIdList3").val()) && parseInt($("#channelIdList3").val()) != 0){
+                    channelId = $("#channelIdList3").val();
+                    
+                } else if(!isNaN($("#channelIdList2").val()) && parseInt($("#channelIdList2").val()) != 0){
+                    channelId = $("#channelIdList2").val();
+                    
+                } else if(!isNaN($("#channelIdList1").val()) && parseInt($("#channelIdList1").val()) != 0){
+                    channelId = $("#channelIdList1").val();
+                    
+                } else if(!isNaN($("#channelIdList0").val()) && parseInt($("#channelIdList0").val()) != 0){
+                    channelId = $("#channelIdList0").val();
+                }   
+             
+                
+		var url= contextPath + "/ajax/getDistrictByChannelId?parentId=" + cityUid +"&channelId="+channelId;
+		if (cityUid!=0){
+                        $.ajax({type: 'GET', url: url, success: function(data){	
+                            var json = JSON.parse(data);
+                            var objArr = json.data;
+                            var obj = new Object;
+                            obj.id = 0;
+                            obj.name = "-- Quận/Huyện --";
+                            obj.code = null;
+                            obj.checked = false;
+                            objArr.unshift(obj);
+                            renderComboBoxX("#quanHuyen", objArr, true);
+                        }});
+		}
+		else{
+			
+			renderComboBox("#quanHuyen",0, "-- Quận/Huyện --");
+		}
+		
+		renderComboBox("#phuongXa",0, "-- Phường/Xã --");
+                
+	}
+	
+	function selectTown(domTown){
+		var $domTown = $(domTown);
+		var townUid = $domTown.val();
+		if (townUid!=0){
+			var url=contextPath + "/ajax/getCbListLocationByParentId?parentId="+townUid;
+			$.ajax({type: 'GET', url: url, success: function (data) {
+                            var json = JSON.parse(data);
+                            var objArr = json.data;
+                            var obj = new Object;
+                            obj.id = 0;
+                            obj.name = "-- Phường/Xã --";
+                            obj.code = null;
+                            obj.checked = false;
+                            objArr.unshift(obj);
+                            renderComboBoxX("#phuongXa", objArr, true);
+                        }});
+                }
+                else {
+                    renderComboBox("#phuongXa",0, "-- Phường/Xã --");
+                }
+            }
+
+            function renderComboBoxX(comboBoxSelector, items, reindex) {
+                //re-render provinces
+                var $domCbo = $(comboBoxSelector);
+                $domCbo.empty();//remove old options
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var $domOption = $("<option value = '" + item.id + "'>" + item.name + "</option>");
+                    $domCbo.append($domOption);
+                }
+                if (reindex) {
+                    $domCbo.select2();
+                }
+            }
+
+            function renderComboBoxEmptyX(comboBoxSelector, reindex) {
+                //re-render provinces
+                var $domCbo = $(comboBoxSelector);
+                $domCbo.empty();//remove old options
+                if (reindex) {
+                    $domCbo.select2();
+                }
+            }
+
+            function checkValidDate(date)
+            {
+                var dateField = $(date);
+                // regular expression to match required date format
+                var re = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+                var regs = dateField.val().match(re);
+                if (regs) {
+                    // day value between 1 and 31
+                    if (regs[1] < 1 || regs[1] > 31) {
+                        dateField.focus();
+                        return false;
+                    }
+                    // month value between 1 and 12
+                    if (regs[2] < 1 || regs[2] > 12) {
+                        dateField.focus();
+                        return false;
+                    }
+                } else {
+                    dateField.focus();
+                    return false;
+                }
+
+                return true;
+            }
+            
+            function validateNum(value) {
+                var reg = new RegExp("^[0-9]+$");
+                return reg.test(value);
+            }
+            
+            function validateEmail(email) {
+                var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+                return re.test(email);
+            }
+            
+            function validateWebAddress(address) {
+                var urlregex = new RegExp("^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/|www\.)[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$");
+                return urlregex.test(address);
+            }
+
+            function validateForm() {
+                var isOK = true;
+                if (checkEmptys('#name', 'Vui lòng nhập tên điểm bán hàng.', '#pos_name_error')) {
+                    isOK &= false;
+                } else {
+                    isOK &= true;
+                    $('#pos_name_error').html('');
+                }
+
+                if (checkEmptys('#address', 'Vui lòng nhập địa chỉ.', '#pos_address_error')) {
+                    isOK &= false;
+                } else {
+                    isOK &= true;
+                    $('#pos_address_error').html('');
+                }
+
+                var statusId = $("#statusId option:selected").val();
+                if (parseInt(statusId) === 0) {
+                    isOK &= false;
+                    $('#errorStatusPOS').html('Vui lòng chọn trạng thái điểm bán hàng.');
+                } else {
+                    isOK &= true;
+                    $('#errorStatusPOS').html('');
+                }
+
+                var provinceId = $("#provinceId option:selected").val();
+                if (parseInt(provinceId) === 0) {
+                    isOK &= false;
+                    $('#errorProvincePOS').html('Vui lòng chọn tỉnh/thành phố.');
+                } else {
+                    isOK &= true;
+                    $('#errorProvincePOS').html('');
+                }
+
+                var districtId = $("#quanHuyen option:selected").val();
+                if (parseInt(districtId) === 0) {
+                    isOK &= false;
+                    $('#errorDistrictPOS').html('Vui lòng chọn quận/huyện.');
+                } else {
+                    isOK &= true;
+                    $('#errorDistrictPOS').html('');
+                }
+
+                var wardId = $("#phuongXa option:selected").val();
+                if (parseInt(wardId) === 0) {
+                    isOK &= false;
+                    $('#errorWardPOS').html('Vui lòng chọn phường/xã.');
+                } else {
+                    isOK &= true;
+                    $('#errorWardPOS').html('');
+                }
+                
+                var birthday = $("#birthday").val();
+                if(birthday.length > 0){
+                	var m = birthday.match(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/);
+    				if (m == null)
+    				{
+    	 				isOK &= false;
+         				$('#pos_birthday_error').html('Định dạng ngày tháng không hợp lệ.');
+    				}
+                }
+              //  if (checkEmptys('#birthday', '', '#pos_birthday_error') == false) {
+               //     if (checkValidDate('#birthday')) {
+               //         isOK &= true;
+               //         $('#pos_birthday_error').html('');
+               //     } else {
+               //         isOK &= false;
+              //          $('#pos_birthday_error').html('Định dạng ngày tháng không hợp lệ.');
+              //      }
+              //  }
+                
+                if (checkEmptys('#otherTel', '', '#pos_otherTel_error') == false) {
+                    var other = $("#otherTel").val();
+                    if (validateNum(other)) {
+                        isOK &= true;
+                        $('#pos_otherTel_error').html('');
+                    } else {
+                        isOK &= false;
+                        $('#pos_otherTel_error').html('Số điện thoại không hợp lệ.');
+                    }
+                }
+                
+                if (checkEmptys('#mobile', '', '#pos_mobile_error') == false) {
+                    var mobile = $("#mobile").val();
+                    if (validateNum(mobile)) {
+                        isOK &= true;
+                        $('#pos_mobile_error').html('');
+                    } else {
+                        isOK &= false;
+                        $('#pos_mobile_error').html('Số điện thoại không hợp lệ.');
+                    }
+                }
+                
+                if (checkEmptys('#tel', '', '#pos_tel_error') == false) {
+                    var tel = $("#tel").val();
+                    if (validateNum(tel)) {
+                        isOK &= true;
+                        $('#pos_tel_error').html('');
+                    } else {
+                        isOK &= false;
+                        $('#pos_tel_error').html('Số điện thoại không hợp lệ.');
+                    }
+                }
+                
+                if (checkEmptys('#fax', '', '#pos_fax_error') == false) {
+                    var fax = $("#fax").val();
+                    if (validateNum(fax)) {
+                        isOK &= true;
+                        $('#pos_fax_error').html('');
+                    } else {
+                        isOK &= false;
+                        $('#pos_fax_error').html('Số Fax không hợp lệ.');
+                    }
+                }
+
+                if (checkEmptys('#ownerCodeDate', '', '#pos_ownerCodeDate_error') == false) {
+                    if (checkValidDate('#ownerCodeDate')) {
+                        isOK &= true;
+                        $('#pos_ownerCodeDate_error').html('');
+                    } else {
+                        isOK &= false;
+                        $('#pos_ownerCodeDate_error').html('Định dạng ngày tháng không hợp lệ.');
+                    }
+                }
+                
+                var channelId = $("#cbbChannel1 option:selected").val();
+                if (parseInt(channelId) === 0) {
+                    isOK &= false;
+                    $('#errorChannelPOS').html('Vui lòng chọn kênh quản lý.');
+                } else {
+                    isOK &= true;
+                    $('#errorChannelPOS').html('');
+                }
+
+                if (checkEmptys('#email', '', '#pos_email_error') == false) {
+                    var email = $("#email").val();
+                    if (validateEmail(email) == false) {
+                        isOK &= false;
+                        $('#pos_email_error').html('Vui lòng nhập đúng định dạng địa chỉ mail.');
+                    } else {
+                        isOK &= true;
+                        $('#pos_email_error').html('');
+                    }
+                }
+                
+                if (checkEmptys('#website', '', '#pos_website_error') == false) {
+                    var website = $("#website").val();
+                    if (validateWebAddress(website) == false) {
+                        isOK &= false;
+                        $('#pos_website_error').html('Vui lòng nhập đúng định dạng địa chỉ website.');
+                    } else {
+                        isOK &= true;
+                        $('#pos_website_error').html('');
+                    }
+                }
+                
+                return isOK;
+            }
+            
+           
+            
+            function checkDecimal(value) {
+                var isOK = true;
+                var arr = value.split(".");
+                if (arr.length == 1) {
+                    if (value.length > 9) return isOK &= false;
+                    return isOK &= true;
+                } else if (arr.length == 2) {
+                    if (arr[0].length > 9 || arr[1].length > 15) return isOK &= false;
+                    return isOK &= true;
+                }
+                return isOK &= false;
+            }
+
+            function savePos() {
+                if (validateForm() == 1 && validateLatLong() == 1) {
+                    document.getElementById('posForm').submit();
+                }
+            }
+
+            function showCombobox(div)
+        {
+            var name = div.getAttribute("id");
+            var level = name.substring(10, name.length);
+
+            /*
+            $province = $("#locationId");
+            $monitoring = $("#monitoringUserId");
+            $userRole = $("#userRoleId");
+            */
+            var channelId = div.value;
+
+            var url = getAppRootPath() + "/ajax/getCbListChannelByParent";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                data: JSON.stringify(channelId),
+                success: function (data) {
+                    var empty = new Object();
+                    for (var i = level + 1; i < 10; i++)
+                    {
+                        var $hideDiv = $("#cbbChannel" + i);
+                        renderComboBoxChannel($hideDiv, empty, $hideDiv[0].firstChild.text);
+                        var hideDiv = document.getElementById("channel" + i);
+                        hideDiv.style.display = "none";
+                    }
+
+                    if (data.channelList.length > 0)
+                    {
+                        var nextDiv = document.getElementById("channel" + (++level));
+                        nextDiv.style.display = "table-row";
+                        var $nextCombobox = $("#cbbChannel" + level);
+                        renderComboBoxChannel($nextCombobox, data.channelList, $nextCombobox[0].firstChild.text);
+
+                        reSelect($nextCombobox, 0);
+                    }
+                    else {
+                        var nextDiv = document.getElementById("channel" + (++level));
+                        nextDiv.style.display = "none";
+                        var $nextCombobox = $("#cbbChannel" + level);
+                        renderComboBoxChannel($nextCombobox, empty, $nextCombobox[0].firstChild.text);
+                    }
+                    /*
+                    renderComboBox($province, data.provinceList, $province[0].firstChild.text);
+                    renderComboBox($monitoring, data.monitoringList, $monitoring[0].firstChild.text);                    
+                    renderComboBox($userRole, empty, $userRole[0].firstChild.text);
+                    */
+                }
+            });
+        }
+
+
+        function hideCombobox(div)
+        {
+            var name = div.getAttribute("id");
+            var level = name.substring(10, name.length);
+            var channelId = -1;
+            if (level == 1)
+                channelId = -1;
+            else
+                channelId = document.getElementById("cbbChannel" + (level - 1)).value;
+            level++;
+            var empty = new Object();
+
+            for (var i = level; i < 10; i++)
+            {
+                var $hideDiv = $("#cbbChannel" + i);
+                renderComboBoxChannel($hideDiv, empty, $hideDiv[0].firstChild.text);
+                var hideDiv = document.getElementById("channel" + i);
+                hideDiv.style.display = "none";
+            }
+            
+            /*
+            $province = $("#locationId");
+            $monitoring = $("#monitoringUserId");
+            $userRole = $("#userRoleId");
+
+            var url = getAppRootPath() + "/ajax/getCbListChannelByParent";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                data: JSON.stringify(channelId),
+                success: function (data) {
+                    renderComboBox($province, data.provinceList, $province[0].firstChild.text);
+                    renderComboBox($monitoring, data.monitoringList, $monitoring[0].firstChild.text);                    
+                    renderComboBox($userRole, empty, $userRole[0].firstChild.text);
+                }
+            });
+            */
+        }
+
+
+        function changeChannel($el) {
+            var channelId = $el.value;
+            showCombobox($el);
+            if (channelId == 0)
+            {
+                hideCombobox($el);
+            }
+            else {
+                showCombobox($el);
+            }
+        }
+        
+        // thay het cac option
+        function renderComboBoxChannel($domCbo, items, msg) {
+            renderComboBoxEmptyChannel($domCbo, msg);// remove old options
+
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var $domOption = $("<option value = '" + item.id + "'>" + item.name
+                        + "</option>");
+                $domCbo.append($domOption);
+            }
+        }
+// xoa cac option
+        function renderComboBoxEmptyChannel($domCbo, msg) {
+            if ($domCbo == null)
+                return;
+            if ($domCbo.find('option').length > 1) {
+                // chi xoa neu danh sach co tu 2 option tro len
+                $domCbo.empty();
+                var $domOption = $("<option value = '0' selected='selected'>" + msg
+                        + "</option>");
+                $domCbo.append($domOption);
+            }
+            $domCbo.select2();
+        }
+// doi option duoc select
+        function reSelect($domCbo, value) {
+            if ($domCbo.find('option').length > 1) {
+                // chi chon lai neu danh sach co tu 2 option tro len
+                $domCbo.find('option:selected').removeAttr('selected');
+                $domCbo.find("option[value='" + value + "']").attr('selected',
+                        'selected');
+            }
+        }
+        </script>
+]]>
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<c:choose>
+								<c:when test="${edit}">
+									<span>THÔNG TIN ĐIỂM BÁN HÀNG</span>
+								</c:when>
+								<c:otherwise>
+									<span>TẠO MỚI ĐIỂM BÁN HÀNG</span>
+								</c:otherwise>
+							</c:choose>
+			</h2>
+		</div>
+		<div id="content">
+		<form:form method="POST" commandName="posForm"  id="posForm">
+		<form:hidden path="id" />
+		<form:hidden path="posCode" />
+                <form:hidden path="isActive" />
+                <form:hidden path="channels.id" />
+                <form:hidden path="createdUser" />
+                <form:hidden path="updatedUser" />
+                <form:hidden path="deletedUser" />
+                <form:hidden path="locations.id" />
+                <form:hidden path="beginAt" />
+                <form:hidden path="endAt" />
+			<table width="100%" border="0" cellspacing="5" cellpadding="0" class="table-1">
+                            
+                            <tr class="info"  id='infoExt'>
+                                        <td style="text-align:left"><strong>Thông tin chung</strong></td>
+                                        <td style="text-align:left">
+                                            <c:if test="${not empty success}">
+								<c:choose>
+									<c:when test="${success}">
+										<div class="infoMessage" id="messageArea">
+											<c:choose>
+												<c:when test="${createSuccess}">
+													<p>Tạo mới điểm bán hàng thành công.</p>
+												</c:when>
+												<c:otherwise>
+													<p>Cập nhật thông tin điểm bán hàng thành công.</p>
+												</c:otherwise>
+											</c:choose>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="errorMessage" id="messageArea">
+											<p>Xảy ra lỗi khi lưu dữ liệu</p>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+                                        </td>
+                                    </tr>
+                                    <tr class="info" style="display: table-row">
+                                        <td style="text-align:right;vertical-align: top" width="15%"><label class="field-label" for="">Kênh quản lý(<label class="errorMessage">*</label>):</label></td>
+                                        <td style="text-align:left;">
+                                            <jsp:include page="../channelSelectorVertical2.jspx"></jsp:include>
+                                        </td>
+                                    </tr>
+                                    
+                                    <tr class="info">
+                                        <c:choose>
+                                            <c:when test="${empty posForm.posCode}">
+                                                <td style="text-align:right"><label class="field-label" for="">Tên ĐBH(<label class="errorMessage">*</label>):</label></td>
+                                                <td>	
+                                                    <form:input path="name" cssStyle="width:150px;" />
+                                                    <label class="errorMessage" id="pos_name_error"/>
+                                                </td>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <td style="text-align:right"><label class="field-label" for="">Mã - Tên ĐBH(<label class="errorMessage">*</label>):</label></td>
+                                                <td>
+                                                    <label>${posForm.posCode} - </label> 
+                                                    <form:input path="name" id="name" cssStyle="width:150px;" />
+                                                    <label class="errorMessage" id="pos_name_error"/>
+                                                </td>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Địa chỉ(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:input path="address" id="address" cssStyle="width:250px;" />
+                                            <label class="errorMessage" id="pos_address_error"/>
+                                                <!--  <label>${posForm.address}</label> -->
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Tỉnh - Thành Phố(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:select path="provinceId" id="provinceId" cssClass="select2_combo" style="width:150px" onchange="selectCity(this);">
+                                                <form:option value="0" label="-- Tỉnh/Thành --" />
+                                                <form:options items="${provineList}" itemValue="id"
+                                                              itemLabel="name" />
+                                            </form:select>
+                                            <label class="errorMessage" id="errorProvincePOS"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Quận - Huyện(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:select path="districtId" cssClass="select2_combo" style="width:150px" onchange="selectTown(this);" id="quanHuyen">
+                                                <form:option value="0" label="-- Quận/Huyện --" />
+                                                <form:options items="${districtList}" itemValue="id"
+                                                              itemLabel="name" />
+                                            </form:select>
+                                            <label class="errorMessage" id="errorDistrictPOS"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Phường - Xã(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:select path="wardId" cssClass="select2_combo" style="width:150px" id="phuongXa">
+                                            	<form:option value="0" label="-- Phường/Xã --" />
+                                                <form:options items="${wardList}" itemValue="id"
+                                                              itemLabel="name" />
+                                            </form:select>
+                                            <label class="errorMessage" id="errorWardPOS"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Trạng thái(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:select path="statuss.id" id="statusId" cssClass="select2_combo" style="width:150px">
+                                                <form:options items="${statusList}" itemValue="id"
+                                                              itemLabel="name"/>
+                                            </form:select>
+                                            <label class="errorMessage" id="errorStatusPOS"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Phân loại(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:select path="hierarchy" cssClass="select2_combo" style="width:150px">
+                                                <form:option value="0" label="0" />
+                                                <form:option value="1" label="1" />
+                                                <form:option value="2" label="2" />
+                                                <form:option value="3" label="3" />
+                                                <form:option value="4" label="4" />
+                                            </form:select>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Số di động:</label></td>
+                                        <td>
+                                            <form:input path="mobile" id="mobile" cssClass="textInput" cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_mobile_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Điện thoại bàn:</label></td>
+                                        <td>
+                                            <form:input path="tel" id="tel" cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_tel_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Fax:</label></td>
+                                        <td>
+                                            <form:input path="fax" id="fax"  cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_fax_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Số điện thoại khác:</label></td>
+                                        <td>
+                                            <form:input path="otherTel" id="otherTel" cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_otherTel_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Email:</label></td>
+                                        <td>
+                                            <form:input path="email" id="email" cssClass="textInput" cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_email_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Website:</label></td>
+                                        <td>
+                                            <form:input path="website" id="website" cssStyle="width:150px;" />
+                                            <label class="errorMessage" id="pos_website_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Vị trí (vĩ độ, kinh độ)(<label class="errorMessage">*</label>):</label></td>
+                                        <td>
+                                            <form:input path="lat" id="lat"  cssStyle="width:100px;" />
+                                            <form:input path="lng" id="lng" cssStyle="width:100px;" />
+                                            <label class="errorMessage" id="pos_latlng_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info"  id='infoExt'>
+                                        <td style="text-align:left" colspan="2"><strong>Người đại diện</strong></td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Tên đại diện:</label></td>
+                                        <td>
+                                            <form:input path="ownerName" cssStyle="width:150px;" />
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Ngày sinh(dd/MM/yyyy):</label></td>
+                                        <td>
+                                            <fmt:formatDate value="${posForm.birthday}" pattern="dd/MM/yyyy" timeZone="GMT+7" var="birthday"/>
+                                            <input value="${birthday}" name="birthday" id="birthday"  Style="width:150px;" />
+                                            <label class="errorMessage" id="pos_birthday_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Số CMND:</label></td>
+                                        <td>
+                                            <form:input path="ownerCode" cssStyle="width:150px;" />
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Ngày cấp:</label></td>
+                                        <td>
+                                            <fmt:formatDate value="${posForm.ownerCodeDate}" pattern="dd/MM/yyyy" timeZone="GMT+7" var="ownerCodeDate"/>
+                                            <input value="${ownerCodeDate}" name="ownerCodeDate" id="ownerCodeDate" Style="width:150px;" />
+                                            <label class="errorMessage" id="pos_ownerCodeDate_error"/>
+                                        </td>
+                                    </tr>
+                                    <tr class="info">
+                                        <td style="text-align:right"><label class="field-label" for="">Nơi cấp:</label></td>
+                                        <td>
+                                            <form:input path="ownerCodeLocation" cssStyle="width:150px;" />
+                                        </td>
+                                    </tr>
+					<tr class="info">
+						<td style="text-align: right"></td>
+
+						<td> 
+                                                    <c:if test="${not readonly}">
+                                                    <c:choose>
+								<c:when test="${edit}">
+									<a href="javascript:savePos();" class="btn-1"
+							title="Cập nhật thông tin ĐBH"> <span><span>Cập nhật</span></span></a> 
+								</c:when>
+								<c:otherwise>
+									<a href="javascript:savePos();" class="btn-1" title="Lưu thông tin ĐBH"> <span><span>Lưu</span></span></a> 
+								</c:otherwise>
+							</c:choose>
+                                                    </c:if>
+                                                </td>
+					</tr>
+				</table>
+			</form:form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RPTCTKM03" pageWidth="2000" pageHeight="3600000" orientation="Landscape" columnWidth="2000" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="20" uuid="2f913e49-1e49-4761-a03f-7158a304f5ad">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="34"/>
+	<property name="ireport.y" value="0"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<style name="header" hAlign="Left" vAlign="Middle" fontSize="14" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="small header" vAlign="Middle" fontSize="12" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table header" mode="Opaque" forecolor="#000000" backcolor="#F0F0F0" hAlign="Center" vAlign="Middle" fontSize="12" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table td" mode="Opaque" forecolor="#000000" fill="Solid" vAlign="Middle" pattern="" fontSize="12">
+		<box>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<parameter name="ctkmStr" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="128">
+			<textField>
+				<reportElement uuid="2aa4e758-323d-42b3-9ca8-ada1ce5edc5d" x="0" y="0" width="1100" height="21"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ngày xuất báo cáo:  "+(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="4dfad656-acb3-4744-99ff-67d4fa6263a7" style="header" x="0" y="21" width="1100" height="37" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Center" markup="none"/>
+				<textFieldExpression><![CDATA["BÁO CÁO THÔNG TIN THAM GIA TRÙNG KHUYẾN MÃI"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="7c7fc127-0764-4be2-98c9-d800a6033fc5" style="small header" x="0" y="58" width="200" height="50" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Right"/>
+				<text><![CDATA[CTKM:]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="fe854ee9-3d61-4f05-8878-2df1b55bf755" style="small header" x="200" y="58" width="900" height="50"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ctkmStr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch"/>
+	</detail>
+</jasperReport>

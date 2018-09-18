@@ -1,0 +1,143 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="createURL" value="/unit/create"/>
+    <spring:url var="editURL" value="/unit/edit/"/>
+    <spring:url var="distribution" value="/channel/distribution" />
+    <spring:url var="editChannel" value="/channel/edit/"/>
+    <spring:url var="editChannelType" value="/channelType/view/"/>
+    <spring:url var="userList" value="/user/list"/>
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/channel.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function deleteChannel(channelId, channelname) {
+            if (confirm('Bạn có thực sự muốn xóa kênh: ' + channelname + '?')) {
+                var data = new Object();
+                data.id = channelId;
+                requestToServer('POST', contextPath + '/ajax/channel/delete', data,
+                        function (successData) {
+                            if (getCode(successData) == 200) {
+                                alert('Xóa kênh thành công.');
+                                $('#distributionForm').submit();
+                            }
+                            else if (getCode(successData) == 406) {
+                                alert('Không thể xóa vì có dữ liệu phụ thuộc: ' + successData.contents);
+                            }
+                            else{
+                                alert('Quá trình xóa kênh xãy ra lỗi. Xin vui lòng thử lại.');
+                            }
+                        },
+                        function (error) {
+                            alert('Quá trình xóa kênh xãy ra lỗi. Xin vui lòng thử lại.');
+                        });
+            }
+        }
+
+        function getUserList(id) {
+            $('#channelId').val(id);
+            $('#userList').submit();
+        }
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" />
+        </span>
+        <div class="content-title" >
+            <h2>
+                <span>Danh sách kênh quản lý</span>
+            </h2>
+        </div>
+
+        <div id="content">
+            <form:form method="POST" commandName="distributionForm" path="distributionForm" id="distributionForm" action="${distribution}">
+                <table width="99%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+                    <tr>
+                        <td>
+                            <label>Loại kênh </label>
+                            <form:select path="channelType" class="select2_combo" style="width:150px">
+                                <form:option value="0">-- Chọn loại kênh --</form:option>
+                                <form:options items="${listChannelType}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                            <label> Mã/tên </label>
+                            <form:input path="textSearch" class="textInput mediumWidth" type="text"/>
+                            <a href="javascript:;"  onclick="javascript:document.forms[0].submit();" class="btn-1"><span><span style="width:70px">Xem kết quả</span></span></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="DistributionTopPagination"
+                                         formSubmit="distributionForm" submitMethod="POST" /></td>
+                    </tr>
+                    <td colspan="2">
+                        <table width="99%" border="0" cellspacing="0" cellpadding="0" class="table-2">
+                            <thead>
+                                <tr>
+                                    <td align="center">STT</td>
+                                    <td>Mã viết tắt</td>
+                                    <td>Tên</td>
+                                    <td>Số điện thoại</td>
+                                    <td>Loại</td>
+                                    <td align="center">Hành động</td>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody_list_channel_type">
+                                <c:choose>
+                                    <c:when test="${not empty distributionForm.listChannel}">
+                                        <c:forEach items="${distributionForm.listChannel}" var="channel" varStatus="status">
+                                            <tr>
+                                                <td align="center">${(status.index +1)+ (page-1)*10}</td>
+                                                <td><a href="${editChannel}${channel.id}">${channel.fullCode}</a></td>
+                                                <td><a href="${editChannel}${channel.id}">${channel.name}</a></td>
+                                                <td>${channel.tel}</td>
+                                                <td><a href="${editChannelType}${channel.channelTypes.id}">${channel.channelTypes.name}</a></td>
+                                                <td align="center">
+                                                    <a href="${editChannel}${channel.id}" class="redTxt" >Xem</a> |
+                                                    <c:if test="${readOnly}">
+                                                        <a href="javascript:;" onclick="javascript:deleteChannel(${channel.id}, '${channel.name}')" class="redTxt">Xóa</a> |
+                                                    </c:if>
+
+                                                    <a href="javascript:;" onclick="javascript:getUserList(${channel.id});" class="redTxt">Nhân viên</a>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tr>
+                                            <td colspan="6" align="center">Không tìm thấy dữ liệu</td>
+                                        </tr>
+                                    </c:otherwise>
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </td>
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="DistributionTopPagination"
+                                         formSubmit="distributionForm" submitMethod="POST" /></td>
+                    </tr>
+                </table>
+            </form:form>
+            <form:form method="POST" id="userList" commandName="filterModel" action="${userList}">
+                <input id="channelId" name="channelId" value="0" hidden="true"/>
+            </form:form>
+        </div>
+    </div>
+</div>

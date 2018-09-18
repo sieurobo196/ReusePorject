@@ -1,0 +1,213 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="imageFolder" value="/resources/images" />
+
+	<div id="posDialog" style="display:none">
+		<![CDATA[
+
+		]]>
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1" name="posDialog">
+					<tr>
+						<td colspan="6" align="center">
+							<div class="infoMessage" id="p_messageInfor">
+								
+							</div>
+							
+							<div class="errorMessage" id="p_messageError">
+								
+							</div>
+						</td>
+					</tr>
+					
+					<tr class="more">
+						<td style="text-align: right">
+							<label for="">Tên Cửa hàng (<label class="errorMessage">*</label>):
+							</label>
+						</td>
+						<td colspan="3">
+							<input id="p_tenCuaHang" style="width:100%;" />
+						</td>
+						<td style="text-align: right">
+							<label for="">Tên chủ cửa hàng (<label class="errorMessage">*</label>):</label>
+						</td>
+						<td>
+							<input id="p_tenChuCuaHang" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more" >
+						<td style="text-align: right"><label for="">Ngày sinh:<br/><i>(20/12/2000)</i>
+						</label></td>
+						<td>
+							<input id="p_ngaySinhString" style="width:100%;"  />
+						</td>
+						<td style="text-align: right"><label for="">Số nhà:
+						</label></td>
+						<td>
+							<input id="p_soNha" style="width:100%;" />
+						</td>
+						<td style="text-align: right"><label for="">Khu phố:
+						</label></td>
+						<td>
+							<input id="p_khuPho" style="width:100%;" />
+						</td>
+					</tr>
+					<tr class="more" >
+						<td style="text-align: right"><label for="">Quận
+								Huyện (<label class="errorMessage">*</label>):
+						</label></td>
+						<td><select id="p_quanHuyen" style="width:100%;"
+								 onchange="selectTown(this, '#p_phuongXa');">
+								<option value="0">--- Quận/Huyện ---</option>
+								<c:forEach items="${listQuanHuyen}" var="item">
+									<option value="${item.id}">${item.name}</option>
+								</c:forEach>
+						</select></td>
+						<td style="text-align: right"><label for="">Phường xã (<label class="errorMessage">*</label>):
+						</label></td>
+						<td><select id="p_phuongXa" style="width:100%;" onchange="selectWard(this, '#p_duongPho');">
+								<option value="0">--- Phường/Xã ---</option>
+							</select></td>
+						<td style="text-align: right"><label for="">Đường:
+						</label></td>
+						<td><select id="p_duongPho" style="width:100%;">
+								<option value="0">--- Đường/Phố ---</option>
+							</select></td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Số CMT:
+						</label></td>
+						<td>
+							<input id="p_cmnd" style="width:100%;" />
+						</td>
+						<td style="text-align: right"><label for="">Ngày cấp:<br/><i>(20/12/2000)</i>
+						</label></td>
+						<td>
+							<input id="p_ngayCapCmndString" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"><label for="">Nơi cấp:
+						</label></td>
+						<td>
+							<input id="p_noiCapCmnd" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Số ĐT bàn:
+						</label></td>
+						<td>
+							<input id="p_soDienThoaiBan" style="width:100%;" />
+						</td>
+						<td style="text-align: right"><label for="">Fax:
+						</label></td>
+						<td>
+							<input id="p_fax" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"><label for="">Số di động:
+						</label></td>
+						<td>
+							<input id="p_soDiDong" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Số ĐT khác:
+						</label></td>
+						<td>
+							<input id="p_soDienThoaiKhac" style="width:100%;" />
+						</td>
+						<td style="text-align: right"><label for="">Số Mobiez:
+						</label></td>
+						<td>
+							<input id="p_soMobiez" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"><label for="">Số Vietpay:
+						</label></td>
+						<td>
+							<input id="p_soVietpay" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Email:
+						</label></td>
+						<td>
+							<input id="p_email" style="width:100%;" />
+						</td>
+						<td style="text-align: right"><label for="">Website:
+						</label></td>
+						<td>
+							<input id="p_website" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"><label for="">Giấy phép KD:
+						</label></td>
+						<td>
+							<input id="p_gpkd" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Ngày cấp GPKD:<br/><i>(20/12/2000)</i>
+						</label></td>
+						<td>
+							<input id="p_ngayCapGpkdString" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"><label for="">Nơi cấp GPKD:
+						</label></td>
+						<td>
+							<input id="p_noiCapGpkd" style="width:100%;"/>
+						</td>
+						<td style="text-align: right"></td>
+						<td></td>
+					</tr>
+					<tr >
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right"><label for="">Địa chỉ:</label></td>
+						<td colspan="5">
+							<input style="width:100%" id="p_diaChi"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right"><label for="">Ghi
+								chú:</label></td>
+						<td colspan="5">
+							<textarea rows="3" style="width:100%" id="p_ghiChu">Ghi chú</textarea>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6" align="center">
+							<a href="javascript:;" onclick="createPos();" class="btn-1"><span><span style="width:50px">Tạo mới</span></span></a>
+							<a href="javascript:;" onclick="tb_remove();" class="btn-1"><span><span style="width:50px">Hủy bỏ</span></span></a>
+						</td>
+					</tr>
+				</table>
+	</div>
+</div>
+

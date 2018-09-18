@@ -1,0 +1,68 @@
+<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:spring="http://www.springframework.org/tags" version="2.0"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     class="HeaderWrapper">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="jsFolder" value="/resources/js" />
+
+    <spring:url value="/" var="home" />
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/script.js?v=3"></script>
+    ]]>
+
+    <![CDATA[
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        //chinh phan quyen
+        $(document).ready(function () {
+            if ('${readonly}' != null && '${readonly}' != '' && '${readonly}' != NaN && '${readonly}' == 'true')
+            {
+                $('select').each(function () {
+                    $(this).attr("disabled", '${readonly}');
+                });
+                $("input[type='text']").each(function () {
+                    $(this).attr("readonly", '${readonly}');
+                });
+                $("input[type='file']").each(function () {
+                    $(this).attr("disabled", '${readonly}');
+                });
+                $("input[type='checkbox']").each(function () {
+                    $(this).attr("disabled", '${readonly}');
+                });
+                $("input[class^='textInput tcal']").each(function () {
+                    $(this).attr("disabled", '${readonly}');
+                });
+
+                $("textarea").each(function () {
+                    $(this).attr("readonly", '${readonly}');
+                });
+
+                $("a[name='checkView']").each(function () {
+                    $(this).remove();
+                });
+                $("li[name='checkView']").each(function () {
+                    $(this).remove();
+                });
+            }
+        });
+    </script>
+    ]]>
+
+    <div id="header">
+        <h1>
+            <a href="${home }" title="mSales - Bán Hàng KP">
+                <img src="${imagesFolder}/logo_itt.png" width="285" height="43" alt="mSales - Bán Hàng KPP" />
+            </a>
+        </h1>
+        <c:if test="${not empty userLogin}">
+            <spring:url value="/WebLogout" var="logout"/>
+            <ul>
+                <li><a href="#" title="Username"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-01" alt="Username" />${userLogin.lastName} ${userLogin.firstName}</a></li>
+                <li><a href="${logout}" title="Thoát"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-02" alt="Thoát" /> Thoát</a></li>
+            </ul>
+        </c:if>
+    </div>
+</div>

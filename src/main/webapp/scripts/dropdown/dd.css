@@ -1,0 +1,243 @@
+/************** Skin 1 *********************/
+.dd {
+	/*display:inline-block !important;*/
+	text-align:left;
+	background-color:#fff;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	float:left;
+	margin:2px;
+	display:inline;
+	position:relative
+}
+.dd .ddTitle {
+		padding:3px;
+	text-indent:0;
+	cursor:default;
+	overflow:hidden;
+	height:16px;
+}
+.dd .ddTitle span.arrow {
+	background:url(../../images/dd_arrow.png) no-repeat 0 0; float:right; display:inline-block;width:16px; height:16px; cursor:pointer; 
+}
+
+.dd .ddTitle span.ddTitleText {text-indent:1px; overflow:hidden; line-height:16px;}
+.dd .ddTitle span.ddTitleText img{text-align:left; padding:0 2px 0 0}
+.dd .ddTitle img.selected {
+	padding:0 3px 0 0;
+	vertical-align:top;
+}
+.dd .ddChild {
+	position:absolute;
+	border:1px solid #e9ede4;
+	border-top:none;
+	display:none;
+	margin:0;
+	width:auto;
+	overflow:auto;
+	overflow-x:hidden !important;
+	background-color:#ffffff;
+	top:26px !important;
+	left:-2px;
+	width:168px !important;
+}
+.dd .ddChild .opta a, .dd .ddChild .opta a:visited {padding-left:10px}
+.dd .ddChild a {
+	display:block;
+	padding:2px 0 2px 3px;
+	text-decoration:none;
+	color:#000;
+	overflow:hidden;
+	white-space:nowrap;
+	cursor:pointer;
+}
+.dd .ddChild a:hover {
+	background-color:#e46fe5;
+}
+.dd .ddChild a img {
+	border:0;
+	padding:0 2px 0 0;
+	vertical-align:middle;
+}
+.dd .ddChild a.selected {
+	background-color:#e46fe5;
+	
+}
+.hidden {display:none;}
+
+.dd .borderTop{border-top:1px solid #c3c3c3 !important;}
+.dd .noBorderTop{border-top:none 0  !important}
+
+/************** Skin 2 *********************/
+.dd2 {
+	/*display:inline-block !important;*/
+	text-align:left;
+	background:url(../images/bg_selectDropdown.jpg) repeat-x;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	float:left;
+	margin:4px 0 0 5px;
+	display:inline
+}
+.dd2 .ddTitle {
+	/*padding:3px 0 0 3px;*/
+	text-indent:0;
+	cursor:default;
+	overflow:hidden;
+	height:20px;
+}
+.dd2 .ddTitle span.arrow {
+	background:url(../images/dd_arrow.png) no-repeat 0 0;width:16px; height:16px; cursor:pointer; position:absolute;right:8px;top:5px
+}
+
+.dd2 .ddTitle span.ddTitleText {text-indent:1px; overflow:hidden; line-height:16px;}
+.dd2 .ddTitle span.ddTitleText img{text-align:left; padding:0 2px 0 0;}
+.dd2 .ddTitle img.selected {
+	padding:0 2px 0 0;
+	vertical-align:top;
+}
+.dd2 .ddChild {
+	position:absolute;
+	border:1px solid #ccc;
+	border-top:none;
+	display:none;
+	margin:0;
+	width:auto;
+	overflow:auto;
+	overflow-x:hidden !important;
+	background-color:#ffffff;top:28px !important;width:86px !important;left:0
+}
+.dd2 .ddChild .opta a, .dd2 .ddChild .opta a:visited {padding-left:10px}
+.dd2 .ddChild a {
+	display:block;
+	padding:5px;
+	text-decoration:none;
+	color:#333;
+	overflow:hidden;
+	white-space:nowrap;
+	cursor:pointer;
+	height:17px;border-bottom:solid 1px #ccc
+}
+.dd2 .ddChild a:hover {
+	background-color:#66CCFF;
+}
+.dd2 .ddChild a img {
+	border:0;
+	padding:0 2px 0 0;
+	vertical-align:middle;
+}
+.dd2 .ddChild a.selected {
+	background-color:#66CCFF;	
+}
+
+.dd2 .borderTop{border-top:1px solid #c3c3c3  !important;}
+.dd2 .noBorderTop{border-top:none 0  !important}
+/************** Skin 3 *********************/
+.dd3 {
+	/*display:inline-block !important;*/
+	text-align:left;
+	background:url(../images/bg_selectDropdown.jpg) repeat-x;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:11px;
+	float:left;margin:4px 0 0 5px;display:inline
+}
+.dd3 .ddTitle {
+	/*background:#f2f2f2;*/
+	/*border:1px solid #c3c3c3;*/
+	padding:3px 0 0 3px;
+	text-indent:0;
+	cursor:default;
+	overflow:hidden;
+	height:20px;
+}
+.dd3 .ddTitle span.arrow {
+	background:url(../images/dd_arrow.png) no-repeat 0 0;width:16px; height:16px; cursor:pointer; position:absolute;right:8px;top:8px
+}
+
+.dd3 .ddTitle span.ddTitleText {text-indent:1px; overflow:hidden; line-height:16px;color:#333}
+.dd3 .ddTitle span.ddTitleText img{text-align:left; padding:0 2px 0 0}
+.dd3 .ddTitle img.selected {
+	padding:0 3px 0 0;
+	vertical-align:top;
+}
+.dd3 .ddChild {
+	position:absolute;
+	border:1px solid #ccc;
+	border-top:none;
+	display:none;
+	margin:0;
+	width:auto;
+	overflow:auto;
+	overflow-x:hidden !important;
+	background-color:#ffffff;top:28px !important;width:259px !important;left:0
+}
+.dd3 .ddChild .opta a, .dd3 .ddChild .opta a:visited {padding-left:10px}
+.dd3 .ddChild a {
+	display:block;
+	padding:5px;
+	text-decoration:none;
+	color:#333;
+	overflow:hidden;
+	white-space:nowrap;
+	cursor:pointer;
+	height:17px;border-bottom:solid 1px #ccc
+}
+.dd3 .ddChild a:hover {
+	background-color:#66CCFF;
+}
+.dd3 .ddChild a img {
+	border:0;
+	padding:0 2px 0 0;
+	vertical-align:middle;
+}
+.dd3 .ddChild a.selected {
+	background-color:#66CCFF;
+	
+}
+.hidden {display:none;}
+
+.dd3 .borderTop{border-top:1px solid #c3c3c3 !important;}
+.dd3 .noBorderTop{border-top:none 0  !important}
+
+/************* use sprite *****************/
+.dd .ddChild a.sprite, .dd .ddChild a.sprite:visited {
+	background-image:url(../icons/sprite.gif);
+	background-repeat:no-repeat;
+	padding-left:24px;
+}
+
+.dd .ddChild a.calendar, .dd .ddChild a.calendar:visited {
+	background-position:0 -404px;
+}
+.dd .ddChild a.shoppingcart, .dd .ddChild a.shoppingcart:visited {
+	background-position:0 -330px;
+}
+.dd .ddChild a.cd, .dd .ddChild a.cd:visited {
+	background-position:0 -439px;
+}
+.dd .ddChild a.email, .dd .ddChild a.email:visited {
+	background-position:0 -256px;
+}
+.dd .ddChild a.faq, .dd .ddChild a.faq:visited {
+	background-position:0 -183px;
+}
+.dd .ddChild a.games,
+.dd .ddChild a.games:visited {
+	background-position:0 -365px;
+}
+.dd .ddChild a.music, .dd .ddChild a.music:visited {
+	background-position:0 -146px;
+}
+.dd .ddChild a.phone, .dd .ddChild a.phone:visited {
+	background-position:0 -109px;
+}
+.dd .ddChild a.graph, .dd .ddChild a.graph:visited {
+	background-position:0 -73px;
+}
+.dd .ddChild a.secured, .dd .ddChild a.secured:visited {
+	background-position:0 -37px;
+}
+.dd .ddChild a.video, .dd .ddChild a.video:visited {
+	background-position:0 0;
+}
+/*******************************/

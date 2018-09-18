@@ -1,0 +1,323 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	escapeXML="true" id="mapContainer">
+
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="imagesFolder" value="/resources/images" />
+	<spring:url var="jsFolder" value="/resources/js" />
+	<spring:url var="scriptsFolder" value="/resources/scripts" />
+	<spring:url var="cssFolder" value="/resources/css" />
+	
+
+	<![CDATA[
+	<script src="https://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry,places&ext=.js"></script>
+	<script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerwithlabel/src/markerwithlabel.js"></script>
+	<script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/utils.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/l10n.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/lib.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/plugin.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/start.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/gpstracking/util.js"></script>
+    <script type="text/javascript" src="${jsFolder}/location.js"></script>
+    <script type="text/javascript" src="${jsFolder}/script.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+    </script>
+    <script type="text/javascript">
+        getProvince();
+    </script>
+    <script type="text/javascript">
+        getListVungMien();
+    </script>
+     <script type="text/javascript">
+        getListUser();
+    </script>
+     <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+
+        function viewResults() {
+            showLoading();
+            $('#orderListForm').submit();
+        }
+        $(window.location).change(function () {
+            alert('change');
+        });
+        function timkiem(){
+   			 if (validateSearch() == 1) {
+        		$("#searchForm").submit();
+    		}
+		}
+    </script>
+	]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<c:choose>
+					<c:when test="${salesSup}">
+						<span>Lộ trình Giám sát</span>
+					</c:when>
+					<c:otherwise>
+						<span>Lộ trình nhân viên</span>
+					</c:otherwise>
+				</c:choose>
+				
+			</h2>
+		</div>
+		<div id="content">
+
+			<form:form method="POST" commandName="searchForm"
+				id="searchForm" name="searchForm">
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+
+					<tr>
+						<c:choose>
+							<c:when test="${salesSup}">
+								<td colspan="3"><jsp:include page="./listUserSalesSup.jspx"></jsp:include></td>
+							</c:when>
+							<c:otherwise>
+								<td colspan="3"><jsp:include page="./listUserSalesman.jspx"></jsp:include></td>
+							</c:otherwise>
+						</c:choose>
+					</tr>
+				</table>
+				<div class="mapFiler" id="filterContainer">
+					<table width="100%" cellpadding="0" cellspacing="0">
+						<tr>
+							<td align="left">
+									<!-- From date -->
+									Ngày: 
+									<fmt:formatDate value="${frm_from_date}" type="both"
+										dateStyle="medium" timeStyle="medium" var="formatedDate"
+										pattern="dd/MM/yyyy" />
+									<input type="text" name="frm_from_date" value="${formatedDate}"
+										id="frm_from_date" class="dateField tcal" />
+							</td>
+							<td>
+									Từ giờ (hh:mm):   
+									<form:select id="fromHour" path="fromHour" cssClass="select2_combo" cssStyle="width:70px;">
+										<form:options items="${listHour}" itemValue="id" itemLabel="name" />
+									</form:select> : 
+									<form:select id="fromMin" path="fromMin" cssClass="select2_combo" cssStyle="width:70px;">
+										<form:options items="${listMin}" itemValue="id" itemLabel="name" />
+									</form:select>
+							</td>
+							<td>
+									Tới giờ (hh:mm):   
+									<form:select id="toHour" path="toHour" cssClass="select2_combo" cssStyle="width:70px;">
+									<form:options items="${listHour}" itemValue="id" itemLabel="name" />
+									</form:select> : 
+									<form:select id="toMin" path="toMin" cssClass="select2_combo" cssStyle="width:70px;">
+									<form:options items="${listMin}" itemValue="id" itemLabel="name" />
+									</form:select>
+							</td>
+							<td>
+								
+
+									<!-- Search button -->
+									<a href="javascript:;" class="btn-1" title="Tìm kiếm"
+										onclick="javascript:timkiem();"> <span><span>Tìm
+												kiếm</span></span>
+									</a>
+								
+								<div style="float: right;" id="zoomLinkFilterColumn">
+									<spring:message code="map_zoom_in" var="zoomIn"
+										htmlEscape="false" />
+									<spring:message code="map_zoom_out" var="zoomOut"
+										htmlEscape="false" />
+									<input type="hidden" id="zoomInLabel" value="${zoomIn}" /> <input
+										type="hidden" id="zoomOutLabel" value="${zoomOut}" /> <a
+										href="javascript:;" id="zoomLink" class="zoomIn">Phóng to</a>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td align="left"><label class="errorMessage"
+								id="errorDate"></label></td>
+							<td align="left"><label class="errorMessage"
+								id="errorFromHour"></label></td>
+							<td align="left"><label class="errorMessage"
+								id="errorToHour"></label></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td align="left"><label class="errorMessage"
+								id="errorFromMin"></label></td>
+							<td align="left"><label class="errorMessage"
+								id="errorToMin"></label></td>
+						</tr>
+					</table>
+				</div>
+			</form:form>
+			<spring:url value="/resources/scripts/googleMap.js?v=3"
+				var="googleMapScript" />
+			<script type="text/javascript" src="${googleMapScript}">
+			<!-- Empty -->
+				
+			</script>
+			<style type="text/css"> 
+					.labels {
+  				color: black;
+ 				background-color: white;
+  				font-family: "Lucida Grande", "Arial", sans-serif;
+  				font-size: 15px;
+  				font-weight:bold;
+  				text-align: center;
+  				
+  				width: 28px;
+  				height:19px;
+  				border-radius: 23px;
+ 				 white-space: nowrap;
+			}
+			
+			</style>
+			
+			<spring:url var="imagesURL" value="/resources/images" />
+			<spring:url var="mapURL" value="/map" />
+			<input value="${latitude}" name="latitude" id="latitude"
+				type="hidden" /> <input value="${longitude}" name="longitude"
+				id="longitude" type="hidden" /> <input value="${mapType}"
+				name="mapType" id="mapType" type="hidden" /> <input value="${zoom}"
+				name="zoom" id="zoom" type="hidden" />
+			<div id="renderAreaForGoogleMap">
+				<table style="width: 100%;">
+					<tbody>
+						<tr id="zoomLinkFullCotainer">
+							<!-- Zoom link container -->
+						</tr>
+					</tbody>
+				</table>
+				<div id="map_canvas"
+					style="width: 98%; height: 500px; border: 1px solid;">
+					<!-- Canvas to display map -->
+				</div>
+				
+				<![CDATA[
+				<script type="text/javascript">
+					var map = reloadMap($('#latitude').val(), $('#longitude').val(), $('#mapType').val(), $('#zoom').val());
+					//var workerImage = createMarkerImage(
+					//		'${imagesURL}/triangle_icon.png', 32, 32, 32, 32);
+					var workerImage = createMarkerImage(
+							'${imagesURL}/store-check.png', 64, 64, 48, 48);
+					var sellImage = createMarkerImage(
+							'${imagesURL}/store-care.png', 64, 64, 48, 48);
+					var storeImage = createMarkerImage(
+							'${imagesURL}/store-64x64.png', 64, 64, 48, 48);
+					
+					//var pointStartImage = createMarkerImage(
+					//		'${imagesURL}/point-image-green.png', 32, 32, 32, 64);
+					var pointStartImage = createMarkerImage(
+							'${imagesURL}/start1.png', 32, 32, 64, 64);
+					//var pointEndImage = createMarkerImage(
+					//		'${imagesURL}/point-image-pink.png', 32, 32, 32, 64);
+					var pointEndImage = createMarkerImage(
+							'${imagesURL}/end1.png', 32, 32, 64, 64);
+					var phoneImage = createMarkerImage(
+							'${imagesURL}/sale_via_phone.png', 64, 64, 48, 48);		
+							
+					var dsLoTrinhString = '${items}';
+					var lotrinhList = JSON.parse(dsLoTrinhString);
+					for(var i=0; i < lotrinhList.length; i++){
+						var	pointImage = getIcon(makeRandomColor());	
+							if(lotrinhList[i].routes.length > 0){
+								createMarkerFromLoTrinh(lotrinhList[i].routes,lotrinhList[i].userName, map, pointImage,pointStartImage,pointEndImage);
+							}
+							if(lotrinhList[i].posList.length > 0){
+								createMarkerFromDsThongTin(lotrinhList[i].posList,lotrinhList[i].userName, map,storeImage,workerImage, sellImage);
+							}
+					}
+					
+					
+				function createMarkerFromDsThongTin(dsThongTinCskh,tenNV, map, storeImage, workerImage, sellImage) {
+						var description = "";
+						var index = 1;
+	 					$.each(dsThongTinCskh, function(i, ttCskh) {
+							/*if (ttCskh.viDoDBH != 0) {
+									createMarker(ttCskh.viDoDBH, ttCskh.kinhDoDBH, map, storeImage,ttCskh.tenDBH);
+							}*/
+						if (ttCskh.lat != 0) {
+							description = "NVBH: "+ tenNV + "<br/>";
+							description += "Tên: " + ttCskh.name + "<br/>"
+							+ "Địa chỉ: " + ttCskh.address + "<br/>"
+							+ "Số ĐT: " + ttCskh.soDT + "<br/>";
+						if (ttCskh.timeCared != null) {
+							description += "Chăm sóc: " + ttCskh.timeCared + "<br/>"
+						}
+						if (ttCskh.timeSale != null) {
+							description += "Bán hàng: " + ttCskh.timeSale + "<br/>";
+						}
+						if (ttCskh.timeDelivery != null) {
+							description += "Giao hàng: " + ttCskh.timeDelivery + "<br/>";
+						}
+						var image = storeImage;
+						if(ttCskh.isVisited && ttCskh.timeSale == null){
+							image = sellImage;
+							createMarkerNumbered(index,ttCskh.lat, ttCskh.lng, map, image, description);
+							index++;
+						}else if(ttCskh.isVisited  && ttCskh.timeSale != null){
+							image = workerImage;
+							createMarkerNumbered(index,ttCskh.lat, ttCskh.lng, map, image, description);
+							index++;
+						}else{
+							createMarker(ttCskh.lat, ttCskh.lng, map, image, description);
+						}
+						
+						
+						vd = ttCskh.lat;
+						kd = ttCskh.lng;
+						}
+					});
+				 map.setCenter(new google.maps.LatLng(vd, kd)); 
+				}
+				
+		function getIcon(color) {
+		    return new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + color,
+			        new google.maps.Size(21, 34),
+			        new google.maps.Point(0,0),
+			        new google.maps.Point(10, 34));
+		}
+		
+		var firstIcon = true;
+		function makeRandomColor(){
+		  if (firstIcon) {
+		  	firstIcon = false;
+		  	return 'ff0000';
+		  }
+		  var c = '';
+		  while (c.length < 6) {
+		    c += (Math.random()).toString(16).substr(-6).substr(-1)
+		  }
+		  return c;
+		}		
+				
+				function createCheckedImage(index, isSold) {
+						return createMarkerImage(
+								'${mapURL}/store-check.png?index=' + index +'&sold=' + isSold, 64, 64, 48, 48);
+				}
+				
+				</script>
+				]]>
+
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,492 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imageFolder" value="/resources/images" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="doawloadFileTemplateURL" value="/downloads/templatePlan.xls" />
+    <spring:url var="importAction" value="/plan/import" />
+    <spring:url var="editUrl" value="/plan/edit" />
+    <div id="inner-content">
+        <style>
+            .temp {
+                color: gray;
+                font-style: italic;
+            }
+        </style>
+        <script type="text/javascript">
+            var contextPath = "${pageContext.request.contextPath}";
+        </script>
+        <![CDATA[
+        <script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+        <script type="text/javascript" src="${jsFolder}/utilities.js?v=1"></script>
+        <script type="text/javascript" src="${jsFolder}/plan.js?v=1"></script>
+        <script type="text/javascript" src="${jsFolder}/responsedata.js?v=1"></script>
+        <script type="text/javascript" src="${jsFolder}/location.js?v=1"></script>
+        <script type="text/javascript" src="${jsFolder}/common.js"></script>
+        <script type="text/javascript">
+
+
+            var tempPos = ${tempPos};
+            function moveRight(sourceID, destID) {
+                var src = document.getElementById(sourceID);
+                var dest = document.getElementById(destID);
+                //var temp = $('#tempSearch').attr('checked');
+                for (var count = 0; count < src.options.length; count++) {
+                    if (src.options[count].selected == true) {
+                        var option = src.options[count];
+                        var newOption = document.createElement("option");
+                        newOption.value = option.value;
+                        newOption.text = option.text;
+                        newOption.selected = true;
+                        var bExistItem = false;
+                        //if (dest.options.length<30){
+                        for (var countDest = 0; countDest < dest.options.length; countDest++) {
+                            var destOption = dest.options[countDest];
+                            if (destOption.value == option.value) {
+                                bExistItem = true;
+                                break;
+                            }
+                        }
+                        if (bExistItem == false) {
+                            try {
+                                dest.add(newOption, null); //Standard
+                                src.remove(count, null);
+                            } catch (error) {
+                                dest.add(newOption); // IE only
+                                src.remove(count);
+                            }
+                            count--;
+                            /*
+                             if (temp) {
+                             tempPos.push(newOption.value);
+                             $(newOption).addClass('temp');
+                             }*/
+
+                            tempPos.push(parseInt(newOption.value));
+                        }
+                        //}
+                        //else{
+                        //	alert("Kế hoạch không thể có hơn 30 điểm bán hàng")
+                        //	break;
+                        //}
+                    }
+                }
+            }
+            function moveLeft(sourceID, destID) {
+                var src = document.getElementById(sourceID);
+                var dest = document.getElementById(destID);
+
+                for (var count = 0; count < src.options.length; count++) {
+
+                    if (src.options[count].selected == true) {
+                        var option = src.options[count];
+
+                        var newOption = document.createElement("option");
+                        newOption.value = option.value;
+                        newOption.text = option.text;
+                        newOption.selected = true;
+
+                        try {
+                            dest.add(newOption, null); //Standard
+                            src.remove(count, null);
+                        } catch (error) {
+                            dest.add(newOption); // IE only
+                            src.remove(count);
+                        }
+                        count--;
+
+                        var index = tempPos.indexOf(parseInt(newOption.value));
+                        if (index != -1) {
+                            tempPos.splice(index, 1);
+                            $(newOption).removeClass('temp');
+                        }
+                    }
+                }
+            }
+            function listbox_selectall(listID, isSelect) {
+                var listbox = document.getElementById(listID);
+                for (var count = 0; count < listbox.options.length; count++) {
+                    listbox.options[count].selected = isSelect;
+                }
+            }
+            function moveRightAll(sourceID, destID) {
+                listbox_selectall(sourceID, true);
+                moveRight(sourceID, destID);
+            }
+            function moveLeftAll(sourceID, destID) {
+                listbox_selectall(sourceID, true);
+                moveLeft(sourceID, destID);
+            }
+
+            function moveUpDown(listID, direction) {
+                var listbox = document.getElementById(listID);
+                var selIndex = listbox.selectedIndex;
+                if (-1 == selIndex) {
+                    alert("Chọn một điểm bán hàng để di chuyển lên xuống.");
+                    return;
+                }
+                var increment = -1;
+                if (direction == 'up')
+                    increment = -1;
+                else
+                    increment = 1;
+                if ((selIndex + increment) < 0 || (selIndex + increment) > (listbox.options.length - 1)) {
+                    return;
+                }
+                var selValue = listbox.options[selIndex].value;
+                var selText = listbox.options[selIndex].text;
+                listbox.options[selIndex].value = listbox.options[selIndex + increment].value
+                listbox.options[selIndex].text = listbox.options[selIndex + increment].text
+                listbox.options[selIndex + increment].value = selValue;
+                listbox.options[selIndex + increment].text = selText;
+                listbox.selectedIndex = selIndex + increment;
+            }
+            function savePlan() {
+                var submitDone = document.getElementById('submitForm').title;
+                var nguoiLap = document.getElementById('establistId').value;
+                if (nguoiLap == "0")
+                    document.getElementById('establistId').value = "${loggedInUser.id}";//will change to user login
+                listbox_selectall('ListDiemBHSelect', true);
+                listbox_selectall('listDiemBH', true);
+                var form = $('#planForm');
+
+                $(tempPos).each(function (i, item) {
+                    form.append('<input type="hidden" name="tempPos" value="' + item + '"/>');
+                });
+                if (parseInt(submitDone) == 0) {
+                    document.getElementById('submitForm').title = "1";
+                    form.submit();
+                } else {
+                    alert('Đang xử lý , vui lòng chờ!');
+                }
+            }
+            function override() {
+                $('#planForm').append($('<input name="override" type="hidden" value="true"/>'));
+                savePlan();
+            }
+            function importPlan() {
+                if ($('[name="importFile"]').val().length == 0) {
+                    alert('Chọn file để import!');
+                    return;
+                }
+                document.forms['planForm'].action = '${importAction}';
+                document.forms['planForm'].submit();
+            }
+            function isNumber(n) {
+                return !isNaN(parseFloat(n)) && isFinite(n);
+            }
+
+
+            function onchangeDate(isCreated) {
+                if (isCreated) {
+                    var beginDate = $("#frm_beginDate").val();
+                    var m = beginDate.match(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/);
+                    if (m == null)
+                    {
+                        alert('Vui lòng chọn đúng kiểu ngày thực hiện');
+                    } else {
+                        var arrayDate = beginDate.split("/");
+                        var newDate = arrayDate[1] + '/' + arrayDate[0] + '/' + arrayDate[2] + ' 23:59:59';
+                        var dateNew = new Date(newDate);
+                        var dateCurrent = new Date();
+                        if (Date.parse(dateNew) < Date.parse(dateCurrent)) {
+                            $('#mcpName').val('');
+                            document.getElementById("errorOfBeginDate").innerHTML = 'Không thể lập tuyến đường cho ngày trong quá khứ!';
+                        } else {
+                            var thu = dateNew.getDay();
+                            var employee = $('#implementId').val();
+                            var employeeName = $('#implementId').find(":selected").text();
+                            var name = employeeName.split(" - ");
+                            if (parseInt(employee) != 0) {
+                                if (thu == 0) {
+                                    $('#mcpName').val(name[1] + ' - Chủ nhật');
+                                } else {
+                                    $('#mcpName').val(name[1] + ' - Thứ ' + (thu + 1));
+                                }
+                            } else {
+                                $('#mcpName').val('');
+                            }
+                            document.getElementById("errorOfBeginDate").innerHTML = '';
+                        }
+                    }
+                }
+
+            }
+            $(document).ready(function () {
+                $('.goods').change(function () {
+                    if (!isNumber(this.value) || parseFloat(this.value) < 0) {
+                        alert('Nhập số nguyên dương.');
+                        $(this).val('0');
+                    }
+                });
+
+                $("#implementId").select2();
+                $("#tinhThanhPho").select2();
+                $("#quanHuyen").select2();
+                $("#phuongXa").select2();
+                $("#tuyenDuong").select2();
+
+                var list = $('#ListDiemBHSelect');
+                $(tempPos).each(function (i, item) {
+                    list.find('option[value=' + item + ']').addClass('temp');
+                });
+            });
+            function getName(nameCombo) {
+                var name = nameCombo.find(":selected").text();
+                var index = name.indexOf(' - ');
+                if (index > 0) {
+                    name = name.substring(index + 3).trim();
+                }
+                index = name.indexOf('(');
+                if (index > 0) {
+                    name = name.substring(0, index).trim();
+                }
+                return name;
+            }
+
+            function f_tcalUpdate(n_date, b_keepOpen) {
+                var e_input = f_tcalGetInputs(true);
+                if (!e_input)
+                    return;
+
+                d_date = new Date(n_date);
+                var s_pfx = A_TCALCONF.cssprefix;
+
+                if (b_keepOpen) {
+                    var e_cal = document.getElementById(s_pfx);
+                    if (!e_cal || e_cal.style.visibility != 'visible')
+                        return;
+                    e_cal.innerHTML = f_tcalGetHTML(d_date, e_input);
+                }
+                else {
+                    e_input.value = f_tcalGenerateDate(d_date, A_TCALCONF.format);
+                    f_tcalCancel();
+                }
+                onchangeDate(${isCreated});
+            }
+        </script>
+        ]]>
+        <span class="bor-left"><img src="${imageFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <c:choose>
+                    <c:when test="${isUpdate==true}">
+                        <span>Sửa tuyến đường</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span>Lập tuyến đường mới</span>
+                    </c:otherwise>
+                </c:choose>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="planForm" enctype="multipart/form-data">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+                    <tr>
+                        <td width="10%">
+                            <!-- Empty -->
+                        </td>
+                        <td width="15%">
+                            <!-- Empty -->
+                        </td>
+                        <td width="7%">
+                            <!-- Empty -->
+                        </td>
+                        <td>
+                        </td>
+                        <td width="12%">
+                            <!-- Empty -->
+                        </td>
+                        <td width="36%">
+                            <!-- Empty -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6" align="center">
+                            <c:if test="${not empty success}">
+                                <c:choose>
+                                    <c:when test="${success}">
+                                        <div class="infoMessage" id="messageArea">
+                                            <p>${infoMessage}</p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="errorMessage" id="messageArea">
+                                            <p>Xảy ra lỗi khi lưu dữ liệu</p>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
+                            <c:if test="${not empty existDay}">
+                                <div class="errorMessage" id="messageArea">
+                                    <p>Kế hoạch ngày <a href="${editUrl}/${existDay[0]}">${existDay[1]}</a> đã tồn tại.</p>
+                                    <p>Tạo mới thay cho kế hoạch cũ? <a href="javascript:override();">Có</a> / <a href="">Không</a></p>
+                                </div>
+                            </c:if>
+                            <c:if test="${not empty notExistSalesPlan}">
+                                <div class="errorMessage" id="messageArea">
+                                    <p>Nhân viên này chưa có chỉ tiêu nào</p>
+                                </div>
+                            </c:if>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="text-align: right">
+                            <label for="">Nhân viên(<label class="errorMessage">*</label>):</label>
+                        </td>
+                        <td>
+                            <label for=""> </label>
+                            <form:hidden path="establistId" />
+                            <form:hidden path="mcpId" />
+                            <form:select path="implementId" cssStyle="width:180px;" onchange="onchangeDate(${isCreated});">
+                                <form:option value="0" label="--- Chọn nhân viên ---" />
+                                <form:options items="${staffList}" itemLabel="name" itemValue="id" />
+                            </form:select>
+                        </td>
+                        <td style="text-align:left" colspan="4">
+                            <label for="">Ngày trong tuần (<label class="errorMessage">*</label>): </label>
+                            <fmt:formatDate value="${frm_beginDate}" var="beginDate"
+                                            pattern="dd/MM/yyyy" />
+
+
+                            <form:input disabled="${not empty isUpdate and isUpdate}"  type="text" id="frm_beginDate" size="14"
+                                        path="beginDate" cssClass="dateField tcal_disableDate" />
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="text-align: right">
+                            <label for="">Tên kế hoạch(<label class="errorMessage">*</label>):</label>
+                        </td>
+                        <td colspan="5"><form:input path="mcpName"
+                                    cssStyle="width:560px;" /> &#160;&#160;&#160;&#160; <form:errors
+                                    path="mcpName" cssClass="errorMessage" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td colspan="2"><form:errors path="implementId"
+                                     cssClass="errorMessage" /></td>
+                        <td colspan="3"><form:errors path="beginDate"
+                                     cssClass="errorMessage" /></td>
+                    </tr>
+
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td colspan="4"><label id="errorOfBeginDate" class="errorMessage"></label></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: right"><label for="">Tên/mã/địa chỉ ĐBH:</label>
+                        </td>
+                        <td>&#160;<form:input path="nameCodeAddressPos" cssStyle="width:176px;" onkeypress="if(event.keyCode==13) {refreshAgent();}"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="10%" valign="top" style="text-align: right">
+                            <label for=""><b>Tuyến đường:</b></label>
+                        </td>
+                        <td colspan="5">
+                            <form:select cssClass="select2_combo"  path="provinceId" cssStyle="width:180px;" onchange="selectCity(this);">
+                                <form:option value="0" label="--- Chọn Tỉnh/Thành phố--"/>
+                                <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                            <label for="">&#160;&#160;</label>
+                            <form:select path="districId" cssStyle="width:180px;" onchange="selectTown(this);" id="quanHuyen">
+                                <form:option value="0" label="--- Chọn Quận/Huyện --"/>
+                                <form:options items="${townList}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                            <label for="">&#160;&#160;</label>
+                            <form:select path="wardId" id="phuongXa" cssStyle="width:173px;">
+                                <form:option value="0" label="--- Chọn Phường/Xã --"/>
+                                <form:options items="${wardList}"  itemValue="id" itemLabel="name"/>
+                            </form:select>
+                            <label for="">&#160;&#160;</label>
+                            <a href="javascript:refreshAgent();" class="btn-1" title="Xem ÐBH"><span><span>Xem ÐBH</span></span></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="6">
+                            <table width="100%" border="0">
+                                <tr>
+                                    <td width="10%"></td>
+                                    <td width="38%">
+                                        <label for=""><strong>Danh sách ÐBH:</strong></label> <br />
+                                        <form:select path="listDiemBH"
+                                                     multiple="true" size="10" cssStyle="height:220px;width:100%;">
+                                            <form:options items="${saleAgentList}" />
+                                        </form:select>
+                                    </td>
+                                    <td width="14%" style="text-align: center">
+                                        <a href="javascript:moveRight('listDiemBH','ListDiemBHSelect')"
+                                           class="btn-1" title="Chọn ÐBH"><span><span>Chọn
+                                                    ÐBH&#160;</span></span>
+                                        </a>
+                                        <a href="javascript:moveRightAll('listDiemBH','ListDiemBHSelect')"
+                                           class="btn-1" title="Chọn tất cả ÐBH"><span><span>Chọn
+                                                    tất cả</span></span>
+                                        </a>
+                                        <a href="javascript:moveLeft('ListDiemBHSelect','listDiemBH')"
+                                           class="btn-1" title="Bỏ ÐBH"><span><span>&#160;&#160;&#160;Bỏ
+                                                    ÐBH&#160;&#160;</span></span>
+                                        </a>
+                                        <a href="javascript:moveLeftAll('ListDiemBHSelect','listDiemBH')"
+                                           class="btn-1" title="Bỏ tất cả ÐBH"><span><span>&#160;&#160;Bỏ
+                                                    tất cả&#160;</span></span>
+                                        </a>
+                                    </td>
+                                    <td width="38%">
+                                        <label for=""><strong>ÐBH được chọn (<label class="errorMessage">*</label>):
+                                            </strong>
+                                        </label>&#160;&#160;
+                                        <form:errors path="ListDiemBHSelect"
+                                                     cssClass="errorMessage" /> <br />
+                                        <form:select path="ListDiemBHSelect" multiple="true"
+                                                     cssStyle="height:220px;width:100%;">
+                                            <form:options items="${saleAgentSelectList}" />
+                                        </form:select></td>
+                                    <td width="2%"><a
+                                            href="javascript:moveUpDown('ListDiemBHSelect','up')"
+                                            title="Lên"><img alt="Lên" src="${imageFolder}/go-up.png" /></a>
+                                        <a href="javascript:moveUpDown('ListDiemBHSelect','down')"
+                                           title="Xuống"><img alt="Lên"
+                                                           src="${imageFolder}/go-down.png" /></a></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="10%">&#160;</td>
+                        <td colspan="5">
+                            <a id="submitForm" title="0" href="javascript:savePlan();" class="btn-1"><span><span>Lưu kế hoạch</span></span></a>
+                                        <c:if test="${keHoach>0}">
+                                <a href="${pageContext.request.contextPath}/plan/create"
+                                   class="btn-1"><span><span>Lập kế hoạch mới</span></span>
+                                </a>
+                            </c:if>
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+
+        </div>
+    </div>
+</div>
+

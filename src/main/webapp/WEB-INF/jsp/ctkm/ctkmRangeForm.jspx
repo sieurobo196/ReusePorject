@@ -1,0 +1,197 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"
+		pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:url var="urlOptionLink" value="/api/ctkm" />
+	<spring:url var="LIST_URL" value="/api/ctkm/range/list" />
+	
+	<form:form action="${requestScope.ctkmFormLink}" method="POST"
+		commandName="ctkmForm">		
+		<div class="formContent">
+			<table width="100%" cellpadding="0" cellspacing="5"
+				class="TableThongTinTram">
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />
+				<col width="20%" />
+
+				<tr>
+					<td></td>
+					<td colspan="3">
+						<c:if test="${not empty success}">
+							<c:choose>
+								<c:when test="${success}">
+									<div class="infoMessage" id="messageArea">
+										<p>Thông tin được cập nhật thành công.</p>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<div class="errorMessage" id="messageArea">
+										<p>Xảy ra lỗi khi lưu dữ liệu</p>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:if>
+						<c:if test="${not empty status}">
+							<c:if test="${status=='OK'}">
+								<p>Lưu thành công</p>
+							</c:if>							
+						</c:if>						
+						
+					</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td align="right">Tên danh mục(<label class="errorMessage">*</label>):</td>
+					<td>
+						<c:choose>
+							<c:when test="${ctkmForm.id==0}">
+								<form:input path="name" cssClass="textInput mediumWidth"/>
+							</c:when>
+							<c:otherwise>
+								<form:input path="name" cssClass="textInput mediumWidth" readonly="true"/>
+							</c:otherwise>
+						</c:choose>					
+						<form:errors path="name" cssClass="errorMessage" />
+					</td>
+					<td align="right">Mã danh mục(<label class="errorMessage">*</label>):</td>
+					<td>
+					<c:choose>
+						<c:when test="${ctkmForm.id==0}">
+							<form:input path="code" cssClass="textInput mediumWidth"/>
+						</c:when>
+						<c:otherwise>
+							<form:input path="code" cssClass="textInput mediumWidth" readonly="true"/>
+						</c:otherwise>
+					</c:choose>					
+						<form:errors path="code" cssClass="errorMessage" />
+					</td>
+					<td></td>
+				</tr>
+				
+				<tr>
+					<td align="right">Loại bậc thang:</td>
+					<td >
+						<form:select path="statusNext" cssClass="selectBox select2_combo" style="width:200px">							
+							<c:choose>
+								<c:when test="${ctkmForm.statusNext==1}">
+									<option value="1"  selected="selected">Tính theo nhiều bậc</option>										
+								</c:when>
+								<c:otherwise>
+									<option value="1">Tính theo nhiều bậc</option>
+								</c:otherwise>									
+							</c:choose>
+							<c:choose>
+								<c:when test="${ctkmForm.statusNext==2}">
+									<option value="2"  selected="selected">Tính chỉ một bậc</option>										
+								</c:when>
+								<c:otherwise>
+									<option value="2">Tính chỉ một bậc</option>
+								</c:otherwise>										
+							</c:choose>		
+						</form:select>	
+					</td>
+					<td align="right">Hình thức tặng:</td>
+					<td>
+						<form:select path="statusVal" cssClass="selectBox select2_combo" style="width:200px">							
+							<c:choose>
+								<c:when test="${ctkmForm.statusVal==1}">
+									<option value="1"  selected="selected">Tặng tiền</option>										
+								</c:when>
+								<c:otherwise>
+									<option value="1">Tặng tiền</option>
+								</c:otherwise>									
+							</c:choose>
+							<c:choose>
+								<c:when test="${ctkmForm.statusVal==2}">
+									<option value="2"  selected="selected">% khuyến mãi</option>										
+								</c:when>
+								<c:otherwise>
+									<option value="2">% khuyến mãi</option>
+								</c:otherwise>										
+							</c:choose>		
+						</form:select>						
+					</td>
+					<td></td>
+				</tr>
+				
+				<tr>						
+					<td align="right">Giá trị đơn hàng mức 1:</td>
+					<td>
+						<form:input path="r01" cssClass="textInput" cssStyle="width:100px;"/>					
+					</td>
+					<td align="right">Giá trị nhận mức 1:</td>
+					<td>
+						<form:input path="v01" cssClass="textInput" cssStyle="width:100px;"/>						
+					</td>
+					<td></td>
+				</tr>	
+				
+				<tr>						
+					<td align="right">Giá trị đơn hàng mức 2:</td>
+					<td>
+						<form:input path="r02" cssClass="textInput" cssStyle="width:100px;"/>					
+					</td>
+					<td align="right">Giá trị nhận mức 2:</td>
+					<td>
+						<form:input path="v02" cssClass="textInput" cssStyle="width:100px;"/>						
+					</td>
+					<td></td>
+				</tr>	
+				<tr>						
+					<td align="right">Giá trị đơn hàng mức 3:</td>
+					<td>
+						<form:input path="r03" cssClass="textInput" cssStyle="width:100px;"/>					
+					</td>
+					<td align="right">Giá trị nhận mức 3:</td>
+					<td>
+						<form:input path="v03" cssClass="textInput" cssStyle="width:100px;"/>						
+					</td>
+					<td></td>
+				</tr>	
+				<tr>						
+					<td align="right">Giá trị đơn hàng mức 4:</td>
+					<td>
+						<form:input path="r04" cssClass="textInput" cssStyle="width:100px;"/>					
+					</td>
+					<td align="right">Giá trị nhận mức 4:</td>
+					<td>
+						<form:input path="v04" cssClass="textInput" cssStyle="width:100px;"/>						
+					</td>
+					<td></td>
+				</tr>		
+				<tr>						
+					<td align="right">Giá trị đơn hàng mức 5:</td>
+					<td>
+						<form:input path="r05" cssClass="textInput" cssStyle="width:100px;"/>					
+					</td>
+					<td align="right">Giá trị nhận mức 5:</td>
+					<td>
+						<form:input path="v05" cssClass="textInput" cssStyle="width:100px;"/>						
+					</td>
+					<td></td>
+				</tr>				
+				<tr>
+					<td><label> 
+					</label></td>
+					<td colspan="4">
+					<form:hidden path="id"/>
+					<form:hidden path="status"/>
+					<a href="javascript:;"
+						onclick="javascript:document.forms[0].submit();" class="btn-1"
+						title="Lưu thông tin bậc thang"><span><span>Lưu</span></span></a>
+						<a href="${LIST_URL}" class="btn-1"
+						title="Làm lại"><span><span>Danh mục bậc thang</span></span></a></td>
+				</tr>
+			</table>
+		</div>
+	</form:form>
+</div>

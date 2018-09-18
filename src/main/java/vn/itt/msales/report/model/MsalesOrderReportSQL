@@ -1,0 +1,14 @@
+	SELECT u.ma_nhan_vien maNV, u.ten nhanVien, p.ma_cua_hang maKH, p.ten_cua_hang tenKH, p.dia_chi diaChi, 
+	case when p.so_di_dong is not null then p.so_di_dong when p.so_dien_thoai_ban is not null then p.so_dien_thoai_ban else p.so_dien_thoai_khac end dienThoai,
+	g.goods_code maSP, g.goods_name tenSP, od.so_luong soLuong, g.price gia, u.nha_phan_phoi nhaPP, o.ngay_gio_dat_hang orderDate
+	FROM PC_ORDER o
+	JOIN PC_ORDER_DETAIL od
+	ON o.id=od.order_id
+	JOIN sales_goods g
+	ON g.goods_id=od.goods_id
+	JOIN nguoi_su_dung u
+	ON o.nhan_vien_cs=u.id
+	JOIN diem_ban_hang p
+	ON 2||p.id=o.to_stock_id 
+	where o.ngay_gio_dat_hang between :startDate and :endDate
+	order by nhaPP, maNV, o.ngay_gio_dat_hang, maKH, tenSP

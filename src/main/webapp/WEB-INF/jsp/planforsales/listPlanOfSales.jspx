@@ -1,0 +1,164 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="planDetailURL" value="/planforsales/detail" />
+    <spring:url var="planStoreURL" value="/planforsales/userstore" />
+    <spring:url var="branchDetailURL" value="/branch/detail" />
+    <spring:url var="agentDetailURL" value="/agent/detail" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="planEditURL" value="/planofsales/edit/" />
+    <spring:url var="planCopyURL" value="/planofsales/create/" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="planOfSalesListURL" value="/planofsales/list/" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        function FilterList() {
+            showLoading();
+            document.forms[0].submit();
+            //  document.getElementById('listPlanForSalesForm').submit();
+        }
+    </script>
+    ]]>
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>Danh sách chỉ tiêu</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" id="listPlanForSalesForm" commandName="listPlanForSalesForm" action="${planOfSalesListURL}">
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0"
+                       class="table-1">
+
+                    <tr>
+                        <td colspan="2">
+
+                            <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                        </td>
+                        <td><a href="javascript:;" onclick="FilterList()" style="min-width: 150px;"
+                               class="btn-1" title="Xem kết quả"><span><span>&#160;&#160;Xem
+                                        kết quả&#160;&#160;</span></span></a></td>
+                    </tr>
+                    <tr>&#160;&#160;</tr>
+                    <tr>
+                         <td align="left">
+									Trong tháng:   
+									<form:select  id="fromHour" path="fromHour" cssClass="select2_combo" cssStyle="width:140px;">
+										<form:option value="0" label="---Chọn tháng---"></form:option>
+										<form:options items="${listMonth}" itemValue="id" itemLabel="name" />
+									</form:select>
+                       				&#160;&#160;&#160;&#160;
+									Năm:   
+									<form:select  id="toHour" path="toHour" cssClass="select2_combo" cssStyle="width:140px;">
+										<form:option value="0" label="---Chọn năm---"></form:option>
+										<form:options items="${listYear}" itemValue="id" itemLabel="name" />
+									</form:select>
+							&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;		
+                        Tìm theo tên/mã: 
+							<form:input id="text" path="searchText" style="width:182px" onkeyup="if(event.keyCode==13) {FilterList();}" />
+						</td>
+					</tr>
+
+
+
+                        <tr>
+                            <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="listPlanForSalesForm" id="userTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table align="center" width="95%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="7%">STT</td>
+                                        <td>Tên Kế Họach</td>
+                                        <td width="13%">Tháng</td>
+                                        <td width="15%">Nhân Viên</td>
+                                        <td width="10%">Tỉnh Thành</td>
+                                        <td width="15%">Người Lập</td>
+                                        <td width="15%">Hành động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty listKeHoachBanHang}">
+                                            <c:forEach items="${listKeHoachBanHang}" var="item" varStatus="status">
+
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td>
+                                                        <a href="${planEditURL}${item.id}" class="redTxt" title="">
+                                                            ${item.name}
+                                                        </a>
+                                                    </td>
+                                                    <td align="center"><fmt:parseDate value="${item.beginDate}"
+                                                                   pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+                                                                   value="${transDate}" pattern="MM/yyyy" /></td>
+                                                    <td>
+                                                        <a href="${userDetailURL}/${item.implementEmployees.id}">${item.implementEmployees.lastName} ${item.implementEmployees.firstName}</a>
+                                                    </td>
+                                                    <td>
+                                                        ${item.implementEmployees.location}
+                                                    </td>
+
+                                                    <td align="center">${item.nameAdmin}</td>
+
+                                                    <td align="center">
+                                                        <a href="${planEditURL}${item.id}" class="redTxt" title="Chỉnh sửa">
+                                                            Chỉnh sửa
+                                                        </a>
+                                                        <c:if test="${not only}">
+                                                        |
+                                                        <a href="${planCopyURL}${item.id}" class="redTxt" title="Sao chép">
+                                                            Sao chép
+                                                        </a>
+                                                        </c:if>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="9" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="listPlanForSalesForm" id="userTopPagination" /></td>
+                    </tr>
+                </table>
+            </form:form>
+            <!--
+            <form id="editUser" action="${pageContext.request.contextPath}/user/detail" method="post" hidden="true">
+                    <input type="text" id="userId" name="userId" />
+            </form>
+            -->
+        </div>
+    </div>
+</div>

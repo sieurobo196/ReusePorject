@@ -1,0 +1,179 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="posSaleURL" value="/pos/sales" />
+    <spring:url var="userDetails" value="/user/detail/"/>
+    <spring:url var="possDetails" value="/pos/details/"/>
+    <spring:url var="reportDetailsSalesTrans" value="/report/detailsSalesTrans" />
+    <spring:url var="reportDaily" value="/report/exportDaily" />
+    <spring:url var="GETLIST" value="/salestrans/list/" />
+    
+    <c:set var="isLoading" value="false"></c:set>
+    
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript" src="${jsFolder}/script.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+		function exportPN(){
+			if ($('#frm_startDate').val() == "") {
+				alert("Cần nhập ngày bắt đầu!");
+				return;
+			}else{
+				submitExportForm('salesTransListForm','${reportDetailsSalesTrans}');
+			}
+		}
+		function exportDaily(){
+			if ($('#frm_startDate').val() == "") {
+				alert("Cần nhập ngày bắt đầu!");
+				return;
+			}else{
+				submitExportForm('salesTransListForm','${reportDaily}');
+			}
+		}
+        function viewResults() {
+            showLoading();
+            $('#salesTransListForm').submit();
+        }
+    </script>
+    ]]>
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif" alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>Nhật ký bán hàng</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" action="${GETLIST}"  commandName="filter" id="salesTransListForm">
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+                    <tr>
+                        <td colspan="3">
+
+                            <jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                            </td>
+                            <td style="width: 120px;"><a href="javascript:;" onclick="viewResults()"
+                                                         class="btn-1" title="Xem kết quả"><span><span>Xem kết quả</span></span></a></td>
+                    </tr>
+                    <tr>
+                            <td colspan="4">
+
+                            <jsp:include page="../timeSelector.jspx"></jsp:include>
+
+                            </td>
+                        </tr>
+					  <tr> <td></td><td colspan="4" align="right">
+                     		<a href="javascript:exportPN()" class="btn-1" title="Xuất báo cáo chi tiết"><span><span>Xuất báo cáo chi tiết giao dịch</span></span></a>
+                            <a href="javascript:exportDaily()" class="btn-1" title="Xuất báo cáo ngày"><span><span>Xuất báo cáo ngày</span></span></a> </td> </tr>
+					
+                        <tr>
+                            <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catTopPagination"
+                                         formSubmit="salesTransListForm" submitMethod="POST" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="4%">STT</td>
+                                        <td width="6%">Số thẻ</td>
+                                        <td>Tên NV</td>
+                                        <td width="10%">Tỉnh/Thành phố</td>
+                                        <td width="8%">Ngày bán hàng</td>
+                                        <td width="13%">Tên ĐBH</td>
+                                        <td width="13%">Địa chỉ</td>
+                                        <td width="13%">Tên sản phẩm</td>
+                                        <td width="6%">SL</td>
+                                        <td width="10%">Thành tiền</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty salesTransList}">
+                                            <c:forEach items="${salesTransList}" var="saleTrans" varStatus="status">
+                                                <c:set var="rowSpan" value="${saleTrans.salesTransDetails.size()}" />
+                                                <c:set var="i" value="0" />
+                                                <c:forEach items="${saleTrans.salesTransDetails}" var="salesTranDetail">
+                                                    <c:choose>
+                                                        <c:when test="${i == 0}">
+                                                            <tr>
+                                                                <td rowspan="${rowSpan}" align="center">${(status.index + 1) + (page -1)*size}</td>
+                                                                <td rowspan="${rowSpan}"><a href="${userDetails}${saleTrans.employee.id}">${saleTrans.employee.username}</a></td>
+                                                                <td rowspan="${rowSpan}"><a href="${userDetails}${saleTrans.employee.id}">${saleTrans.employee.lastName} ${saleTrans.employee.firstName} </a></td>
+                                                                <td rowspan="${rowSpan}">${saleTrans.employee.locations.name}</td>
+                                                                <td rowspan="${rowSpan}" align="center">
+                                                                    <fmt:formatDate
+                                                                        value="${saleTrans.createdAt}"
+                                                                        pattern="dd/MM/yyyy HH:mm:ss" />
+                                                                </td>
+                                                                <!-- set address-->
+                                                                <c:choose>
+                                                                    <c:when test="${saleTrans.toStocks.poss != null}">
+                                                                        <td rowspan="${rowSpan}"><a href="${possDetails}${saleTrans.toStocks.poss.id}">${saleTrans.toStocks.poss.name}</a></td>
+                                                                        <td rowspan="${rowSpan}"><a href="${possDetails}${saleTrans.toStocks.poss.id}">${saleTrans.toStocks.poss.address}</a></td>
+                                                                        </c:when>
+                                                                        <c:otherwise>
+                                                                        <td rowspan="${rowSpan}"></td>
+                                                                        <td rowspan="${rowSpan}"></td>
+                                                                    </c:otherwise>
+                                                                </c:choose>
+                                                                <td>${salesTranDetail.goodss.name}</td>
+                                                                <td align="center">${salesTranDetail.quantity}</td>
+                                                                <td align="right"><fmt:formatNumber type="number" pattern="#,##0" value="${salesTranDetail.quantity * salesTranDetail.price}" /></td>
+                                                            </tr>
+                                                        </c:when>
+                                                        <c:otherwise>
+                                                            <tr>
+                                                                <td>${salesTranDetail.goodss.name}</td>
+                                                                <td align="center">${salesTranDetail.quantity}</td>
+                                                                <td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${salesTranDetail.quantity * salesTranDetail.price}" /></td>
+                                                            </tr>
+                                                        </c:otherwise>
+                                                    </c:choose>
+                                                        <c:set var="i" value="${i+1}" />
+                                                </c:forEach>
+                                            </c:forEach>
+                                            <c:set var="isLoading" value="false" />
+                                        </c:when>
+                                                            <c:otherwise>
+                                                                <tr>
+                                                <td colspan="10" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <util:pagination maxPages="${maxPages}"
+                                             page="${page}" size="${size}" id="catBottomPagination"
+                                             formSubmit="salesTransListForm" submitMethod="POST" />
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

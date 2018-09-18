@@ -1,0 +1,91 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <spring:url var="importFileGui" value="/workflow/importFileGui" />
+    <spring:url var="importFileCare" value="/workflow/importFileCare" />
+    <spring:url var="importFileSales" value="/workflow/importFileSales" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="downloadFiles" value="/workflow/download" />
+    <spring:url var="downloadCurrent" value="/workflow/current" />
+    <spring:url var="importURL" value="/workflow/importWorkflow" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/workflow.js"></script>
+    ]]>
+
+
+    <div id="inner-content">
+        <div class="content-title">
+            <h2>
+                <span>DANH MỤC WORKFLOW</span>
+            </h2>
+        </div>
+        <div id="content">
+            <table width="100%" border="0" cellspacing="5px" cellpadding="0">
+                <tr>
+                    <td></td>
+                    <td>
+                        <label class="errorMessage" id="file_error">
+                            <c:if test="${fileError}">
+                                <label class="errorMessage">Nội dung tập tin không hợp lệ.</label>
+                            </c:if>
+                            <c:if test="${fileNotFound}">
+                                <label class="errorMessage">Chưa có dữ liệu cho workflow hiện tại, vui lòng tải file mẫu.</label>
+                            </c:if>
+                        </label>
+                    </td>
+                </tr>
+                <!-- Code import work follow was deleted from here -->  
+                                    
+                <form id="form_workflow_excel" enctype="multipart/form-data" action="${importURL}" method="POST">
+                    <tr>
+                        <td colspan="2"><strong>Import Workflow (Giao diện, Chăm sóc, Bán hàng): </strong></td>
+                    </tr>
+                    <tr>
+                        <td>&#160;</td><td>&#160;</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <c:if test="${not empty importExcelSuccess}">
+                                <c:choose>
+                                    <c:when test="${importExcelSuccess}">
+                                        <div class="infoMessage" id="messageArea">
+                                            <p><span><span> Cập nhật dữ liệu thành công.</span> </span> </p>
+                                        </div>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <div class="errorMessage" id="messageArea">
+                                                <p> Cập nhật dữ liệu thất bại.</p>
+                                        </div>
+                                        <div class="errorMessage" id="messageArea">
+                                                <p>${errorException}</p>
+                                        </div>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 150px">
+                            <a href="${downloadFiles}" class="btn-1"><span><span>Tải file mẫu</span></span></a>
+                        </td>
+                        <td>
+                            <input type="file" style="width:350px" name="file_workflow" id="file_workflow" onchange="removeError(this);"/>
+                            <a href="javascript:;" onclick="javascript:postWorkflowByExcel();" class="btn-1"><span><span>Import</span></span></a>
+                            &#160;&#160;&#160;
+                            <a href="${downloadCurrent}" class="btn-1"><span><span> Tải Workflow hiện tại</span></span></a>
+                        </td>
+                         
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="form_error_workflow_excel"></label></td></tr>
+                </form>
+            </table>
+        </div>
+    </div>
+</div>

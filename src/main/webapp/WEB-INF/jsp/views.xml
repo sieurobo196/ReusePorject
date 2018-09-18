@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition extends="default" name="index">
+        <put-attribute name="body" value="/WEB-INF/jsp/index.jspx"/>
+        <!-- <put-attribute name="body" value="/WEB-INF/jsp/home.jspx"/> -->
+    </definition>
+
+    <definition extends="public" name="login">
+        <put-attribute name="body" value="/WEB-INF/jsp/account/login.jspx"/>
+<!--        <put-attribute name="body" value="/WEB-INF/jsp/index.jspx"/>-->
+    </definition>
+  
+    <definition extends="default" name="planImportPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/plan/planImportPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="planPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/plan/planPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posList">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/list.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posOfUserList">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/posofuserlist.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posDetails">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/details.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posSales">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/posForm.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posAdd">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/posForm.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posCustomerCare">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/customercare.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posDiary">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/diary.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="posPrintQR">
+        <put-attribute name="body" value="/WEB-INF/jsp/pos/printQR.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="listPlanPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/plan/listPlanPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="viewPlanPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/plan/viewPlanPage.jspx"/>
+    </definition>
+
+    <definition extends="default" name="map">
+        <put-attribute name="body" value="/WEB-INF/jsp/map.jspx"/>
+    </definition>
+
+    <definition extends="default" name="levels">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/level.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="levelAdd">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/levelPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="levelPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/levelPage.jspx"/>
+    </definition>
+   
+    <definition extends="default" name="roles">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/role.jspx"/>
+    </definition>
+   
+    <definition extends="default" name="provinces">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/provinces.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="districts">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/districts.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="districtsAdd">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/districtForm.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="wards">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/wards.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="wardsAdd">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/wardForm.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="streets">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/streets.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="branches">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/branches.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="companies">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/companies.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="companyDetail">
+        <put-attribute name="body" value="/WEB-INF/jsp/settings/list/companyDetail.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="listAgentPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/listAgentPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="agentPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/agentPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="agentViewPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/agentViewPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="addPos">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/addPos.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="agentPosList">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/listPosPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="agentStaffList">
+        <put-attribute name="body" value="/WEB-INF/jsp/agent/listStaffPage.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="upcomingFeature">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/upcoming.jspx" />
+    </definition>
+
+    <definition extends="default" name="prohibited">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/prohibited.jspx" />
+    </definition>
+    
+    <definition extends="default" name="notAccess">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/notAccess.jspx" />
+    </definition>
+
+    <definition extends="default" name="notFoundError">
+        <put-attribute name="body"
+                       value="/WEB-INF/jsp/error/notfound.jspx" />
+    </definition>
+	
+ 
+    <definition extends="default" name="feedBackList">
+        <put-attribute name="body" value="/WEB-INF/jsp/feedback/feedBackList.jspx"/>
+    </definition>
+
+    <definition extends="default" name="bestPos">
+        <put-attribute name="body" value="/WEB-INF/jsp/transvas/listBestPos.jspx"/>
+    </definition>
+	
+    <definition extends="default" name="bestCare">
+        <put-attribute name="body" value="/WEB-INF/jsp/transvas/listBestCare.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="bestSales">
+        <put-attribute name="body" value="/WEB-INF/jsp/transvas/listBestSales.jspx"/>
+    </definition>
+  
+    <definition extends="default" name="bestStaff">
+        <put-attribute name="body" value="/WEB-INF/jsp/transvas/listBestStaff.jspx"/>
+    </definition>
+    <definition extends="default" name="pagenotfound">
+        <put-attribute name="body" value="/WEB-INF/jsp/404.jspx"/>
+    </definition>
+    <definition extends="default" name="noData">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/noData.jspx" />
+    </definition>
+    <definition extends="default" name="notfound">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/notfound.jspx" />
+    </definition>
+    <definition extends="default" name="createChannelError">
+        <put-attribute name="body" value="/WEB-INF/jsp/error/createChannelError.jspx" />
+    </definition>
+    <definition extends="default" name="adminPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/masterAdminPage.jspx" />
+    </definition>    
+    <definition extends="default" name="adminPageEdit">
+        <put-attribute name="body" value="/WEB-INF/jsp/masterAdminEdit.jspx" />
+    </definition>
+    <definition extends="default" name="adminEquipmentPage">
+        <put-attribute name="body" value="/WEB-INF/jsp/masterAdminEquipmentPage.jspx" />
+    </definition> 
+    <definition extends="default" name="adminPageEquipmentEdit">
+        <put-attribute name="body" value="/WEB-INF/jsp/masterAdminEquipmentEdit.jspx" />
+    </definition> 
+    <definition extends="default" name="masterAdminEquipmentCompany">
+        <put-attribute name="body" value="/WEB-INF/jsp/masterAdminEquipmentCompany.jspx" />
+    </definition>
+</tiles-definitions>

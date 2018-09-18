@@ -1,0 +1,187 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="viewAgentURL" value="/agent/view" />
+	<spring:url var="editAgentURL" value="/agent/edit" />
+	<spring:url var="addPosURL" value="/agent/addPos" />
+
+	<div id="inner-content">
+		<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>		
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js?v=1"></script>		
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		function FilterList(){
+			document.getElementById('listAgentForm').submit();
+		}	
+		$(document).ready(function() { 
+			$("select").select2(); 
+		});
+	</script>
+	]]>
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH MỤC ĐẠI LÝ</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form id="listAgentForm" method="POST"
+				commandName="listAgentForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<colgroup>
+						<col width="0%" />
+						<col width="100%" />
+					</colgroup>
+					<tr>
+						<td>
+							<!-- Fix for FF -->
+						</td>
+						<td>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="tinhThanhPho" path="tinhThanhPho"
+									cssStyle="width:140px;" onchange="selectCity(this);">
+									<form:options items="${provinceList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="quanHuyen" path="quanHuyen"
+									cssStyle="width:140px;" onchange="selectDistrict(this);">
+									<form:options items="${districtList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select id="phuongXa" path="phuongXa"
+									cssStyle="width:140px;">
+									<form:options items="${wardList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<label for="">Loại Đại Lý:</label>
+								<form:select path="loaiDaiLy" cssStyle="width:100px;">
+									<form:options items="${agentTypeList}" />
+								</form:select>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<label for="">Mã/tên Đại lý:</label>
+								<form:input path="searchText" cssStyle="width:100px;" onkeypress="if(event.keyCode==13) {document.forms[0].submit();}"/>
+							</div>
+							<div style="padding-left: 10px; display: inline;">
+								<a href="javascript:FilterList();" class="btn-1"
+									title="Xem danh mục đại lý"><span><span>Tìm Kiếm
+											</span></span></a>
+							</div>
+							<!--
+							<div style="padding-left: 10px; display: inline;">
+								<a href="${pageContext.request.contextPath}/agent/create"
+									class="btn-1"><span><span>Thêm đại lý</span></span></a>
+							</div>
+							-->
+							<div style="padding-left: 10px; display: inline;"></div>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- Fix for FF -->
+						</td>
+						<td ><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" listingURL="" submitMethod="POST"
+								formSubmit="listAgentForm" id="provTopPagination" /></td>
+					</tr>
+					<tr>
+						<td>
+							<!-- Fix for FF -->
+						</td>
+						<td >
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="25%">Tên Đại lý</td>
+										<td width="5%">Mã Viết Tắt</td>
+										<td width="30%">Địa chỉ</td>
+										<td width="15%">Người liên hệ</td>
+										<td width="10%">Điện thoại</td>
+										<c:choose>
+											<c:when test="${permission == 1}">
+												<td width="10%">Hành động</td>
+											</c:when>
+											<c:otherwise>
+										   </c:otherwise>
+										 </c:choose>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach items="${agentList}" var="item" varStatus="status">
+										<tr>
+											<td align="center">${(page-1)*size+status.count}</td>
+											<!--
+											<td><a
+												href="${editAgentURL}/${item.getId()}" class="redTxt"
+												title="Tên">${item.getTen()}</a></td>
+											-->
+											<td>${item.getTen()}</td>
+											<td>${item.getMaVietTat()}</td>
+											<td>${item.getDiaChi()}</td>
+											<td>${item.getNguoiLienHe()}</td>
+											<td>${item.getDienThoai()}</td>
+											
+												<c:choose>
+												<c:when test="${permission == 1}">
+												<td>
+													<!--
+													<a href="${viewAgentURL}/${item.getId()}"
+													class="redTxt" title="Xem">Xem</a> &#160;|&#160; 
+													<a
+													href="${addPosURL}/${item.getId()}" class="redTxt"
+													title="Sửa">ĐBH</a>
+													-->
+													<a
+													href="${editAgentURL}/${item.getId()}" class="redTxt"
+													title="Sửa">Chi Tiết</a> 
+												</td>
+												 </c:when>
+												 <c:otherwise>
+												 </c:otherwise>
+												 </c:choose>
+											
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<!-- Fix for FF -->
+						</td>
+						<td ><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" listingURL="" submitMethod="POST"
+								formSubmit="listAgentForm" id="strBottomPagination" /></td>
+					</tr>
+				</table>
+			</form:form>
+		</div>
+	</div>
+</div>

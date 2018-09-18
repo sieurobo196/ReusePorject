@@ -1,0 +1,221 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="jsFolder" value="/resources/js" />
+
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="cssFolder" value="/resources/css" />
+
+    <spring:url var="editChannel" value="/channel/edit/" />
+    <spring:url var="createChannel" value="/channel/create" />
+    <spring:url var="channelTypeView" value="/channelType/view/"/>
+    <spring:url var="channelListURL" value="/channel/list"/>
+
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/channel.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/channelsearch.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${jsFolder}/location.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+    <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+
+    <script type="text/javascript">
+        var page = '${page}';
+        var size = '${size}';
+
+        function viewChannel(id)
+        {
+            var url = '${channelListURL}' + "?parent=" + id;
+            if (page !== undefined && page != null)
+            {
+                url += "&page=" + page;
+            }
+            if (size !== undefined && size != null)
+            {
+                url += "&size=" + size;
+            }
+            window.location = url;
+        }
+        
+        function createChannel()
+        {
+            var url = '${createChannel}';
+            if('${parent}'!=null && '${parent}'!=0 && '${parent}'!='')
+            {
+                url+="?parent=" + '${parent}';
+            }
+            window.location = url ;
+        }
+
+        function deleteChannel(id,name)
+        {
+            if (confirm('Bạn có thực sự muốn xóa kênh: ' + name + '?')) {
+                var data = new Object();
+                data.id = id;
+
+                $.ajax({
+                    type: 'POST',
+                    url: contextPath + '/ajax/channel/delete',
+                    dataType: 'json',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json',
+                    mimeType: 'application/json',
+                    success: function (data) {
+                        if (getCode(data) == 200) {
+                            document.forms[0].submit();
+                        }
+                        else if (getCode(data) == 406)
+                        {
+                            alert('Không thể xóa vì có dữ liệu phụ thuộc: ' + data.contents);
+                        }
+                        else {
+                            alert('Quá trình xóa kênh xãy ra lỗi. Xin vui lòng thử lại.');
+                        }
+                    },
+                    error: function (error) {
+                        alert('Quá trình xóa kênh xãy ra lỗi. Xin vui lòng thử lại.');
+                    }
+                });
+            }
+        }
+    </script>
+
+    ]]>
+
+
+    <div id="inner-content">
+        <span class="bor-left">
+            <img src="${imagesFolder}/dummy.gif" alt="" />
+        </span>
+        <div class="content-title" >
+            <h2>
+                <span>Hệ thống kênh quản lý</span>
+            </h2>
+        </div>
+
+        <div id="content">
+            <form:form method="POST"  id="channelForm">
+
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="99%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+                    <tr>
+                        <td colspan="3" align="center"><span class="errorMessage">${error}</span></td>
+                    </tr>
+                    <tr>
+                        <td id="td_list_channel">
+                            <jsp:include page="../channelSystem.jspx" />
+                        </td>
+                        <td style="text-align: right;">
+                            <c:if test="${isAdminCompany}">
+                                <a onclick="createChannel();" class="btn-1" href="javascript:void(0)"><span><span>Thêm</span></span></a>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-top:8px" colspan="6" id="td_level_path">
+                            <strong>
+                                <c:choose>
+                                    <c:when test="${isAdminCompany}">
+                                        <a href="${channelListURL}">${userPrincipal.companyName}</a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${userPrincipal.companyName}
+                                    </c:otherwise>
+                                </c:choose>
+
+                                <c:forEach items="${channelTree}" var="item">
+                                    <c:choose>
+                                        <c:when test="${item.checked}">
+                                            » ${item.name}
+                                        </c:when>
+                                        <c:otherwise>
+                                            <a href="javascript:;" onclick="viewChannel(${item.id})"> » ${item.name}</a>
+                                        </c:otherwise>
+                                    </c:choose>                                    
+                                </c:forEach>
+                            </strong>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="channelForm" id="userTopPagination"  /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="4%">STT</td>
+                                        <td width="15%">Mã viết tắt</td>
+                                        <td width="20%">Tên</td>
+                                        <td width="15%">Số điện thoại</td>
+                                        <td width="10%">Loại</td>
+                                        <td width="15%">Thực Hiện</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_channel_list">
+                                    <c:choose>
+                                        <c:when test="${not empty list}">
+                                            <c:forEach items="${list}" var="item" varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+(status.count)}</td>
+                                                    <td>
+                                                        <a href="${editChannel}${item.id}">${item.fullCode}</a>                                                        
+                                                    </td>
+                                                    <td>
+                                                        <a href="${editChannel}${item.id}" >${item.name}</a>
+                                                    </td>
+                                                    <td>${item.tel}</td>
+                                                    <td style="text-align: center;"><a href="${channelTypeView}${item.channelTypes.id}">${item.channelTypes.name}</a></td>
+                                                    <td style="text-align: center;">
+                                                        <a href="javascript:;" onclick="viewChannel(${item.id})" class="redTxt" >Xem Kênh</a>
+                                                        <c:if test="${isAdminCompany}">
+                                                            |<a href="javascript:;"  onclick="deleteChannel(${item.id},'${item.name}')" class="redTxt" >Xóa</a>
+                                                        </c:if>                                                        
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="7" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <util:pagination maxPages="${maxPages}"
+                                             page="${page}" size="${size}" submitMethod="POST"
+                                             formSubmit="channelForm" id="userTopPagination" />
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+    <jsp:include page="searchForm.jspx"></jsp:include>
+    <jsp:include page="agentForm.jspx"></jsp:include>
+
+</div>

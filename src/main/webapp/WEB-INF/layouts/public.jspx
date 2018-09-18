@@ -1,0 +1,28 @@
+<html xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:tiles="http://tiles.apache.org/tags-tiles" xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	disable-url-rewriting="true">
+
+<jsp:output doctype-root-element="HTML" doctype-system="about:legacy-compat" />
+
+<jsp:directive.page contentType="text/html; charset=UTF-8" />
+<jsp:directive.page pageEncoding="UTF-8" />
+
+<head>
+	<title>mSales - Bán Hàng KPP - Đăng Nhập Vào Hệ Thống</title>
+	<util:load-scripts />
+</head>
+
+<body>
+	<div id="container">
+		<tiles:insertAttribute name="header" ignore="true" />
+		<tiles:insertAttribute name="body" />
+		<tiles:insertAttribute name="footer" ignore="true" />
+	</div>
+	<spring:url var="scriptsFolder" value="/scripts" />
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/lib.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/l10n.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/plugin.js"><!-- Fix for FF & Opera --></script>
+	<script type="text/javascript" src="${scriptsFolder}/gpstracking/start.js"><!-- Fix for FF & Opera --></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="rpt_barcode" pageWidth="595" pageHeight="842" columnWidth="580" leftMargin="15" rightMargin="0" topMargin="15" bottomMargin="20" uuid="364bd738-fa5c-463d-8523-55ac65e914fe">
+	<property name="ireport.zoom" value="1.2100000000000009"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="font small" forecolor="#BF9F62" fontSize="5"/>
+	<field name="barcode1" class="java.lang.String"/>
+	<field name="barcode2" class="java.lang.String"/>
+	<field name="barcode3" class="java.lang.String"/>
+	<field name="barcode1Name" class="java.lang.String"/>
+	<field name="barcode2Name" class="java.lang.String"/>
+	<field name="barcode3Name" class="java.lang.String"/>
+	<field name="barcode1Quan" class="java.lang.String"/>
+	<field name="barcode2Quan" class="java.lang.String"/>
+	<field name="barcode3Quan" class="java.lang.String"/>
+	<field name="code1" class="java.lang.String"/>
+	<field name="code2" class="java.lang.String"/>
+	<field name="code3" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="533" splitType="Stretch">
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="180" y="38" width="12" height="180" uuid="15895fa2-43f0-4a5a-b95f-f8d186a59e10"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="372" y="38" width="12" height="180" uuid="aa61bf8b-dfff-4762-96e3-5d9bcdd7255f"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="180" y="238" width="12" height="20" forecolor="#000000" uuid="ec357945-33a5-4b7a-94fd-7e17ebadcb5a"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement stretchType="RelativeToBandHeight" x="372" y="238" width="12" height="20" forecolor="#000000" uuid="e147c374-6042-43fb-b076-64ca58a0ffa2"/>
+				<textElement>
+					<font size="10" isBold="false"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<image scaleImage="Clip" hAlign="Center" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="38" width="180" height="180" isRemoveLineWhenBlank="true" forecolor="#0000FF" uuid="0e0fe2a6-5fe2-4303-9d98-e9fc31975d58"/>
+				<graphicElement>
+					<pen lineColor="#000000"/>
+				</graphicElement>
+				<imageExpression><![CDATA[vn.itt.msales.common.CustomMatrixToImageWriter.toBufferedImage(
+                        new com.google.zxing.qrcode.QRCodeWriter().encode(
+                        $F{barcode1},
+                        com.google.zxing.BarcodeFormat.QR_CODE, 200, 220),new vn.itt.msales.common.CustomMatrixToImageConfig())]]></imageExpression>
+			</image>
+			<image scaleImage="Clip" hAlign="Center" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="192" y="38" width="180" height="180" isRemoveLineWhenBlank="true" uuid="bded9ace-07b8-49ac-80f3-7bbdf4e04ced"/>
+				<graphicElement>
+					<pen lineColor="#000000"/>
+				</graphicElement>
+				<imageExpression><![CDATA[vn.itt.msales.common.CustomMatrixToImageWriter.toBufferedImage(
+                        new com.google.zxing.qrcode.QRCodeWriter().encode(
+                        $F{barcode2},
+                        com.google.zxing.BarcodeFormat.QR_CODE, 200, 220),new vn.itt.msales.common.CustomMatrixToImageConfig())]]></imageExpression>
+			</image>
+			<image scaleImage="Clip" hAlign="Center" vAlign="Middle" isUsingCache="false" onErrorType="Blank">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="384" y="38" width="180" height="180" isRemoveLineWhenBlank="true" uuid="22978f79-fbc8-4ef2-b5c4-9cab373f1100"/>
+				<graphicElement>
+					<pen lineColor="#000000"/>
+				</graphicElement>
+				<imageExpression><![CDATA[vn.itt.msales.common.CustomMatrixToImageWriter.toBufferedImage(
+                            new com.google.zxing.qrcode.QRCodeWriter().encode(
+                            $F{barcode3},
+                            com.google.zxing.BarcodeFormat.QR_CODE, 200, 220),new vn.itt.msales.common.CustomMatrixToImageConfig())]]></imageExpression>
+			</image>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="0" y="238" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="652cae29-445a-4042-9011-eee187b8ce6d">
+					<printWhenExpression><![CDATA[$F{barcode1}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode1Name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="192" y="238" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="ceafcfc0-918a-445f-ac12-e5a61b3983dc">
+					<printWhenExpression><![CDATA[$F{barcode2}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode2Name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="384" y="238" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="881da6c5-b713-4450-a9f0-8ef99a596fb2">
+					<printWhenExpression><![CDATA[$F{barcode3}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode3Name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="0" y="258" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="309bb2e5-1ffe-4e4e-a974-a867692a06c6">
+					<printWhenExpression><![CDATA[$F{barcode1}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode1Quan}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="192" y="258" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="adf5f011-3147-4ccf-8e53-9e916660b977">
+					<printWhenExpression><![CDATA[$F{barcode2}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode2Quan}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="384" y="258" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="1ae8ab21-9881-47e9-a62a-19ad69477621">
+					<printWhenExpression><![CDATA[$F{barcode3}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{barcode3Quan}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="0" y="218" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="83411f8b-5791-4226-b66d-94d1afa0ea93">
+					<printWhenExpression><![CDATA[$F{barcode1}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ID:"+$F{code1}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="192" y="218" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="912b14eb-005d-4117-bb56-cbbda8a0066c">
+					<printWhenExpression><![CDATA[$F{barcode2}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ID:"+$F{code2}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="font small" positionType="Float" x="384" y="218" width="180" height="20" isPrintWhenDetailOverflows="true" forecolor="#000000" uuid="1cc4d1ac-1f7f-4091-9a3c-afaa36b432d3">
+					<printWhenExpression><![CDATA[$F{barcode3}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="10" isBold="false"/>
+					<paragraph lineSpacing="1_1_2"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ID:"+$F{code3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+</jasperReport>

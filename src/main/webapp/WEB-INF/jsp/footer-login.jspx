@@ -1,0 +1,13 @@
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" 
+xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:spring="http://www.springframework.org/tags" id="footer" version="2.0">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"/>
+	<jsp:output omit-xml-declaration="yes"/>
+ 
+	<div id="footer">
+       	<div id="footer_cnt" class="HiddenBg">
+       		<spring:eval var="systemVersion" expression="@systemProperties['system.version']" />
+               <p>Bản quyền (C) 2012 thuộc <span>ITT</span>. Bảo lưu mọi quyền. ${systemVersion}.</p>
+        </div>
+	</div>
+</div>

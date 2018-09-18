@@ -1,0 +1,71 @@
+﻿.tab
+{
+width:99%;
+float:left;
+margin:10px 0 0 o;display:inline;padding:0 5px
+}
+.tabs { 
+	list-style:none; 
+	margin:0 ;
+	padding:0;	
+	clear:both;
+	display:block;
+	background:url(../images/bg_ul.jpg) 0 0 repeat-x;
+	background-color:#168d1d;
+	height:30px;
+	padding:5px 8px 0 9px;
+}
+.tabs li { 
+	display:block;
+	float:left;
+	margin-right:1px;	
+	 
+}
+/* tab menu */
+.tab1{background:url(../images/tab.png) 0 0 no-repeat;width:199px;height:30px}
+.tab1 .current{background:url(../images/tab.png) 0 -30px no-repeat;width:199px;height:30px}
+.tab2{background:url(../images/tab.png) -199px 0 no-repeat;width:199px;height:30px}
+.tab2 .current{background:url(../images/tab.png) -199px -30px no-repeat;width:199px;height:30px}
+.tab3{background:url(../images/tab.png) -290px 0 no-repeat;width:145px;height:26px}
+.tab3 .current{background:url(../images/tab.png) -290px -26px no-repeat;width:145px;height:26px}
+.tab4{background:url(../images/tab.png) -435px 0 no-repeat;width:145px;height:26px;margin-right:0px !important;}
+.tab4 .current{background:url(../images/tab.png) -435px -26px no-repeat;width:145px;height:26px;margin-right:0px !important;}
+/* end tab */
+
+.tabs a { 
+
+	display:block;
+	text-align:center;	
+	text-decoration:none;
+	color:#0f600e;
+	height:30px;
+	line-height:30px;
+	font-weight:bold;
+	font-size:12px;text-transform:uppercase
+}
+ul.tabs a.current
+{
+			
+	color:#cc0000 ;
+	outline:none;
+	font-weight:bold;font-size:12px;text-transform:uppercase	
+}
+.panes
+{
+	float:left;
+	clear:both;
+	min-height:123px;
+	height:auto !important;
+	height:123px;
+	padding:10px 5px;	
+	width:723px
+
+}
+div.panes div.pane {
+	display:none;	
+}
+
+/************** Panes *******************/
+.panes1{float:left;width:723px}
+.form_info_panes1{float:left;margin:3px 0 0 5px;display:inline}
+.textarea{width:620px;height:115px;overflow:auto;font-size:11px}

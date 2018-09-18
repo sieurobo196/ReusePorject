@@ -1,0 +1,182 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="nppDetailURL" value="/npp/detail" />
+	<spring:url var="nppAddURL" value="/npp/add" />
+
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+<script type="text/javascript">
+
+</script>
+
+]]>
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH NHÀ PHÂN PHỐI</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="frmNPPList" name="frmNPPList" commandName="frmNPPList">
+				<!--  <input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				-->
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					
+					<tr>
+						<td>
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="padding-left: 10px; display: none;">
+										<form:select style="width:140px;" path="company" cssClass="select2_combo"
+											onchange="changeUserCompany($(this) ,$('#agent'), [$('#district'), $('#area'), $('#provinceArea')]);">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							
+							<div style="display: inline;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#district')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), $('#district'));">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province" cssClass="select2_combo"
+									style="width:150px" onchange="changeCity($(this),$('#district'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div style="padding-right:20px; display: inline;">
+								<form:select path="district" cssStyle="width:150px" cssClass="select2_combo">
+									<form:options items="${disList}" itemValue="id"
+											itemLabel="name"/>
+								</form:select> 
+							</div>
+						</td>
+					</tr>
+					<tr>	
+						<td style="text-align: right">
+							Tên / Mã / Địa Chỉ / Điện Thoại: 
+							&#160;&#160;&#160;
+							<form:input path="searchText" cssStyle="width: 120px" onkeypress="if(event.keyCode==13) {submitActionForm('frmNPPList', '');}"/> 
+							&#160;&#160;&#160;
+							<a href="javascript:void(0);" onclick="submitActionForm('frmNPPList', '');"
+								class="btn-1" title="Tìm Kiếm">
+								<span><span>Tìm Kiếm</span></span>
+							</a>
+							&#160;&#160;&#160;
+							<c:if test="${allowEdit}">
+							<a href="${nppAddURL}" class="btn-1" title="Thêm định nhà phân phối">
+										<span><span>Thêm Nhà NPP</span></span>
+							</a>
+							</c:if>
+						</td> 
+					</tr>
+					
+					
+					<tr>
+					
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posTopPagination" formSubmit="frmNPPList" submitMethod="POST" />
+						</td>
+					
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="10%">Mã Nhà Phân Phối</td>
+										<td width="20%">Tên Nhà Phân Phối</td>
+										<td width="30%">Địa Chỉ</td>
+										<td width="20%">Số Điện Thoại</td>	
+										<td width="20%">Trạng Thái</td>		
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty nppList}">
+											<c:forEach items="${nppList}" var="posItem" varStatus="status">
+											 
+												<tr>
+													<!--<td align="center">${(page-1)*size+status.count}</td>-->
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td><a href="${nppDetailURL}/${posItem.id}">${posItem.maNPP}</a></td>
+													 
+													<td>${posItem.tenNPP}</td>
+													
+													<td>${posItem.diaChi}</td>
+													
+													<td align="center">${posItem.soDienThoai}</td>
+													
+													<td align="center"><a href="${nppDetailURL}/${posItem.id}">
+													<c:choose>
+														<c:when test="${posItem.trangThai}">
+															Hoạt Động
+														</c:when>
+														<c:otherwise>
+														</c:otherwise>
+													</c:choose>
+													</a></td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr><td colspan="10" align="center">Không có dữ liệu.</td></tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posBottomPagination" formSubmit="frmNPPList" submitMethod="POST"/>
+						</td>
+					</tr>
+					
+				</table>
+			</form:form>
+			 <a href="javascript:submitExportForm('frmNPPList','../export/barcodeLargeNPP');"
+					        class="btn-1" title="PrintBarcode">
+					       <span><span>In Mã NPP</span></span></a> &#160;&#160;&#160;
+		</div>
+	</div>
+</div>

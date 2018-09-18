@@ -1,0 +1,84 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <![CDATA[
+    <script type="text/javascript">
+        function addGoodsCategory() {
+            var goodsCategory = $('#goodsCategoryCombo');
+            if (goodsCategory.val() == 0) {
+                alert('Chưa chọn Loại hàng hóa');
+                return;
+            }
+            var id = goodsCategory.val();
+            if ($('#tr_' + id).length == 0) {
+                var op = goodsCategory.find(":selected");
+                var name = op.text();
+                var tr = '<tr id="tr_' + id + '">';
+                tr += '<td align="left">';
+                tr += name;
+                tr += '	<input type="hidden"  name="goodsCategoryId" value="' + id + '"/>';
+                tr += '	<input type="hidden"  name="userGoodsCategoryId" />';
+                tr += '</td>';
+                tr += '<td align="center">';
+                tr += '	<a href="javascript:deleteGoodsCategory(' + id + ');" title="' + name + '">Xóa</a>';
+                tr += '</td>';
+                tr += '</tr>';
+                $('#goodsCategoryTable').append($(tr));
+                op.remove();
+                goodsCategory.select2();
+            }
+        }
+        function deleteGoodsCategory(id) {
+            var tr = $('#tr_' + id);
+            var name = tr.children().first().text().trim();
+            var goodsCategory = $('#goodsCategoryCombo');
+
+            tr.remove();
+            goodsCategory.append($('<option value="' + id + '">' + name + '</option>'));
+            goodsCategory.select2();
+
+        }
+    </script>
+    ]]>
+
+    <style>
+        .goodsCategory_table td {border-bottom:1px solid lightgray;}
+        .goodsCategory_table {padding-bottom:5px;}
+    </style>
+    <table width="250px" border="0" cellspacing="0" cellpadding="3px" class="table-1 goodsCategory_table">
+        <tbody id="goodsCategoryTable">
+            <c:forEach items="${selectedGoodsCategory}" var="item">
+                <tr id="tr_${item.goodsCategorys.id}">
+                    <td align="left">
+                        ${item.goodsCategorys.name} 
+                        <input type="hidden" name="goodsCategoryId" value="${item.goodsCategorys.id}"/>
+                        <input type="hidden"  name="userGoodsCategoryId" value="${item.id}"/>
+                    </td>
+                    <td align="center">
+                        <a name="checkView" href="javascript:deleteGoodsCategory(${item.goodsCategorys.id});" title="${item.goodsCategorys.name}">Xóa</a>
+                    </td>
+                </tr>
+            </c:forEach>
+        </tbody>
+    </table>
+    <select id="goodsCategoryCombo" class="select2_combo" style="width:150px">
+        <c:forEach items="${goodsCategoryList}" var="item">
+            <option value="${item.id}">${item.name}</option>
+        </c:forEach>
+    </select> 
+    &#160;&#160;
+
+    <a href="javascript:;" name="checkView" onclick="addGoodsCategory();" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>	
+
+    <label id="${select_goodsCategory}Err" class="errorMessage" style="padding-left:10px"> </label>
+</div>
+

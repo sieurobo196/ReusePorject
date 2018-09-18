@@ -1,0 +1,92 @@
+#LeftMenu ul.menu, #LeftMenu ul.menu ul {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+  width: 223px;float:left 
+}
+
+#LeftMenu ul.menu a {
+  display: block;
+  text-decoration: none;	
+}
+
+#LeftMenu ul.menu li {
+ float:left !important;background:url(../../../images/tab1_up.png) no-repeat;clear:both;width:223px;min-height:27px;height:auto !important;height:27px;line-height:27px;margin-top:1px}
+ #LeftMenu ul.menu li:hover,  #LeftMenu ul.menu li.active{background:url(../../../images/tab1_over.png) no-repeat;}
+#LeftMenu ul.menu li ul.tab2{
+ width:223px
+}
+
+#LeftMenu ul.menu li a {
+ /* background: #333;*/
+  color: #965100;	
+  text-transform:none !important;
+  font-family:Arial, Helvetica, sans-serif;padding-left:15px;
+  background:url(../../../images/l_bullet1.png) 6px center no-repeat;font-weight:bold
+}
+
+#LeftMenu ul.menu li a:hover {
+ /* background: #000;*/
+}
+#LeftMenu ul.menu li ul.tab2 li{float:left !important;width:223px !important;clear:none !important;padding:0;border-bottom:none;background:url(../../../images/tab2_up.png) no-repeat;min-height:27px;height:auto !important;height:27px}
+#LeftMenu ul.menu li ul.tab2 li a {
+ /* background: #ccc;*/
+  color: #003996;font-family:Arial, Helvetica, sans-serif;font-weight:bold;
+  text-transform:none !important;background:url(../../../images/l_bullet2.png) 15px center no-repeat !important;padding-left:28px
+}
+#LeftMenu ul.menu li ul.tab2 li:hover, #LeftMenu ul.menu li ul.tab2 li.active{
+	background:url(../../../images/tab2_over.png) no-repeat;
+}
+
+#LeftMenu ul.menu li ul.tab3 li{float:left !important;width:223px !important;clear:none !important;padding:0;border-bottom:none;background:url(../../../images/tab3_up.png) no-repeat;min-height:27px;height:auto !important;height:27px}
+#LeftMenu ul.menu li ul.tab3 li a {
+ /* background: #ccc;*/
+  color: #de0202;font-family:Arial, Helvetica, sans-serif;font-weight:bold;
+  text-transform:none !important;background:url(../../../images/l_bullet3.png) 30px center no-repeat !important;padding-left:40px
+}
+#LeftMenu ul.menu li ul.tab3 li:hover, #LeftMenu ul.menu li ul.tab3 li:active{
+	background:url(../../../images/tab3_over.png) no-repeat;
+}
+
+/* style 2*/
+#LeftMenu2 ul.menu, #LeftMenu ul.menu ul {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+  width: 223px;float:left 
+}
+
+#LeftMenu2 ul.menu a {
+  display: block;
+  text-decoration: none;	
+}
+
+#LeftMenu2 ul.menu li {
+ float:left !important;background:url(../../../images/tab1_up.png) no-repeat;clear:both;width:223px;min-height:27px;height:auto !important;height:27px;line-height:27px;margin-top:1px}
+ #LeftMenu2 ul.menu li:hover,  #LeftMenu2 ul.menu li.active{background:url(../../../images/tab1_over.png) no-repeat;}
+#LeftMenu2 ul.menu li ul.tab2{
+ width:223px
+}
+
+#LeftMenu2 ul.menu li a {
+ /* background: #333;*/
+  color: #003996;	
+  text-transform:none !important;
+  font-family:Arial, Helvetica, sans-serif;padding-left:15px;
+  background:url(../../../images/l_bullet2.png) 6px center no-repeat;font-weight:bold
+}
+
+#LeftMenu2 ul.menu li a:hover {
+ /* background: #000;*/
+}
+/* menu left thong tin ca nhan */
+#LeftMenu2 ul.menu li ul.tab2_child li{float:left !important;width:223px !important;clear:none !important;padding:0;border-bottom:none;background:url(../../../images/tab2_2_up.png) no-repeat;min-height:27px;height:auto !important;height:27px}
+#LeftMenu2 ul.menu li ul.tab2_child li a {
+ /* background: #ccc;*/
+  color:#373737;font-family:Arial, Helvetica, sans-serif;font-weight:bold;
+  text-transform:none !important;background:url(../../../images/l_bullet4.png) 15px center no-repeat !important;padding-left:28px
+}
+#LeftMenu2 ul.menu li ul.tab2_child li a:hover, #LeftMenu2 ul.menu li ul.tab2_child li.active a{color:#c30000}
+#LeftMenu2 ul.menu li ul.tab2_child li:hover, #LeftMenu2 ul.menu li ul.tab2_child li.active{
+	background:url(../../../images/tab2_2_over.png) no-repeat;
+}

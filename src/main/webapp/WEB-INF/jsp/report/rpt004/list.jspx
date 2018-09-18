@@ -1,0 +1,115 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="home" value="/" />
+	<fmt:setLocale value="en_US" scope="session" />
+	<![CDATA[
+		<link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css"/>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.ui.monthpicker.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/js/monthpicker.js"></script>
+		<script type="text/javascript" src="${pageContext.request.contextPath}/scripts/commonfilter.js?v=2"></script>
+		<script>
+			function checkForm(type){
+				if(type=="export")
+					submitExportForm('rpt004Form','export')
+				else
+					submitActionForm('rpt004Form','list')
+			}
+		
+		</script>
+		
+		]]>
+
+	<div id="inner-content">
+
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>BÁO CÁO NHẬN HÀNG TỪ NHÀ PHÂN PHỐI</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="rpt004Form">
+				<table border="0" cellspacing="5px" cellpadding="0" class="table-1">
+					<tr>
+						<td colspan="3">
+							<c:choose>
+								<c:when test="${companyLogin!=null}">
+									<input type="hidden" name="company" value="${companyLogin}"/>
+								</c:when>
+								<c:otherwise>
+									<div style="padding-left: 10px; display: none;">
+										<form:select style="width:150px;" path="company" cssClass="select2_combo"
+											onchange="changeUserCompany($(this) ,$('#agent'), [$('#area'), $('#provinceArea'), $('#employer')]);">
+											<form:options items="${companies}" itemValue="id"
+												itemLabel="ten" />
+										</form:select>
+									</div>
+								</c:otherwise>
+							</c:choose>
+							<div style="display: inline;width:150px;padding-right:20px">
+								<form:select path="agent" style="width:150px;" cssClass="select2_combo"
+									onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#employer')]);">
+									<form:options items="${regionList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px;padding-right:20px; display: inline;">
+								<form:select path="area" cssClass="select2_combo"
+									style="width:150px" onchange="changeAreaList($(this), $('#provinceArea'), $('#employer'));">
+									<form:options items="${areaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="provinceArea" path="province" cssClass="select2_combo"
+									style="width:150px" onchange="changeProvinceList($(this), $('#employer'));">
+									<form:options items="${provinceAreaList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							<div
+								style="width: 150px; padding-right:20px; display: inline;">
+								<form:select id="employer" path="employer" cssClass="select2_combo"
+									style="width:150px">
+									<form:options items="${employerList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						</td>
+						
+						<td> <a href="javascript:void(0)"
+								onclick="checkForm('export')" class="btn-1"
+								title="Xuất báo cáo"><span><span>Xuất báo cáo</span></span></a>
+						 </td>
+					</tr>
+					<tr>
+						<td  colspan="3" style="text-align: right; font-weight: bold;"><label
+							for="">Tháng:</label> <form:input type="text" id="frm_endDate" size="14"
+								path="thang" cssClass="monthpicker" cssStyle="width:200px" /></td>
+						<script type="text/javascript">
+							$(".monthpicker").monthpicker(optionMonthpicker);
+						</script>
+					</tr>
+				</table>
+				
+
+			</form:form>
+		</div>
+	</div>
+</div>

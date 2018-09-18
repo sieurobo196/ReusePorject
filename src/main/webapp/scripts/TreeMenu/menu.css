@@ -1,0 +1,58 @@
+ul.menu, ul.menu ul {
+  list-style-type:none;
+  margin: 0;
+  padding: 0;
+  background:url(../images/bg_left_block.jpg) repeat-y;
+  float:left;
+  width:175px;
+  padding:0 10px;
+}
+
+ul.menu a {
+  display: block;
+  text-decoration: none;
+  border-bottom:dashed 1px #dfdfdf;	
+}
+
+ul.menu li {
+  background:url(../images/bullet.png) left 10px no-repeat;
+  padding-left:5px;
+  float:left;
+  width:170px
+}
+
+ul.menu li a {
+  color: #8e8e8e;	
+  padding: 5px;
+}
+
+ul.menu li a:hover, ul.menu li a.active {
+  background: #f8cde8;
+}
+.sub2{background:none !important;padding:0 0 0 10px !important;width:160px !important;overflow:hidden}
+.sub2 li{width:155px !important}
+.sub2 li a{padding:5px !important}
+
+.sub3{background:none !important;padding:0 0 0 10px !important;}
+
+ul.menu li ul li a {
+
+  color: #8e8e8e;
+  padding-left: 20px;
+}
+
+ul.menu li ul li ul li a {
+  color: #8e8e8e;
+  padding-left: 30px;
+}
+
+ul.menu li ul li ul li  a:hover {
+  background: #f8cde8;
+
+  padding-left: 25px;
+}
+
+ul.menu li ul li a:hover {
+  background: #f8cde8;
+  padding-left: 15px;
+}

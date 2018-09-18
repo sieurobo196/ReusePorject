@@ -1,0 +1,140 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="catListURL" value="/category/list/" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+
+                <c:choose>
+                    <c:when test="${view}">
+                        <span>THÔNG TIN loại hàng hóa</span>
+                        <spring:url value="/category/update" var="goodsCategory" scope="request">
+
+                        </spring:url>
+                    </c:when>
+                    <c:otherwise>
+                        <span>THÊM mới loại hàng hóa </span>
+                        <spring:url value="/category/create" var="goodsCategory" scope="request">
+
+                        </spring:url>
+                    </c:otherwise>
+                </c:choose>	
+
+            </h2>
+        </div>
+        <div id="content">
+            <form:form action="${requestScope.goodsCategory}" method="POST"
+                       commandName="goodsCategory">
+                <form:hidden path="id" />
+
+                <div class="formContent">
+                    <table width="100%" cellpadding="0" cellspacing="5"
+                           class="TableThongTinTram">
+                        <col width="20%" />
+                        <col width="80%" />
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <c:if test="${not empty success}">
+                                    <c:choose>
+                                        <c:when test="${success}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>Lưu thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Lưu thất bại.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <c:if test="${not empty update}">
+                                    <c:choose>
+                                        <c:when test="${update}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>Cập nhật thành công </p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Cập nhật thất bại.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </td>
+                        </tr>
+<!--                        <tr>
+                            <td align ="right"> Công ty : </td>
+                            <td>
+                                <form:select id="company" path="" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">Công ty Pham Nguyen </form:option>
+                                </form:select>&#160;&#160;&#160;
+                            </td>
+                        </tr>-->
+                        <tr>
+                            <td align="right">Mã viết tắt (<label class="errorMessage">*</label>):
+                            </td>
+                            <td><form:input path="goodsCode" cssClass="textInput mediumWidth"/>&#160;&#160;&#160;
+                            <form:errors path="goodsCode" cssClass="errorMessage" />
+                            	<label class="errorMessage" id="goods_code_error"><c:if test="${dupblicateCode}">
+                                    Mã loại sản phẩm đã tồn tại.
+                                </c:if></label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Tên (<label class="errorMessage">*</label>):
+                            </td>
+                            <td><form:input path="name" cssClass="textInput mediumWidth"/>&#160;&#160;&#160;<form:errors
+                                    path="name" cssClass="errorMessage" /></td>
+                        </tr>
+
+                        <tr>
+                            <td align="right">Trạng thái (<label class="errorMessage">*</label>):
+                            </td>
+                            <td><form:select id="statusId" path="statuss.id" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">--- Trạng thái ---</form:option>
+                                    <form:options items="${statusList}" itemValue="id"
+                                                  itemLabel="name" />
+                                </form:select>&#160;&#160;&#160;<form:errors path="statuss.id" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&#160;</td>
+                        </tr>
+                        <tr>
+                            <td><label> <!-- Empty -->
+                                </label></td>
+                            <td>
+
+                                <a name="checkView" href="javascript:;"
+                                   onclick="javascript:document.forms[0].submit();" class="btn-1"
+                                   title="Lưu thông tin"><span><span>Lưu</span></span></a>
+                                <a name="checkView" href="javascript:;"
+                                   onclick="javascript:document.forms[0].reset();" class="btn-1"
+                                   title="Làm lại"><span><span>Reset</span></span></a>
+                                <a  href="${catListURL}" class="btn-1"
+                                   title="Danh sách hàng hóa"><span><span>Danh sách loại hàng hóa</span></span></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form:form>
+        </div>
+    </div>
+</div>

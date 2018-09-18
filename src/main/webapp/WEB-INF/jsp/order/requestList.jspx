@@ -1,0 +1,150 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="ajaxURL" value="/ajax" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="orderViewURL" value="/order/view" />
+    <spring:url var="approveURL" value="/order/approve" />
+    <spring:url var="detailsURL" value="/order/requestDetails/list" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <spring:url var="orderRequestGoodsListURL" value="/order/requestGoods/list" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+    <script type="text/javascript" src="${scriptsFolder}/device.js"></script>
+    <script type="text/javascript">
+
+            var contextPath = "${pageContext.request.contextPath}";
+
+            function viewResults() {
+                showLoading();
+                //	$('#requestForm').submit();
+                document.forms[0].submit();
+            }
+
+    </script>
+    ]]>
+    <style>
+        .wait_row {
+            color: red;
+        }
+    </style>
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>THEO DÕI NHẬN HÀNG CỦA NVBH</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="requestForm" id="requestForm" action="${orderRequestGoodsListURL}">
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="100%" border="0" cellspacing="5px" cellpadding="0"
+                       class="table-1">
+
+                    <tr>
+                        <td colspan="3"><jsp:include page="../locationSelector.jspx"></jsp:include>
+
+                            </td>
+                            <td><a href="javascript:;" onclick="viewResults()" style="min-width: 150px;"
+                                   class="btn-1" title="Xem kết quả"><span><span>&#160;&#160;Xem kết quả&#160;&#160;</span></span></a></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4"><jsp:include page="../timeSelector.jspx"></jsp:include>
+
+                        </td>
+                    </tr>
+
+
+
+                        <!-- <tr>
+                                <td colspan="4" style="text-align: left;"><form:errors
+                        path="filter_message"></form:errors></td>
+</tr> -->
+                        <tr>
+                            <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catTopPagination"
+                                         formSubmit="requestForm" submitMethod="POST" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="17%">Tên Nhân Viên</td>
+                                        <td width="12%">Tỉnh Thành</td>
+                                        <!-- <td width="15%">Mã Nơi Nhận/Trả Hàng</td> -->
+                                        <td>Tên Nơi Nhận/Trả Hàng</td>
+                                        <td width="15%">Ngày Tạo</td>
+                                        <td width="12%">Trạng Thái</td>
+                                        <td width="12%">Hành Động</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty salesTransList}">
+                                            <c:forEach items="${salesTransList}" var="item"
+                                                       varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td><a href="${userDetailURL}/${item.employee.id}">${item.employee.name}</a></td>
+                                                    <td>${item.employee.location}</td>
+                                                  
+                                                    <td>${item.channel.name}</td>
+                                                    <td align="center"><fmt:parseDate
+                                                            value="${item.salesTransDate}"
+                                                            pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+                                                            value="${transDate}" pattern="dd/MM/yyyy HH:mm:ss" /></td>
+                                                    <td align="center"><c:choose>
+                                                            <c:when test="${item.transType==1}">
+                                                                Nhận Hàng
+                                                            </c:when>
+                                                            <c:when test="${item.transType==3}">
+                                                                Trả Hàng
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Chờ
+                                                            </c:otherwise>
+                                                        </c:choose></td>
+                                                    <td align="center">
+                                                        <a href="${detailsURL}/${item.id}" class="redTxt" title="Xem yêu cầu hàng"> Xem </a>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="9" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" id="catBottomPagination"
+                                         formSubmit="requestForm" submitMethod="POST" listingURL="" /></td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

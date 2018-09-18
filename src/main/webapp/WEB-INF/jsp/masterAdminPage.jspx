@@ -1,0 +1,173 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="editCompany" value="/admin/company/edit" />
+    <spring:url var="deleteCompany" value="/admin/company/delete" />
+    <spring:url var="listCompany" value="/admin/company" />
+    <spring:url var="viewEquipment" value="/admin/equipment/company" />
+
+
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH CÔNG TY</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" action="${listCompany}" modelAttribute="searchObject" id="companyList">
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0" class="table-1">
+                    <tr>   
+                        <td>
+                            <div style="width: 200px;padding-right:10px;display: inline-block">
+                                <form:select path="branch" class="select2_combo" style="width:100%">          
+                                    <form:options items="${branchList}" itemLabel="name" itemValue="id" />
+                                </form:select>
+                            </div>
+
+                            <div style="width: 200px;padding-right:10px;display: inline-block">
+                                <form:select path="packageService" class="select2_combo" style="width:100%">          
+                                    <form:options items="${packageList}" itemLabel="name" itemValue="id" />
+                                </form:select>
+                            </div>
+
+                            <div style="padding-right:10px; display: inline-block;width: 200px;">
+                                <form:input id="searchText" path="searchText" style="width: 100%;" />
+                            </div>
+                        </td>
+                        <td >
+                            <div style="width:200px;text-align: right" >
+                                <a href="javascript:"
+                                   onclick="document.forms[0].submit()" class="btn-1"
+                                   title="Danh Sách NSD"><span><span style="width:90px">Xem Danh Sách</span></span></a>
+                            </div>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="companyList" id="userTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="10%">Mã công ty</td>
+                                        <td width="30%">Tên công ty</td>
+                                        <td width="10%">Gói dịch vụ</td>										
+                                        <td width="10%">Số lượng thiết bị</td>
+                                        <td width="10%">Thời gian hết hạn</td>
+                                        <td width="10%">Chức năng</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty companyList}">
+                                            <c:forEach items="${companyList}" var="item" varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td align="center"><a href="${editCompany}/${item.branch}/${item.id}">${item.code}</a></td>
+                                                    <td align="left"><a href="${editCompany}/${item.branch}/${item.id}">${item.name}</a></td>
+                                                    <td align="center">
+                                                        <c:choose>
+                                                            <c:when test="${item.packageService == 1}">
+                                                                Normal
+                                                            </c:when>
+                                                            <c:when test="${item.packageService == 2}">
+                                                                <span style="color:#FF8300;font-size: 11px;">Professional</span>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span style="color:blue;font-size: 11px;">Premium</span>
+                                                            </c:otherwise>
+                                                        </c:choose>                                                       
+                                                    </td>
+
+                                                    <td align="right">${item.equipmentMax}</td>
+
+                                                    <td align="center">
+                                                        <c:choose>
+                                                            <c:when test="${item.expireTime.compareTo(now)>0}">
+                                                                <fmt:formatDate pattern="dd/MM/yyyy" value="${item.expireTime}"/>
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <span style="color:red;font-size: 11px;"><fmt:formatDate pattern="dd/MM/yyyy" value="${item.expireTime}"/></span>
+                                                            </c:otherwise>
+                                                        </c:choose>                                                        
+                                                    </td>
+
+                                                    <td  align="center">
+                                                        <a href="${editCompany}/${item.branch}/${item.id}">Chỉnh sửa </a>
+                                                        | 
+                                                        <a href="${viewEquipment}/${item.branch}/${item.id}">Thiết bị </a>
+                                                        |                                                         
+                                                        <a href="javascript:;" onclick="deleteCompany(${item.branch},${item.id})">Xóa</a>
+                                                    </td>                                                
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="10" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         submitMethod="POST" formSubmit="companyList" page="${page}"
+                                         size="${size}" id="userBottomPagination" /></td>
+                    </tr>
+                </table>
+
+            </form:form>
+        </div>
+    </div>
+
+    <![CDATA[
+    <script>
+        function deleteCompany(branch, id) {
+            var conf = confirm("Bạn có chắc muốn xóa công ty này không?");
+            if (conf) {
+                var url = '${deleteCompany}' + "/" + branch + "/" + id;
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: url,
+                    success: function (data) {
+                        if (data.success == 'OK') {
+                            alert("Xóa thành công.");
+                            window.location = window.location.href;
+                        }
+                        else if (data.success == 'FALSE') {
+                            alert("Xóa thất bại.");
+                        }
+                        else {
+                            alert(data.success);
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+    ]]>
+
+</div>

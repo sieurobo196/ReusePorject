@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.1.final using JasperReports Library version 6.0.0  -->
+<!-- 2015-09-16T16:05:14 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Order Email" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="20" bottomMargin="20" uuid="2f913e49-1e49-4761-a03f-7158a304f5ad">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="17"/>
+	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="header" hAlign="Left" vAlign="Middle" fontSize="14" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="small header" vAlign="Middle" fontSize="12" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<leftPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<bottomPen lineWidth="0.5" lineColor="#CFD5E3"/>
+			<rightPen lineWidth="0.5" lineColor="#CFD5E3"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table header" forecolor="#000000" backcolor="#F0F0F0" hAlign="Center" vAlign="Middle" fontSize="12" isBold="true">
+		<box>
+			<topPen lineWidth="0.5" lineColor="#000000"/>
+			<leftPen lineWidth="0.5" lineColor="#000000"/>
+			<bottomPen lineWidth="0.5" lineColor="#000000"/>
+			<rightPen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<style name="table td" mode="Transparent" forecolor="#000000" fill="Solid" vAlign="Middle" pattern="" fontSize="12">
+		<box>
+			<topPen lineWidth="0.5"/>
+			<leftPen lineWidth="0.5"/>
+			<bottomPen lineWidth="0.5"/>
+			<rightPen lineWidth="0.5"/>
+		</box>
+		<paragraph leftIndent="5" rightIndent="5"/>
+	</style>
+	<subDataset name="dataset1" uuid="f2293209-a807-485f-8234-a15bd90f7d2e"/>
+	<parameter name="distributionName" class="java.lang.String"/>
+	<parameter name="address" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\ITT\\IT1414-VMS2\\Project\\EntMgt\\src\\main\\resources\\reports\\"]]></defaultValueExpression>
+	</parameter>
+	<field name="employeCode" class="java.lang.String"/>
+	<field name="employeName" class="java.lang.String"/>
+	<field name="customerCode" class="java.lang.String"/>
+	<field name="customerName" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="tel" class="java.lang.String"/>
+	<field name="goodsCode" class="java.lang.String"/>
+	<field name="goodsName" class="java.lang.String"/>
+	<field name="quantity" class="java.lang.Integer"/>
+	<field name="price" class="java.lang.Integer"/>
+	<field name="orderDate" class="java.util.Date"/>
+	<variable name="thanhToan" class="java.lang.Integer">
+		<variableExpression><![CDATA[$F{quantity}*$F{price}]]></variableExpression>
+		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="tongThanhToan" class="java.lang.Integer" resetType="Group" resetGroup="GroupKhachHang" calculation="Sum">
+		<variableExpression><![CDATA[$V{thanhToan}]]></variableExpression>
+	</variable>
+	<variable name="countSP" class="java.lang.Integer" resetType="Group" resetGroup="GroupKhachHang" incrementType="Report" calculation="Count">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<group name="GroupKhachHang" isStartNewPage="true">
+		<groupExpression><![CDATA[$F{customerCode}]]></groupExpression>
+		<groupHeader>
+			<band height="167">
+				<staticText>
+					<reportElement style="table header" mode="Opaque" x="0" y="137" width="96" height="30" uuid="3b192403-4e76-4ebd-ab88-8e0eadc06ee4"/>
+					<text><![CDATA[Mã Sản Phẩm]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table header" mode="Opaque" x="96" y="137" width="297" height="30" uuid="e3ca0d99-7bab-4913-b567-e3d01442f0c8"/>
+					<text><![CDATA[Sản Phẩm]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table header" mode="Opaque" x="478" y="137" width="115" height="30" uuid="e9fc8393-681d-4302-bb0f-5037594fee4c"/>
+					<text><![CDATA[Giá bán]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table header" mode="Opaque" x="593" y="137" width="139" height="30" uuid="fa89dcab-3586-41b3-9aaa-b96272a9820f"/>
+					<text><![CDATA[Thanh toán]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="table header" mode="Opaque" x="393" y="137" width="85" height="30" uuid="1653748e-e6dd-41c4-bb5c-28d00de22a12"/>
+					<text><![CDATA[Số lượng]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="small header" x="0" y="1" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="57e9dbac-f162-42b0-83c9-99bac7184066"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Nhân viên:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="96" y="1" width="297" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="00d9d002-ca8e-423f-a771-833473b144dd"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{employeName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" x="0" y="27" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="05222669-8e6f-41aa-bb0e-2a5cb24ff4a2"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Khách hàng:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="96" y="27" width="297" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="9b839e6e-6fd7-416e-a139-23baaf27a13c"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{customerName}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" x="0" y="53" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="47f3267e-ec69-4164-a65c-333239423841"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Địa chỉ:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="96" y="53" width="297" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="cb5399fa-a4d1-4a4a-933a-2c83fa690062"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" x="393" y="53" width="85" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="f7eed229-c6fb-4683-8ef9-dab8c5ef63d8"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Điện thoại:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="478" y="53" width="254" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="fa8fb254-75b6-48a4-a45a-31976ff777e0"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tel}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" x="393" y="27" width="85" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="89e79587-5401-4e63-9aa0-57de95acdebb"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Mã KH:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="478" y="27" width="254" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="8b3d09e6-0b4c-452a-9602-b6c6ed7b03ee"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{customerCode}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="478" y="1" width="254" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="80041e2c-61ee-438b-8e55-720f30e751f7"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{employeCode}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" x="393" y="1" width="85" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="9f2e1ab0-5561-4b0b-be72-dd9738a815c1"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Mã NV:]]></text>
+				</staticText>
+				<staticText>
+					<reportElement style="small header" x="0" y="79" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="4aa12f62-11be-4335-84f8-1f78d2ac06a0"/>
+					<textElement textAlignment="Right">
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[Ngày giờ đặt:]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy HH:mm:ss" isBlankWhenNull="true">
+					<reportElement mode="Transparent" x="96" y="79" width="297" height="26" forecolor="#000000" backcolor="#FFFFFF" uuid="4c9c18cf-8f68-4fc2-94bd-3fb6d4a81f11"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{orderDate}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="154">
+				<staticText>
+					<reportElement style="table td" x="0" y="34" width="732" height="47" uuid="bfc1cc50-803e-4ebf-bf16-740217658120"/>
+					<textElement>
+						<font isBold="true"/>
+						<paragraph leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[    Nhân viên bán hàng: .............................................                             Xác nhận nhà phân phối: .........................................]]></text>
+				</staticText>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement style="table td" mode="Opaque" x="593" y="0" width="139" height="25" uuid="041210e8-4365-4b7d-b61c-9a84e9912c5d"/>
+					<textElement textAlignment="Right">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{tongThanhToan}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement style="small header" mode="Transparent" x="0" y="81" width="732" height="50" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="cbb8fac6-d0bd-456a-a847-499cc10a3990"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+						<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+						<paragraph lineSpacing="Single" leftIndent="5"/>
+					</textElement>
+					<text><![CDATA[]]></text>
+				</staticText>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="128">
+			<textField>
+				<reportElement x="0" y="0" width="732" height="21" uuid="2aa4e758-323d-42b3-9ca8-ada1ce5edc5d"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Ngày xuất báo cáo:  "+(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="header" x="0" y="21" width="732" height="37" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="4dfad656-acb3-4744-99ff-67d4fa6263a7"/>
+				<textElement textAlignment="Center" markup="none"/>
+				<textFieldExpression><![CDATA["THEO DÕI ĐƠN ĐẶT HÀNG NGÀY "+(new SimpleDateFormat("dd/MM/yyyy")).format(new Date())]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="small header" mode="Transparent" x="393" y="110" width="339" height="18" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" forecolor="#000000" backcolor="#FFFFFF" uuid="0cd6de6c-899d-4221-a99e-6e68a29ca340"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
+					<font fontName="SansSerif" size="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single" leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="small header" x="0" y="58" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="de1e2a48-e09b-4ff7-8df1-17269668295c"/>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Nhà phân phối:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="small header" x="96" y="58" width="297" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="227707c6-cba6-4ade-a5db-872a9bce3f0e"/>
+				<textElement markup="none">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{distributionName}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="small header" x="0" y="84" width="96" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="0ccfacb8-2a43-41d9-bc7a-0fbce33bb903"/>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Địa chỉ:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="small header" x="96" y="84" width="636" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="491f7650-2850-48b3-b77d-0961014c814f"/>
+				<textElement markup="none">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="small header" x="393" y="58" width="85" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="0213eec3-02c5-44e6-9abe-cdee63b70469"/>
+				<textElement textAlignment="Right">
+					<paragraph leftIndent="5"/>
+				</textElement>
+				<text><![CDATA[Điện thoại:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="small header" x="478" y="58" width="254" height="26" isPrintInFirstWholeBand="true" isPrintWhenDetailOverflows="true" uuid="5fb0930b-ffdc-446e-80a6-9fc6be2777e8"/>
+				<textElement markup="none">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<detail>
+		<band height="25">
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="table td" mode="Opaque" x="393" y="0" width="85" height="25" uuid="835948b3-a8e6-471e-a52f-21da4614ed9e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="table td" mode="Opaque" x="96" y="0" width="297" height="25" uuid="94667819-e3ac-481e-96f0-3c0ce78ccaad"/>
+				<textFieldExpression><![CDATA[$F{goodsName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="table td" mode="Opaque" x="478" y="0" width="115" height="25" uuid="65d2526a-ac29-4eda-9900-a853623d3262"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{price}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="table td" mode="Opaque" x="593" y="0" width="139" height="25" uuid="b335dd48-f353-49b1-9981-9f411ccb1d91"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$V{thanhToan}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement style="table td" mode="Opaque" x="0" y="0" width="96" height="25" uuid="e5440752-d309-4043-8b8a-4492c0c3ae3e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{goodsCode}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

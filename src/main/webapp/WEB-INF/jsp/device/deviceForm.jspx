@@ -1,0 +1,161 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="urlEquipment" value="/device/list"/>
+    <spring:url var="imagesFolder" value="/resources/images" />
+    
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <c:choose>
+                    <c:when test="${isView}">
+                        <span> Thông tin Thiết bị</span>
+                        <spring:url value="/device/update" var="equipment" scope="request"/>
+                    </c:when>
+                    <c:otherwise>
+                        <span> Thêm thiết bị mới</span>
+                        <spring:url value="/device/create" var="equipment" scope="request"/>
+                    </c:otherwise>
+                </c:choose>
+            </h2> 
+        </div>
+        <div id="content">
+            <form:form action="${requestScope.equipment}" method="POST"
+                       commandName="equipment">
+                <form:hidden path="id" />
+
+                <div class="formContent">
+                    <table width="100%" cellpadding="0" cellspacing="5"
+                           class="TableThongTinTram">
+                        <col width="20%" />
+                        <col width="80%" />
+
+                        <tr>
+                            <td></td>
+                            <td>
+                                <c:if test="${not empty overEquipment and overEquipment}">
+                                    <div class="errorMessage" id="messageArea">
+                                        <p>Vượt quá ${equipmentMax} thiết bị của Công ty đăng ký!</p>
+                                    </div>
+                                </c:if>
+                                
+                                <c:if test="${not empty create}">
+                                    <c:choose>
+                                        <c:when test="${create}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p> Lưu thành công</p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="infoMessage" id="messageArea">
+                                                <p> Lưu thất bại</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <c:if test="${not empty update}">
+                                    <c:choose>
+                                        <c:when test="${update}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>cập nhật thành công.</p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Xảy ra lỗi khi lưu dữ liệu</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Số IMEI (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:input path="imei" cssClass="textInput mediumWidth"/>
+                                &#160;&#160;&#160;
+                                <form:errors path="imei" cssClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Subscriber ID (<label class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:input path="subscriberId" cssClass="textInput mediumWidth"/>(IMSI)
+                                &#160;&#160;&#160;
+                                <form:errors path="subscriberId" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Số điện thoại :
+                            </td>
+                            <td>
+                                <form:input path="telNo" cssClass="textInput mediumWidth"/>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Tên thiết bị:</td>
+                            <td><form:input path="name" cssClass="textInput largerWidth" /></td>
+                        </tr>
+                        <tr>
+                            <td align="right">Version (<label class="errorMessage">*</label>):</td>
+                            <td>
+                                <form:input path="version" cssClass="textInput largerWidth" />
+                                <form:errors path="version" cssClass="errorMessage"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Nhân viên sử dụng (<label
+                                    class="errorMessage">*</label>):
+                            </td>
+                            <td>
+                                <form:select id="userId" path="users.id" style="width:170px" class="select2_combo select2-offscreen">
+                                    <form:option value="0">---Nhân viên ---</form:option>
+                                    <c:forEach items="${userList}" var="item">
+                                        <form:option value="${item.id}">[${item.username}] - ${item.lastName} ${item.firstName} </form:option>
+                                    </c:forEach>
+                                </form:select>
+                                &#160;&#160;&#160;
+                                <form:errors path="users.id" cssClass="errorMessage" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Kích hoạt:</td>
+                            <td>
+                                <form:checkbox id="isActive" path="isActive"  />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&#160;</td>
+                        </tr>
+                        <tr>
+                            <td><label> <!-- Empty -->
+                                </label></td>
+                            <td><a name="checkView" href="javascript:;"
+                                   onclick="javascript:document.forms[0].submit();" class="btn-1"
+                                   title="Lưu thông tin thiết bị này"><span><span>Lưu</span></span></a>
+                                <a name="checkView" href="javascript:;"
+                                   onclick="javascript:document.forms[0].reset();" class="btn-1"
+                                   title="Làm lại"><span><span>Reset</span></span></a>
+                                <a href="${urlEquipment}" class="btn-1"
+                                   title="Danh sách hàng hóa"><span><span>Danh sách thiết bị</span></span></a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form:form>
+        </div>
+    </div>
+</div>

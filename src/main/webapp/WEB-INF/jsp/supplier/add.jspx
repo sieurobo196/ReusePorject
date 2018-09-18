@@ -1,0 +1,28 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>THÊM NHÀ PHÂN PHỐI</span>
+			</h2>
+		</div>
+		<div id="content">
+			<spring:url value="/npp/add" var="supplierFormLink" scope="request">
+				<spring:param name="new" />
+			</spring:url>
+			<jsp:include page="supplierForm.jspx" />
+		</div>
+	</div>
+</div>

@@ -1,0 +1,377 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags" 
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="orderListURL" value="/order/list/" />
+    <spring:url var="doOrderURL" value="/order/do/" />
+    <spring:url var="cancelOrderURL" value="/order/cancel/" />
+    <spring:url var="updateOrderURL" value="/order/update/" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="userDetailURL" value="/user/detail" />
+    <![CDATA[
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        var flag = false;
+
+        function doExport() {
+            //submitActionForm('order', '${doOrderURL}${order.id}');
+            window.location.href = "${doOrderURL}${order.id}";
+        }
+        function cancel() {
+            window.location.href = "${cancelOrderURL}${order.id}";
+        }
+        function doUpdate()
+        {
+            var els = $('input[name^=txtQuantity]');
+
+
+            for (var i = 0; i < els.length; i++) {
+                if (els[i].value === "" || els[i].value.trim() === "") {
+                    alert("Chưa nhập dữ liệu.");
+                    els[i].focus();
+                    return false;
+                }
+                if (!isSoNguyenDuong(els[i].value) || parseInt(els[i].value) < 0) {
+                    alert("số lượng phải là số nguyên dương");
+                    return;
+                }
+            }
+            document.getElementById("updateOrder").submit();
+        }
+
+        function edit() {
+            if (flag)
+            {
+                $('#tr_edit').hide();
+            }
+            else
+                $('#tr_edit').show();
+            flag = !flag;
+            $('#updateOrder input[name^=txt]').removeAttr('disabled');
+        }
+        function getNumber(txt) {
+            if (txt) {
+            	var arrayNumber = txt.split('.');
+            	if(arrayNumber.length > 1){
+            		return parseInt(txt.replace(/[.]/g, ''));
+            	}else{
+            		return parseInt(txt.replace(/[,]/g, ''));
+            		//return parseInt(txt.replace(/[.]/g, ''));
+            	}
+                
+            } else {
+                return 0;
+            }
+        }
+        function formatNumber(txt) {
+            if (txt) {
+            	var price = document.getElementById('price_txtQuantity0').textContent;
+            	var arrayNumber = price.split('.');
+            	if(arrayNumber.length > 1){
+            		return (txt + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            	}else{
+            		return (txt + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
+            	}
+               // return (txt + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
+            } else {
+                return 0;
+            }
+        }
+        function getEl(id, key) {
+            return document.getElementById(key + '_' + id);
+        }
+        function calculate(el) {
+            var el = $(el);
+            var id = el.attr('id');
+            var price = getNumber(getEl(id, 'price').textContent);
+            getEl(id, 'total').textContent = formatNumber(el.val() * price);
+            var els = $('input[name^=txtQuantity]');
+            var quantity = parseInt(el.val());
+            var total = price * quantity;
+            for (var i = 0; i < els.length; i++) {
+                if (els[i] !== el[0]) {
+                    quantity += parseInt(els[i].value);
+                    total += getNumber(getEl(els[i].id, 'total').textContent);
+                }
+            }
+            $('#quantity').html('<b>' + formatNumber(quantity) + '</b>');
+            $('#total').html('<b>' + formatNumber(total) + '</b>');
+        }
+    </script>
+    ]]>
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>THÔNG TIN đơn đặt hàng</span>
+            </h2>
+        </div>
+        <div id="content">
+            <div>
+                <!-- <form:hidden path="id" /> -->
+
+                <div class="formContent">
+                    <table width="100%" cellpadding="0" cellspacing="5"
+                           class="TableThongTinTram">
+                        <col width="30%" />
+                        <col width="70%" />
+
+                        <tr>
+                            <td></td>
+                            <td align="left">
+                                <c:if test="${not empty update}">
+                                    <c:choose>
+                                        <c:when test="${update}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>Cập nhật thành công.</p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Cập nhật thất bại.</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <c:if test="${not empty success}">
+                                    <c:choose>
+                                        <c:when test="${success}">
+                                            <div class="infoMessage" id="messageArea">
+                                                <p>Đã xuất hàng thành công.</p>
+                                            </div>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <div class="errorMessage" id="messageArea">
+                                                <p>Xảy ra lỗi khi lưu dữ liệu</p>
+                                            </div>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:if>
+                                <c:if test="${not empty cancelSuccess and cancelSuccess}">
+                                    <div class="infoMessage">
+                                        <p>Đã hủy đơn hàng thành công.</p>
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty notInventory and notInventory}">
+                                    <div class="errorMessage" align="center">
+                                        <p>Không có hàng để xuất cho đơn hàng này.</p>
+                                    </div>
+                                </c:if>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Nơi đặt hàng:</b>
+                            </td>
+                            <td>${order.pos.name}</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Địa chỉ:</b>
+                            </td>
+                            <td>${order.pos.address}</td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Nhân viên CS:</b>
+                            </td>
+                            <td><a href="${userDetailURL}/${order.createdUsers.id}">${order.createdUsers.lastName} ${order.createdUsers.firstName}</a></td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Ngày đặt:</b>
+                            </td>
+                            <td>
+                                <fmt:parseDate value="${order.createdAt}" pattern="yyyy-MM-dd HH:mm:ss" var="orderDate" />
+                                <fmt:formatDate value="${orderDate}" type="both"
+                                                dateStyle="medium" timeStyle="medium"
+                                                pattern="HH:mm:ss dd/MM/yyyy" />
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Ngày giao:</b>
+                            </td>
+                            <td>
+                                <fmt:parseDate value="${order.salesTransDate}" pattern="yyyy-MM-dd HH:mm:ss" var="salesTransDate" />
+                                <fmt:formatDate value="${salesTransDate}" type="both"
+                                                dateStyle="medium" timeStyle="medium"
+                                                pattern="dd/MM/yyyy" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right"><b>Trạng thái:</b>
+                            </td>
+                            <td>${order.statuss.name}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&#160;</td>
+                        </tr>
+                        <tr>
+                            <td align="right" style="vertical-align:top"><b>Danh sách hàng đặt:</b>
+                            </td>
+                            <td>
+                                <table width="80%" border="0" cellspacing="0" cellpadding="0"
+                                       class="table-2">
+                                    <thead>
+                                        <tr>
+                                            <td width="4%">STT</td>
+                                            <td width="13%">Mã</td>
+                                            <td>Tên</td>
+                                            <td width="13%">Số Lượng</td>
+                                            <td width="10%">ĐVT</td>
+                                            <td width="13%">Giá</td>
+                                            <td width="15%">Thành Tiền</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:set var="total" value="0"></c:set>
+                                        <c:set var="totalQuantity" value="0"></c:set>
+                                        <c:forEach items="${order.orderDetailsList}" var="item" varStatus="status">
+                                            <tr>
+                                                <td align="center">${status.index+1}</td>
+                                                <td>${item.goodss.goodsCode}</td>
+                                                <td>${item.goodss.name}</td>
+                                                <td align="right">
+                                                    <fmt:parseNumber value="${item.quantity}" var="quantity" />
+                                                    <c:set var="totalQuantity" value="${totalQuantity + quantity}"></c:set>
+                                                    <fmt:formatNumber type="number" pattern="###,###" value="${item.quantity}" />
+                                                </td>
+                                                <td align="left">
+                                                    ${item.goodsUnits.units.name}
+                                                </td>
+                                                <td align="right">
+                                                    <fmt:parseNumber value="${item.price}" var="price" />
+                                                    <fmt:formatNumber type="number" pattern="###,###" value="${item.price}"  />
+                                                </td>
+                                                <td align="right">                                                    
+                                                    <fmt:formatNumber type="number" pattern="###,###" value="${price * quantity}" />
+                                                </td>
+                                                <c:set var="total" value="${total + price * quantity}"></c:set>
+                                                </tr>		
+                                        </c:forEach>
+                                        <tr>
+                                            <td align="center" colspan="3"><b>Tổng</b></td>
+                                            <td align="right">
+                                                <b><fmt:formatNumber type="number" pattern="###,###" value="${totalQuantity}" /></b>
+                                            </td>
+                                            <td align="right">
+                                            </td>
+                                            <td align="right">
+                                            </td>
+                                            <td align="right">
+                                                <b><fmt:formatNumber type="number" pattern="###,###" value="${total}" /></b>
+                                            </td>
+                                        </tr>		
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&#160;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center">
+                                <c:if test="${order.statuss.id==13}">
+                                	<c:if test="${not onlyExport}">
+                                		 <a href="javascript:;"
+                                       onclick="javascript:doExport();" class="btn-1"
+                                       title="Xuất kho"><span><span>Xuất kho</span></span></a>
+                                    	 <a href="javascript:;"
+                                       onclick="javascript:cancel();" class="btn-1"
+                                       title="Hủy bỏ"><span><span>Hủy bỏ</span></span></a>
+                                    <a href="javascript:;"
+                                       onclick="javascript:edit();" class="btn-1"
+                                       title="Chỉnh sửa"><span><span>Chỉnh sửa</span></span></a>
+                                	</c:if>
+                                  
+                                </c:if>
+                                <a href="${orderListURL}" class="btn-1"
+                                   title="Danh sách Hàng đặt"><span><span>Danh sách Hàng đặt</span></span></a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">&#160;</td>
+                        </tr>
+                        <tr id="tr_edit" style="display:none">
+                            <td align="right" style="vertical-align:top"><b>Chỉnh sửa lại danh sách đặt:</b>
+                            </td>
+                            <td>
+                                <form id="updateOrder" name="updateOrder"
+                                      method="POST" action="${updateOrderURL}${order.id}">
+                                    <table width="80%" border="0" cellspacing="0" cellpadding="0"
+                                           class="table-2">
+                                        <thead>
+                                            <tr>
+                                                <td width="4%">STT</td>
+                                                <td width="13%">Mã</td>
+                                                <td>Tên</td>
+                                                <td width="13%">Số Lượng</td>
+                                                <td width="10%">ĐVT</td>
+                                                <td width="13%">Giá</td>
+                                                <td width="15%">Thành Tiền</td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:set var="total" value="0"></c:set>
+                                            <c:set var="totalQuantity" value="0"></c:set>
+                                            <c:forEach items="${order.orderDetailsList}" var="item" varStatus="status">
+                                                <tr>
+                                            
+                                            <td align="center">${status.index+1}</td>
+                                            <td>${item.goodss.goodsCode}</td>
+                                            <td>${item.goodss.name}</td>
+                                            <td align="right">
+                                                <fmt:parseNumber value="${item.quantity}" var="quantity" />
+                                                <c:set var="totalQuantity" value="${totalQuantity + quantity}"></c:set>
+                                                <input hidden="hidden" id="txtId${status.index}" name="txtId${status.index}" value="${item.id}" />
+                                                <input id="txtQuantity${status.index}" name="txtQuantity${status.index}" disabled="disabled" style="width:70px"  type="text"  value="${quantity}"
+                                                       onkeyup="restrictInputDoubleOnly(event, this); calculate(this);"  autocomplete="off"/>
+                                            </td>
+                                            <td align="left">${item.goodsUnits.units.name}</td>
+                                            <td align="right" id="price_txtQuantity${status.index}">
+                                                <fmt:parseNumber value="${item.price}" var="price" />
+                                                <fmt:formatNumber type="number" pattern="###,###" value="${item.price}"  />
+                                            </td>
+                                            <td align="right" id="total_txtQuantity${status.index}">                                             
+                                                <fmt:formatNumber type="number" pattern="###,###" value="${price * quantity}"/>
+                                            </td>
+                                            <c:set var="total" value="${total + price * quantity}"></c:set>
+                                            </tr>		
+                                    </c:forEach>
+                                    <tr>
+                                            <td align="center" colspan="3"><b>Tổng</b></td>
+                                            <td align="right" id="quantity">
+                                                <b><fmt:formatNumber type="number" pattern="###,###" value="${totalQuantity}" /></b>
+                                            </td>
+                                            <td align="right">
+                                            </td>
+                                            <td align="right">
+                                            </td>
+                                            <td align="right" id="total">
+                                                <b><fmt:formatNumber type="number" pattern="###,###" value="${total}" /></b>
+                                            </td>
+                                        </tr>	
+                                        <tr>
+                                            <td colspan="7" align="right">
+                                                <a href="javascript:;"
+                                                   onclick="javascript:doUpdate();" class="btn-1"
+                                                   title="Cáº­p nháº­t"><span><span>Cập nhật</span></span></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>                                    
+                                    </table>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

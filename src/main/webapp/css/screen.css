@@ -1,0 +1,561 @@
+/**************************/
+/*        CSS reset       */
+/**************************/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend {margin:0; padding:0; border:0; outline:0; font-size:100%; vertical-align:baseline; background:transparent;}
+body {line-height:1;}
+ol, ul {list-style:none;}
+blockquote, q {quotes:none;}
+blockquote:before, blockquote:after,
+q:before, q:after {content:''; content:none;}
+:focus {outline:0;}
+ins {text-decoration:none;}
+del {text-decoration:line-through;}
+p{ line-height:16px}
+html{ height:100%}
+/*caption, th, td {text-align: left; font-weight: normal;}
+table, caption, tbody, tfoot, thead, tr, th, td {font-size:100%; vertical-align:baseline; outline:0; margin:0; padding:0;}
+table { border-collapse:collapse; border-spacing: 0;}*/
+/******* Default rules tags *******/
+body {font-family:Tahoma, Geneva, sans-serif; color:#333333; font-size:11px; background-color:#1A5CBA; height:100%;}
+h1 {font-size:20px;}
+h2 {font-size:18px; }
+h3 {font-size:16px;}
+h4 {font-size:12px; padding:15px 0}
+h5 {font-size:12px;}
+a{text-decoration:none; color:#1A5CBA;}
+a:hover{text-decoration:none; color:#0099cc}
+input, select, textarea {font-size:11px; border:1px solid #CCC; font-family:Arial, Helvetica, sans-serif; height: 17px}
+input[type="checkbox"]{ border:none;}
+/*0. ///////Structure all templates///////*/
+#container { font-size:11px; width:100%; margin:0; overflow:hidden; height:100%; position:relative}
+/*******Header*******/
+#header{ height:48px; overflow:hidden}
+#header h1 { float:left; padding:5px 0 0 5px}	
+#header ul{ float:right; padding-top:15px; overflow:hidden}
+#header ul li{ list-style:none; display:block; float:left; padding:0 10px; vertical-align:middle; font-size:9px; font-weight:bold}
+#header ul li a{ color:#fff}
+#header ul li a:hover{ color:#000}
+#header ul li.first span{ width:21px; height:16px; padding-top:5px; vertical-align:middle; display:inline-block; text-align:center; background:url(../images/ui-icon.png) 0 0 no-repeat;}
+#header ul li.first a{ color:#000}
+
+/*******Login Header*******/
+#header-login {
+    height: 180px;
+    text-align: center;
+    margin: 1em 0;
+}
+
+.header-login-helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#header-login-logo {
+    /*background: #1956AC;*/
+    vertical-align: middle;
+    max-height: 180px;
+    max-width: 280px;
+}
+/*******main*******/
+#main { overflow:hidden; background-color:#1A5CBA; height:100%;}
+/********Context*******/			
+#wrap-context{ width:20%; float:left; background:url(../images/line_r.png) 100% 0 repeat-y; padding-right:2px; position:relative}
+#inner-context{ background:#333333 url(../images/bgd_main.png) 0 0 repeat-x; padding-top:2px}
+.context{ width:97%;}
+.context-title{ height:20px; background:url(../images/ui-icon.png) 100% -75px no-repeat; padding:5px 0}
+.context-title img{ padding:5px 0 0 10px}
+.bor-right{ width:7px; height:8px; position:absolute; top:0px; right:0px; background:url(../images/ui-icon.png) -18px -307px no-repeat}
+.bor-left{ width:7px; height:8px; position:absolute; top:0px; left:0px; background:url(../images/ui-icon.png) 0 -307px no-repeat}
+.wrap-context-block{ width:100%; background-color:#e8e8e8; border-top:solid 1px #cbcbcb; overflow:auto}
+.context-block{ width:100%;}
+/********Content*******/
+#wrap-content{ width:79%; float:right; background:url(../images/line_l.png) 0 0 repeat-y; padding-left:2px; position:relative}
+#inner-content{ background:#333333 url(../images/bgd_main.png) 0 0 repeat-x; padding-top:2px;}
+#content{ margin:0 0 0 12px; background-color:#ffffff; border-top:solid 1px #666666; border-left:solid 1px #666666; padding:20px 0 20px 10px; overflow:auto}
+.content-title{ height:28px; background:url(../images/ui-line.png) 0 -116px repeat-x; margin:12px 0 0 12px}
+.content-title h2{ display:inline-block; height:28px; background:url(../images/bgd_title_h2.png) 100% 0 no-repeat; padding-right:33px}
+.content-title h2 span{ display:block; height:28px; line-height:28px; font-size:11px; text-transform:uppercase; font-weight:bold; padding: 0 35px 0 10px; border-left:solid 1px #999999; background:url(../images/ui-line.png) 0 -148px repeat-x}
+#content h3{ height:20px; margin-bottom:20px; border-bottom:solid 1px #666666; position:relative; font-size:12px;}
+#content h3 span{ display:block; padding:0 10px 0 0; background-color:#e8e8e8; position:absolute; top:13px; left:0}
+/********footer********/
+#footer { width:100%; height:52px; background:url(../images/bgloop-footer.png) repeat-x; position:absolute; bottom:0; left:0; z-index:10}	
+#footer_cnt{ width:442px; height:25px; margin:0 auto; text-align:center; padding-top:5px; font-weight:bold; color:#fff; font-size:11px; background:url(../images/bgd_footer.png) 0 0 no-repeat}
+.HiddenBg{ background:none !important}	
+#footer_cnt p span{ color:#0099cc}	
+/*1///////Style on ever page///////*/
+/*block navi left*/	
+.block-nav-left{}
+.block-nav-left .title-1{ height:21px; padding:4px 5px 0 10px; overflow:hidden; background:url(../images/ui-line.png) 0 0 repeat-x}	
+.block-nav-left .title-1 a{ color:#fff}
+.block-nav-left .title-1.active{ font-weight:bold}
+.block-nav-left .title-1 span{ float:left; margin-left:5px}
+.block-nav-left .title-1 img{ float:left}
+.block-nav-left .title-1 img.icon-03{ float:right}
+.block-nav-left ul{}
+.block-nav-left li{ list-style:none; display:block; height:25px; line-height:25px; padding-left:35px; background:url(../images/ui-line.png) 0 -26px repeat-x}
+.block-nav-left li a{ display:block; background:url(../images/ui-icon.png) 0 -205px no-repeat; padding-left:20px}
+/* list of homepage */
+.lst-home{ overflow:hidden; padding:10px 0 0 55px}
+.lst-home li{ list-style:none; display:block; float:left; width:182px; margin:0 50px 40px 0; text-align:center}
+.lst-home li img{ display:block; border:solid 1px #666666}
+.lst-home li span{ display:block; padding-top:10px; font-weight:bold}
+.lst-home li.last{ width:190px}
+.lst-home li.last img{ border:none; padding-bottom:3px}
+/* block 01 */
+.block-01{ width:96.5%; border:solid 1px #ccc; background-color:#fff; padding:10px; margin-top:15px; position:relative}
+.block-01 h5{ background:#e8e8e8; position: absolute; top:-12px; left:10px; padding:5px 10px}
+/* block 02 */
+.block-02{ width:96.5%; border:solid 1px #ccc; background-color:#fff; padding:20px 10px; margin:10px 0 30px 0; text-align:center; font-weight:bold; font-size:12px}
+/* style 01 */
+.style-01{ padding-bottom:10px}
+.style-01 dt{ width:98.5%; overflow:hidden; padding-bottom:10px}
+.style-01 dt span{ font-weight:bold; color:#6699ff}
+.style-01 dt span.lnk-01{ float:right}
+.style-01 dd{ background:url(../images/icon.png) 10px 4px no-repeat; padding:0 0 10px 25px}
+.style-01 dd span{ display:block; padding:5px 0 0 0}
+/*3. ///////Block common of templates///////*/
+/*table*/
+.table-1 td{ padding-bottom:0px}
+.table-1 td span{ font-size:10px}
+.table-2{ border-top:solid 1px #6d6d6d; border-right:solid 1px #6d6d6d;}
+.table-2 .warning{ color:red;}
+.table-2 thead td{ background-color:#6699ff; color:#fff; padding:10px 0; text-align:center}
+.table-2 td{ border-bottom:solid 1px #6d6d6d; padding:5px 0; border-left:solid 1px #6d6d6d; padding:5px}
+.table-2 tbody{ background-color:#fff;}
+/*paging*/
+.paging { float:right}
+.paging li{ list-style:none; display:block; float:left; padding:0 10px; font-weight:bold}
+.paging li.pd0{ padding:0 0 0 10px}
+.paging li a:hover{ color:#6699ff}
+/*fckDefault*/			
+.fckDefault {overflow:hidden; line-height:16px }
+.fckDefault ul , .editorInfo ol{ margin:0 0 10px 0;}
+.fckDefault ul li { margin:0; list-style-type:disc; padding:0 0 10px 0; list-style:inside;}
+.fckDefault ol li { margin:0; list-style-type:decimal!important; list-style:inside; padding:0 0 10px 0;}
+
+.field-label { font-size:9px; font-weight:bold}
+/*4 ///////Layer common of templates///////*/	
+/*5 ///////Style add from js///////*/
+/*6. ///////Form common to all templates///////*/
+/*class common on form : checkbox, radio*/
+.chekbox { width:13px; height:13px; vertical-align:middle; border:0;}
+/*form General*/
+.frm-general {}
+.frm-general label{ font-size:9px; font-weight:bold}
+.frm-general label.txt-r{ text-align:right}
+.frm-general input{ width:85%; height:20px; padding:2px 5px; border:solid 1px #ccc; color:#333333}
+.frm-general select{ width:90%; height:25px; padding:2px 2px 2px 5px; border:solid 1px #ccc; color:#333333}
+.frm-popup1{}
+.frm-popup1 label{ width:160px; float:left; font-size:9px; font-weight:bold}
+.frm-popup1 label.wth01{ width:80px}
+.frm-popup1 label.txt-r{ text-align:right}
+.frm-popup1 select{ width:490px; height:25px; padding:2px 2px 2px 5px; border:solid 1px #ccc; color:#333333; float:left}
+.frm-popup1 select.wth01{ width:100px; margin-right:40px}
+.frm-popup2{}
+.frm-popup2 p{ overflow:hidden; padding-bottom:10px}
+.frm-popup2 p.color-2{ padding:20px 0 30px 0}
+.frm-popup2 label{ width:100px; float:left; font-size:9px; font-weight:bold}
+.frm-popup2 input{ width:300px; height:25px; padding:2px 2px 2px 5px; border:solid 1px #ccc; color:#333333; float:left}
+.frm-popup3{}
+.frm-popup3 p{ overflow:hidden; padding-bottom:10px}
+.frm-popup3 p.color-2{ padding:20px 0 30px 0}
+.frm-popup3 label{ width:150px; float:left; font-size:9px; font-weight:bold; text-align:right; margin-right:10px; line-height:24px;}
+.frm-popup3 input[type="text"],.frm-popup3 input[type="password"]{ width:300px; height:21px; padding:2px 2px 2px 5px; border:solid 1px #ccc; color:#333333; float:left}	
+.frm-popup3 dl{ overflow:hidden;}
+.frm-popup3 dl dd{ width:150px; float:left; text-align:right; margin-right:10px;}	
+.frm-popup3 dl dt{ width:300px; float:left}
+/* popup */
+.wrap-popup-1{ width:670px; padding:10px; background-color:#fff; border:solid 1px #666666}
+.wrap-popup-1 .lnk-close{ overflow:hidden}
+.wrap-popup-1 .lnk-close a{ float:right}
+.wrap-popup-1 h2{ text-transform:uppercase; text-align:center; padding-bottom:20px; font-size:14px}
+.wrap-popup-1 h3{ height:5px; padding-bottom:10px; border-bottom:solid 1px #666666; margin-bottom:20px; position:relative}
+.wrap-popup-1 h3 span{ background-color:#fff; font-size:12px; padding:5px 10px 5px 0; position:absolute; top:2px; left:0}
+.wrap-popup-1 p{ padding-bottom:10px; overflow:hidden}
+.wrap-popup-1 .txt-02{ padding-left:80px}
+.wrap-popup-2{ width:514px; height:413px; padding:7px 10px 10px 10px; background:url(../images/bgd_popup.png) 0 0 no-repeat}
+.wrap-popup-2 .title-1{ overflow:hidden; padding-bottom:30px}
+.wrap-popup-2 .title-1 h3{ float:left; background:url(../images/icon_1.png) 0 0 no-repeat; padding:5px 30px; font-size:12px; color:#fff}
+.wrap-popup-2 .title-1 a{ float:right}
+.wrap-popup-2 h2{ text-align:center; font-size:12px; padding-bottom:20px}
+.w515{ }
+.wrap-popup-3{ width:514px; height:253px; padding:7px 10px 10px 10px; background:url(../images/bgd_popup_03.jpg) 0 0 no-repeat; margin:auto;}
+.wrap-popup-3 .title-1{ overflow:hidden; padding-bottom:30px}
+.wrap-popup-3 .title-1 h4{ float:left; padding:5px 10px; font-size:12px; color:#fff}
+.wrap-popup-3 h2{ text-align:center; font-size:12px; padding-bottom:20px}
+a.redTxt{ color:#cc0000; text-decoration:none;}
+.errorMessage { color:#cc0000; text-decoration:none;}
+.infoMessage { color:#028B3D; text-decoration:none;}
+.infowarning { color:#FF8000; text-decoration:none;}
+a.redTxt:hover{ text-decoration:underline;}
+/*7. ///////Buttons common to all templates///////*/
+/*Button link*/
+/*Button input*/
+.btn-1{ height:29px; display:inline-block; background:url(../images/ui-btn.png) 0 0 no-repeat; padding-left:18px; font-size:10px; font-weight:bold}
+.btn-1 span{ height:29px; display:inline-block; background:url(../images/ui-btn.png) 100% -30px no-repeat; padding-right:18px}
+.btn-1 span span{ height:29px; line-height:25px; display:inline-block; background:url(../images/ui-btn.png) 0 -60px repeat-x; padding:0 10px;text-align: center}
+a:hover.btn-1{ background:url(../images/ui-btn.png) 0 -90px no-repeat; cursor:pointer}
+a:hover.btn-1 span{ background:url(../images/ui-btn.png) 100% -120px no-repeat}
+a:hover.btn-1 span span{ background:url(../images/ui-btn.png) 0 -150px repeat-x; color:#000}
+/*8. ///////Classes common to all templates///////*/
+.hidden {display:none}
+.floatL { float:left}
+.floatR { float:right}
+.txtAlignC { text-align:center}
+.bor-top{ border-top:solid 1px #6d6d6d; padding:10px 0 10px 0}
+.p10t{ padding-top:10px}
+.color-1{ color:#0099cc}
+.color-2{ color:#fff}
+.txt-01{ padding-bottom:5px}
+.txt-01 span{ display:inline-block; padding-right:40px}
+.txt-01 a{ display:inline-block; text-decoration:underline; color:#0099cc; font-weight:bold; padding-right:50px}
+
+/*9. CSS Sprites ///////Styles sprite to all templates///////*/
+.ui-icon{ background:url(../images/ui-icon.png) 0 0 no-repeat}
+.icon-01{ width:18px; height:22px; background-position:0 -25px; vertical-align:middle}
+.icon-02{ width:20px; height:22px; background-position:0 -55px; vertical-align:middle}
+.icon-03{ width:16px; height:15px; background-position:0 -110px; float:right}
+.icon-03:hover{ background-position:-30px -110px}
+.icon-04, .active .icon-03{ width:16px; height:15px; background-position:0 -130px; float:right}
+.icon-04:hover, .active .icon-03:hover{ background-position:-30px -130px}
+.icon-03-blue{ width:16px; height:15px; padding-right: 10px;background-position:-30px -110px}
+.icon-03-blue:hover{ cursor:pointer}	
+.icon-04-blue{ width:16px; height:15px; padding-right: 10px;background-position:-30px -130px}
+.icon-04-blue:hover{ cursor:pointer}	
+.icon-05{ width:20px; height:17px; background-position:0 -155px; vertical-align:middle}
+.icon-06{ width:20px; height:17px; background-position:0 -180px; vertical-align:middle}
+.icon-07{ width:20px; height:17px; background-position:0 -235px; vertical-align:middle}
+.icon-08{ width:20px; height:17px; background-position:0 -259px; vertical-align:middle}
+.icon-09{ width:20px; height:17px; background-position:0 -283px; vertical-align:middle}
+.icon-10{ width:29px; height:25px; background-position:0 -323px; vertical-align:middle; margin-right:10px}
+.icon-11{ width:16px; height:10px; background-position:0 -375px}
+a:hover .icon-11{ background-position:-24px -375px}
+.icon-12{ width:16px; height:10px; background-position:-24px -390px}
+a:hover .icon-12{ background-position:0 -390px}
+.icon-13{ width:12px; height:10px; background-position:0 -405px}
+a:hover .icon-13{ background-position:-24px -405px}
+.icon-14{ width:12px; height:10px; background-position:-24px -420px}
+a:hover .icon-14{ background-position:0 -420px}
+.icon-close{ width:18px; height:19px; background-position:0 -350px}
+.icon-close:hover{ background-position:-25px -350px}	
+
+/* Modified for Pagination control */
+.ui-icon.icon-first{ width:16px; height:10px; background-position:0 -375px}
+a:hover  .ui-icon.icon-first{ background-position:-24px -375px}
+
+.ui-icon.icon-prev{ width:12px; height:10px; background-position:0 -405px}
+a:hover  .ui-icon.icon-prev{ background-position:-24px -405px}
+
+.ui-icon.icon-next{background-position:0 -420px; width:12px; height:10px;}
+a:hover .ui-icon.icon-next{background-position:-24px -420px}
+
+.ui-icon.icon-last{background-position:0 -390px; width:16px; height:10px;}
+a:hover .ui-icon.icon-last{background-position:-24px -390px}
+
+a.stat-disable{ color:#999; cursor:default;}
+a.stat-disable:hover{ color:#999 !important;}
+a.stat-disable .icon-first,
+a.stat-disable .icon-first:hover{ width:16px; height:10px; background-position:0 -435px !important;}		
+a.stat-disable .icon-last,
+a.stat-disable .icon-last:hover{ width:16px; height:10px; background-position:-24px -435px !important;}	
+a.stat-disable .icon-next,
+a.stat-disable .icon-next:hover{ width:12px; height:10px; background-position:0 -450px !important;}			
+a.stat-disable .icon-prev,
+a.stat-disable .icon-prev:hover{ width:12px; height:10px; background-position:-24px -450px !important;}
+/* END: Modified for Pagination control */
+
+/*10. End///////ID common to all templates///////*/
+
+
+.buttonForm {background-color: #616161;
+             color: white;
+             width: 100px;
+             height: 20px;
+             vertical-align: middle;}
+.mapFiler{
+    display: block;
+}
+.mapFiler .field{
+    margin-right: 10px;
+    float: left;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.mapFiler .field .label_filter{
+    margin-right: 5px;
+    width: 82px;
+    float: left;
+}
+#map_canvas{
+    float: left;
+}
+.mapFiler .field input[type=text]:not(.dateField){
+    width: 130px;
+}
+.mapFiler .field select{
+    width: 133px;
+}
+.mapFiler .field .dateField{
+    width: 113px;
+}
+.zoomIn{
+    background: url("../images/zoom_in.png")left top no-repeat;
+}
+.zoomOut{
+    background: url("../images/zoom_out.png")left top no-repeat;
+}
+#zoomLink {
+    display: inline;
+    float: right;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 10px;
+    padding-bottom: 5px;
+    padding-left: 24px;
+}
+#fullscreenContainer{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background-image: url("../images/popup_background.png");
+    background-repeat: repeat;
+    overflow: auto;
+}
+.pagination {
+    padding-top:10px;
+    padding-bottom:15px;
+}
+.smallestWidth {
+    width:50px;
+}
+.smallerWidth {
+    width:100px;
+}
+.smallWidth {
+    width:150px;
+}
+.mediumWidth {
+    width:200px;
+}
+.largeWidth {
+    width:250px;
+}
+.largerWidth {
+    width:300px;
+}
+.largestWidth {
+    width:500px;
+}
+.groupHeader {
+    background-color: #D6D6D6;
+    font-size: 12px;
+    font-weight: bold;
+    height: 20px;
+    padding-left: 5px;
+}
+.subGroupHeader {
+    background-color: #EDEDED;
+    font-size: 10px;
+    font-weight: bold;
+    height: 20px;
+    padding-left: 5px;
+}
+
+#loading {
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    display: block;
+    opacity: 0.7;
+    background-color: #fff;
+    z-index: 99;
+    text-align: center;
+}
+
+#loading-image {
+    position: absolute;
+    top: 40%;
+    left: 40%px;
+    z-index: 100;
+}
+
+/*
+ kenh ban hang 
+ ---------------------------
+*/
+#content-tittle_kbh {
+    background: url("../images/ui-line.png") repeat-x scroll 0 -116px
+        transparent;
+    height: 28px;
+    margin: 12px 0 0;
+}
+
+#panel_left {
+    width: 30%;
+    height: 500px;
+    float: left;
+    overflow: scroll;
+}
+
+#panel_right {
+    width: 70%;
+    float: left;
+    height: 500px;
+}
+
+#content_kpp {
+    background-color: #FFFFFF;
+    border-left: 1px solid #666666;
+    border-top: 1px solid #666666;
+    margin: 0 0 0 12px;
+    overflow: auto;
+    padding: -1px 0 20px 10px;
+}
+
+#top_content_kpp {
+    width: 100%;
+    height: 190px;
+}
+
+#botton_content_kpp {
+    width: 100%;
+    height: 310px;
+}
+
+fieldset {
+    border: 1px solid green
+}
+
+legend {
+    padding: 0.2em 0.5em;
+    border: 1px solid green;
+    /*color: green;*/
+    /*font-size: 90%;*/
+    /*text-align: right;*/
+    /*font-size: 15px;*/
+}
+
+#errorID {
+    font-size: 12px;
+    color: red;
+}
+
+#result_title {
+    font-size: 15px;
+    color: blue;
+    margin-left: 5px;
+    padding-top: 20px;
+}
+
+
+#result {
+    font-size: 15px;
+    margin-left: 5px;
+    padding-top: 15px;
+}
+
+#table-3 {
+    border: 1px solid #e3e3e3;
+    background-color: #f2f2f2;
+    width: 100%;
+    border-radius: 3px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+}
+
+#table-3 td,#table-3 th {
+    padding: 1px;
+    color: #333;
+}
+
+#table-3 thead {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    padding: .1em 0 .1em .1em;
+    text-align: left;
+    color: #4B4B4B;
+    background-color: #C8C8C8;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2),
+        to(#e3e3e3), color-stop(.6, #B3B3B3) );
+    background-image: -moz-linear-gradient(top, #D6D6D6, #B0B0B0, #B3B3B3 90%);
+    border-bottom: solid 1px #999;
+}
+
+#table-3 th {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 15px;
+    font-style: normal;
+    font-weight: normal;
+    text-align: left;
+    text-shadow: white 1px 1px 1px;
+}
+
+#table-3 td {
+    line-height: 15px;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    border-bottom: 1px solid #fff;
+    border-top: 1px solid #fff;
+}
+
+#table-3 td:hover {
+    background-color: #fff;
+}
+
+#errorFail {
+    font-size: 12px;
+    color: red;
+}
+
+#errorSuccess {
+    font-size: 12px;
+    color: blue;
+}
+
+.btnUpdateInvisible{
+    display: none;
+}
+
+.btnUpdateVisible{
+    display: inline-block;
+}
+
+#content_head {
+    width: 100%;
+    height: 30px;
+    margin-top: -20px;
+
+}
+#content_table{
+    width: 100%;
+    height: 400px;
+}
+.loading-indicator {
+    height: 100%;
+    width: 100%;
+    background: url( '../images/loading-wait.gif' );
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+.loading-indicator-overlay {	
+    position:absolute;
+    height:100%;
+    width:100%;
+    background-color: #FFFFFF;
+    opacity: 0.6;
+    filter: alpha(opacity = 60);
+    top:0;
+    left: 0;
+}

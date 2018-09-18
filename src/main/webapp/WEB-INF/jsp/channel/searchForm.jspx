@@ -1,0 +1,146 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="jsFolder" value="/resources/js" />
+        <spring:url var="cssFolder" value="/resources/css" />
+
+	<![CDATA[
+		<script type="text/javascript" src="${jsFolder}/channelsearch.js?v=5"></script>
+                <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+                <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+	]]>		
+	<style type="text/css">
+		.box{
+			padding:8px;
+			border-bottom:1px solid #6699ff;
+			border-left:1px solid #6699ff;
+			margin-bottom:8px;
+			height:200px;
+			overflow-y:scroll;
+		}
+		.newbox{
+			padding:8px;
+			border:1px solid red;
+			margin-bottom:8px;
+			height:50px;
+		}
+	</style>
+	<div id="searchDialog" style="display: none;">
+		<table width="100%" cellpadding="0" cellspacing="5"
+						class="TableThongTinTram" border="0" name="searchDialog">
+			<tr>
+				<td>
+					<table width="100%" cellpadding="0" cellspacing="5"
+						class="TableThongTinTram" border="0">
+						<tr>
+							<td align="right" width="13%">
+								Loại thành viên:
+							</td>
+							<td align="center" width="15%">
+								<select name="s_type" id="s_type" style="width:100%">
+									<option value="1">Tổng đại lý / Đại lý</option>
+									<c:if test="${level != 1}">
+										<option value="2">Điểm bán hàng</option>
+										<option value="3">NVBH</option>
+									</c:if>
+								</select>
+							</td>
+							<td align="right" width="6%">
+								Quận:
+							</td>
+							<td align="center" width="19%">
+								<select name="s_dist" id="s_dist" style="width:90%" onchange="selectTown(this, '#s_ward');">
+									<option value="0">--- Quận/Huyện ---</option>
+									<c:forEach items="${listQuanHuyen}" var="item">
+										<option value="${item.id}">${item.name}</option>
+									</c:forEach>
+								</select>
+							</td>
+							<td align="right" width="6%">
+								Phường:
+							</td>
+							<td align="center" width="19%">
+								<select name="s_ward" id="s_ward" style="width:90%">
+									<option value="0">--- Phường/Xã ---</option>
+								</select>
+							</td>
+							<td align="right" width="8%">
+								Mã đại lý:
+							</td>
+							<td align="center">
+								<input name="s_code" id="s_code" style="width:90%" onkeypress="if(event.keyCode==13) {searchMember();}">
+								</input>
+							</td>
+						</tr>
+					</table>	
+				</td>
+			</tr>
+			<tr>
+				<td align="center">
+					<a href="javascript:;" onclick="searchMember();" class="btn-1"><span><span style="width:50px">Tìm</span></span></a>
+					<a href="javascript:;" onclick="openAddForm();" class="btn-1"><span><span style="width:50px">Tạo mới</span></span></a>
+					<!--<c:if test="${!levelParentList.isEmpty()}">
+					</c:if>
+				--></td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" cellpadding="0" cellspacing="0"
+						class="TableThongTinTram" border="0">
+						<tr>
+							<td align="center">
+								<b>Danh sách tìm kiếm</b> <br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<style>
+									.box {
+										padding: 0;
+										border-top: 1px solid #6699FF;
+										height: 300px;
+									}
+								</style>
+								<div class="box">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0" class="table-2">
+										<thead>
+											<tr>
+												<td width="5%"><input type="checkbox" id="checkbox_all" onchange="selectAllMember(this)"/></td>
+												<td width="10%">Mã TĐL / ĐL</td>
+												<td width="30%">Tên TĐL / ĐL</td>
+												<td width="45%">Địa chỉ liên lạc</td>
+												<td width="10%">Số ĐT</td>
+											</tr>
+										</thead>
+										<tbody id="searchTable">
+										
+										</tbody>
+									</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="javascript:;" onclick="addMember();" class="btn-1"><span><span>Thêm</span></span></a>
+					<a href="javascript:;" onclick="tb_remove();" class="btn-1"><span><span>Bỏ qua</span></span></a>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="loading" style="display:none;z-index:103">
+	  <img id="loading-image" src="${imagesFolder}/loading.gif" alt="Đang xử lý dữ liệu..." title="Đang xử lý dữ liệu..." width="100px" />
+	</div>
+</div>

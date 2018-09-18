@@ -1,0 +1,89 @@
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="content_wrapper" xmlns:form="http://www.springframework.org/tags/form" disable-url-rewriting="true">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imageFolder" value="/resources/images" />
+    <spring:message code="security_login_form_name_message" var="name_msg" htmlEscape="false" />
+    <spring:message code="security_login_form_password_message" var="pwd_msg" htmlEscape="false" />
+    <spring:url value="/WebLogin" var="form_url" />
+
+    <div id="main">
+        <div class="wrap-popup-3"  style="background-size: contain;">
+            <div class="title-1">
+       	        <h4>Đăng nhập vào chương trình CSĐBH</h4>
+            </div>
+            <form:form id="loginForm" commandName="user" action="${form_url}" method="POST" class="frm-popup3">
+                <h2 class="errorMessage">
+                    <c:choose>
+                        <c:when test="${not empty failed and failed}">
+                            Tên đăng nhập hoặc mật khẩu không hợp lệ.
+                        </c:when>
+
+                        <c:when test="${not empty codeFailed and codeFailed}">
+                            Thông tin công ty không hợp lệ.
+                        </c:when>
+                        <c:when test="${not empty usernameFailed and usernameFailed}">
+                            Tên tài khoản không hợp lệ (name@code).
+                        </c:when>
+                        <c:when test="${not empty userNotWork and userNotWork}">
+                            Nhân viên đã nghỉ việc.
+                        </c:when>
+                        <c:when test="${not empty userLock and userLock}">
+                            Tài khoản đang bị khóa.
+                        </c:when>
+                        <c:when test="${not empty expired and expired}">
+                            Công ty đã hết hạn sử dụng.<br />
+                            Vui lòng truy cập <a href="http://msales.vn/" target="_blank" title="msales.vn">msales.vn</a> để biết thêm chi tiết.
+                        </c:when>
+                        <c:when test="${not empty expiredRegister and expiredRegister}">
+                            Công ty đã hết thời gian trải nghiệm.<br />
+                            Vui lòng truy cập <a href="http://msales.vn/" target="_blank" title="msales.vn">msales.vn</a> để biết thêm chi tiết.
+                        </c:when>
+                        <c:when test="${not empty serverFailed and serverFailed}">
+                            Lỗi dữ liệu.
+                        </c:when>
+                    </c:choose>                    
+                </h2>
+                <p>
+                    <label>Tên đăng nhập:</label>
+                    <form:input type="text" path="username" value="" name="j_username" id="j_username" onkeypress="if (event.keyCode == 13) {
+                                document.forms[0].submit();
+                                }" />
+                </p>
+                <p>
+                    <label>Mật khẩu:</label>
+                    <form:password path="password" name="j_password" id="j_password" onkeypress="if (event.keyCode == 13) {
+                                   document.forms[0].submit();
+                                   }"/>
+                </p>
+                <dl>
+                    <dd><img src="${imageFolder}/security-login.png" width="80px" height="80px" style="margin-right:25px;" /></dd>
+                    <dt>
+                    <c:choose>
+                        <c:when test="${remember}">
+                            <p>
+                                <input style="float: left;" type="checkbox" checked="checked"  name="remember_checkbox" id="remember_checkbox"  />  
+                                <label style="float: left;text-align: left;" for="remember_checkbox"> Ghi nhớ lại mật khẩu của tôi </label>
+                            </p>
+                        </c:when>
+                        <c:otherwise>
+                            <p>
+                                <input style="float: left;" type="checkbox"  name="remember_checkbox" id="remember_checkbox"  /> 
+                                <label style="float: left;text-align: left;" for="remember_checkbox"> Ghi nhớ lại mật khẩu của tôi </label>
+                            </p>
+                        </c:otherwise>
+                    </c:choose>
+
+                    <p>
+                        <!--<script type="text/javascript">Spring.addDecoration(new Spring.ValidateAllDecoration({elementId:'proceed', event:'onclick'}));</script>
+                        --><a href="javascript:document.getElementById('loginForm').submit();" id="proceed" class="btn-1" title="Đăng nhập"><span><span>Đăng nhập</span></span></a>
+                    </p>
+                    </dt>
+                </dl>
+            </form:form>
+        </div>
+    </div>
+
+</div>

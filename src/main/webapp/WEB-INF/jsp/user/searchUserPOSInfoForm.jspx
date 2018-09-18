@@ -1,0 +1,130 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="jsFolder" value="/resources/js" />
+        <spring:url var="cssFolder" value="/resources/css" />
+
+	<![CDATA[
+		<script type="text/javascript" src="${jsFolder}/usersearch.js?v=1"></script>
+                <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+                <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+	]]>		
+	<style type="text/css">
+		.box{
+			padding:8px;
+			border-bottom:1px solid #6699ff;
+			border-left:1px solid #6699ff;
+			margin-bottom:8px;
+			height:200px;
+			overflow-y:scroll;
+		}
+		.newbox{
+			padding:8px;
+			border:1px solid red;
+			margin-bottom:8px;
+			height:50px;
+		}
+	</style>
+	<div id="searchUserPOSDialog" style="display: none;">
+		
+		<table width="100%" cellpadding="0" cellspacing="5"
+						class="TableThongTinTram" border="0">
+			<tr>
+				<td>
+						Chi Nhánh:
+						<select id="upos_chiNhanh" path="upos_chiNhanh" cssStyle="width:120px;" onchange="selectBranch(this);">
+							<c:forEach items="${branchList}" var="item">
+								<option value="${item.id}">${item.name}</option>
+							</c:forEach>
+						</select>
+						&#160;
+						
+					
+						<select name="s_dist" id="s_dist" style="width:120px" onchange="selectTown(this, '#s_ward');">
+							<option value="0">--- Quận/Huyện ---</option>
+							<c:forEach items="${listQuanHuyen}" var="item">
+								<option value="${item.id}">${item.name}</option>
+							</c:forEach>
+						</select>
+						&#160;	
+						<select name="s_ward" id="s_ward" style="width:120px">
+							<option value="0">--- Phường/Xã ---</option>
+						</select>
+						&#160;
+						<label>
+							Mã/Tên ĐBH:
+						</label>
+						<input name="upos_code" id="upos_code" style="width:120px;" onkeypress="if(event.keyCode==13) {searchVasAcc();}">
+						</input>
+				</td>
+			</tr>
+			<tr>  
+				<td align="center">
+					<a href="javascript:;" onclick="searchUserPOS();" class="btn-1"><span><span style="width:50px">Tìm</span></span></a>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<table width="100%" cellpadding="0" cellspacing="0"
+						class="TableThongTinTram" border="0">
+						<tr>
+							<td align="center">
+								<b>Danh sách tìm kiếm</b> <br/>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<style>
+									.box {
+										padding: 0;
+										border-top: 1px solid #6699FF;
+										height: 300px;
+									}
+								</style>
+								<div class="box">
+									<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+								
+									<tr>
+										<td><input type="checkbox" id="checkbox_all" onchange="selectAllMember(this)"/></td>
+										<td>Mã ĐBH</td>
+										<td>Tên ĐBH</td>
+										<td>Địa chỉ liên lạc</td>
+										<td>Số ĐT</td>
+									</tr>
+								</thead>
+								<tbody id="searchUserPOSInfoTable">
+									
+								</tbody>
+							</table>
+								</div>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<a href="javascript:;" onclick="addMember();" class="btn-1"><span><span>Thêm</span></span></a>
+					<a href="javascript:;" onclick="tb_remove();" class="btn-1"><span><span>Bỏ qua</span></span></a>
+				</td>
+			</tr>
+		</table>
+		<input type="hidden" name="upos_userId" id="upos_userId" value="" />	
+		<input type="hidden" name="upos_tennv" id="upos_tennv" value="" />
+	</div>
+	<div id="loading" style="display:none;z-index:103">
+	  <img id="loading-image" src="${imagesFolder}/loading.gif" alt="Đang xử lý dữ liệu..." title="Đang xử lý dữ liệu..." width="100px" />
+	</div>
+</div>

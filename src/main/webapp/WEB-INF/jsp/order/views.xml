@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+  
+  <definition extends="default" name="orderList">
+    <put-attribute name="body" value="/WEB-INF/jsp/order/orderList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="orderView">
+    <put-attribute name="body" value="/WEB-INF/jsp/order/orderDetail.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="requestList">
+    <put-attribute name="body" value="/WEB-INF/jsp/order/requestList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="requestDetailsList">
+    <put-attribute name="body" value="/WEB-INF/jsp/order/requestDetailsList.jspx"/>
+  </definition>
+  <definition extends="default" name="setGoodsOrder">
+    <put-attribute name="body" value="/WEB-INF/jsp/order/setGoodsOrder.jspx"/>
+  </definition>
+  
+</tiles-definitions>

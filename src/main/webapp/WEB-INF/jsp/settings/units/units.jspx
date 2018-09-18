@@ -1,0 +1,120 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="listUnit" value="/unit/list"/>
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/units.js" ></script>
+    ]]>
+
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" />
+        </span>
+        <div class="content-title" >
+            <h2>
+                <c:choose>
+                    <c:when test="${created}">
+                        <span>Thêm đơn vị tính</span>
+                    </c:when>
+                    <c:otherwise>
+                        <span>Chỉnh sửa đơn vị tính</span>
+                    </c:otherwise>
+                </c:choose>
+            </h2>
+        </div>
+
+        <div id="content">
+
+            <form:form method="POST" commandName="unitForm" path="channelForm" id="unitForm">
+                <table width="99%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+                    <tr>
+                        <td>&#160;</td>
+                        <td>
+                            <c:if test="${edit}">
+                                <c:if test="${cratedSuccess}">
+                                    <label class="infoMessage" id="text_informessage">Thêm đơn vị thành công.</label>
+                                </c:if>
+                                    <c:if test="${updated}">
+                                        <label class="infoMessage" id="text_informessage">Cập nhật đơn vị thành công.</label>
+                                </c:if>
+                            </c:if>
+                            <label class="errorMessage" id="text_errormessage"></label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Mã viết tắt (<label class="errorMessage">*</label>) </td>
+                        <td><form:input path="code" id="unit_code" class="textInput mediumWidth" type="text" cssStyle="width: 150px"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="unit_code_error">
+                    	<c:if test="${dupblicateCode}">
+                                    Mã đơn vị tính đã tồn tại.
+                                </c:if>
+                    </label></td></tr>
+                    <tr>
+                        <td align="right">Tên đơn vị tính(<label class="errorMessage">*</label>) </td>
+                        <td><form:input path="name" id="unit_name" class="textInput mediumWidth" type="text" cssStyle="width: 150px"/></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <label class="errorMessage" id="unit_name_error">
+                                <c:if test="${dupblicate}">
+                                    Tên đơn vị tính đã tồn tại.
+                                </c:if>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Đơn vị nhỏ</td>
+                        <td>
+                            <form:select id="unit_child_unit" path="childUnit" class="select2_combo" style="width:150px" onchange="removeText()">
+                                <form:option value="0">-- Chọn đơn vị con --</form:option>
+                                <form:options items="${childUnitList}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Số lượng</td>
+                        <td>
+                            <form:input path="childQuantity" id="unit_child_quantity" class="textInput mediumWidth" type="text" cssStyle="width: 150px" onkeyUp="restrictInputDoubleOnly(event,this)"/>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="unit_child_quantity_error"></label></td></tr>
+                    <tr>
+                        <td>&#160;</td>
+                        <td>&#160;</td>
+                    </tr>
+                    <tr>
+                        <td>&#160;</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${created}">
+                                    <a href="javascript:;" onclick="javascript:postForm();" class="btn-1"><span><span style="width:30px">Lưu</span></span></a>
+                                    <a href="javascript:;" onclick="javascript:document.forms[0].reset();" class="btn-1"><span><span style="width:60px">Làm lại</span></span></a>
+                                            </c:when>
+                                            <c:otherwise>
+                                        <a href="javascript:;" onclick="javascript:postForm();" class="btn-1"><span><span style="width:60px">Cập nhật</span></span></a>
+                                    </c:otherwise>
+                            </c:choose>
+                            <a href="${listUnit}" class="btn-1"><span><span style="width:120px">Danh sách đơn vị tính</span></span></a>
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

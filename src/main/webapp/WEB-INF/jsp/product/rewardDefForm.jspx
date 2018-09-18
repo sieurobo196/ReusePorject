@@ -1,0 +1,204 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"
+		pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js"></script>	
+	<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function changeRewardType (Type) {
+			if (Type.value == 1) {
+				$("select#quantity").attr('disabled', false);
+				document.getElementById('soluong').disabled = false;
+				document.getElementById('tien').disabled = true;
+				document.getElementById('tien').value = "";	
+			}
+			else if (Type.value == 2) {
+				$("select#money").attr('disabled', false);
+				document.getElementById('tien').disabled = false;
+				document.getElementById('soluong').disabled = true;
+				document.getElementById('soluong').value = "";
+			}
+		}
+
+	</script>
+]]>
+	
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imageFolder}/dummy.gif"
+				alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>ĐỊNH NGHĨA ĐIỂM THƯỞNG</span>
+			</h2>
+		</div>
+  
+	<div id="content">
+		<form:form method="POST" id="rewardDefForm" commandName="rewardDefForm">
+		
+			<table width="100%" cellspacing="5px" cellpadding="0"
+					class="TableThongTinTram">
+				<col width="20%" />
+				<col width="80%" />
+				
+				  
+				<tr>
+					<td></td>
+					<td><c:if test="${not empty success}">
+							<c:choose>
+								<c:when test="${success}">
+									<div class="infoMessage" id="messageArea">
+										<p>Thông tin được cập nhật thành công.</p>
+									</div>
+								</c:when>
+								<c:otherwise>
+									<div class="errorMessage" id="messageArea">
+										<p>Định nghĩa đã tồn tại hoặc xảy ra lỗi khi lưu dữ liệu</p>
+									</div>
+								</c:otherwise>
+							</c:choose>
+						</c:if></td>
+				</tr>
+				
+				<tr>
+					<td style="text-align: right"><label><Strong>Khu Vực Áp Dụng : </Strong>:</label>
+						</td>
+						<td>
+							<form:select path="branchId" cssClass="selectBox" >
+									<form:options items="${branchList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+						</td>
+				</tr>
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				
+				<tr>
+						<td style="text-align: right"><label><Strong>Sản Phẩm / Dịch Vụ </Strong> (<label class="errorMessage">*</label>):</label>
+						</td>
+						<td>
+							<form:select path="goodsCatId" cssClass="selectBox" onchange="selectCat(this);">
+									<form:options items="${goodsCatList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="goodsCatId" cssClass="errorMessage" />
+							
+							<form:select path="goodsId" cssClass="selectBox">
+									<form:options items="${goodsList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+
+						</td>
+				</tr>
+				
+				<tr hidden="true">
+						<td style="text-align: right"><label><Strong>Cấp Điểm Thưởng </Strong>:</label>
+						</td>
+						<td>
+							<form:select path="rewardLevel" cssClass="selectBox" >
+									<form:options items="${rewardLevelList}" itemValue="id"
+										itemLabel="name" />
+							</form:select> 
+							<form:errors path="rewardLevel" cssClass="errorMessage" />
+						</td>
+				</tr>
+
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><label><strong>Tiêu chí tính điểm thưởng</strong> </label>(<label class="errorMessage">*</label>):
+					</td>
+					<td><form:errors path="rewardType" cssClass="errorMessage" /></td>
+				</tr>
+				<tr>
+					<td align="right"><label> Số Lượng :</label></td>
+					<td>
+						<form:radiobutton path="rewardType" value="1" onclick="javascript:changeRewardType(this);"/> 
+							<form:input path="quantity" class="textInput numberField" 
+							onkeyup="restrictInputDoubleOnly(event,this)" id="soluong"/>
+							<form:errors path="quantity" cssClass="errorMessage" />
+						<label> ( giao dịch / sim / thẻ cào ) </label> 
+						<br/>
+					</td>
+				</tr>
+				
+				<tr>
+					<td align="right"><label> Doanh Thu :</label></td>
+					<td>
+						<form:radiobutton path="rewardType" value="2" onclick="javascript:changeRewardType(this);"/> 
+							<form:input path="money" class="textInput numberField" 
+							onkeyup="restrictInputDoubleOnly(event,this)" id="tien"/>
+							<form:errors path="money" cssClass="errorMessage" />
+						<label> ( VND )</label> 							
+						<br/>
+
+					</td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><label class="errorMessage"><strong>Thưởng </strong> </label>(<label class="errorMessage">*</label>):
+					</td>
+					<td>
+						<form:input path="rewardPoint" class="textInput numberField" 
+							onkeyup="restrictInputDoubleOnly(event,this)" id="diemThuong"/>
+							
+						<form:errors path="rewardPoint" cssClass="errorMessage" />
+						<label> ( Điểm )</label>
+					</td>
+				</tr>
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+			
+				<tr>
+					<td align="right"><strong>Sử dụng định nghĩa:</strong></td>
+					<td><form:checkbox path="status" /></td>
+				</tr>
+				<tr>
+					<td align="right">Ghi chú:</td>
+					<td>
+						<form:textarea style="height: 100px; width: 500px;" path="description" cssClass="textInput" />
+					</td>
+				</tr>
+
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				  
+				<tr>
+					<td><label>
+					</label></td>
+					<td>
+						<a href="javascript:;" onclick="javascript:document.forms[0].submit();" class="btn-1" title="Lưu thông tin">
+							<span><span>Lưu</span></span>
+						</a>
+					</td>
+				</tr>
+			</table>
+		</form:form>
+		</div>
+		
+	</div>
+</div>

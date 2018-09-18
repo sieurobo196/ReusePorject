@@ -1,0 +1,103 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+
+	<div id="inner-content">
+	
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>	
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+	</script>
+	]]>
+	
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH VAI TRÒ NGƯỜI SỬ DỤNG</span>
+			</h2>
+		</div>
+		
+		<div id="content">
+
+			<br/><br/>
+			<table width="100%" border="0" cellspacing="0" cellpadding="0"
+				class="table-2">
+				<thead>
+					<tr>
+						<td width="5%">STT</td>
+						<td width="20%">Mã viết tắt</td>
+						<td width="20%">Mô tả</td>
+						<td width="20%">Phân loại</td>
+						<td width="20%">Trạng thái</td>
+						<!--
+						<c:choose>
+							<c:when test="${permission == 1}">
+								<td width="15%">Hành Động</td>
+							</c:when>
+							<c:otherwise>
+							</c:otherwise>
+						</c:choose>
+						-->
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach items="${roleList}" var="item" varStatus="status">
+						<tr id="${item.id}">
+							<td align="center">${(page-1)*size+status.count}</td>
+							<td align="left">${item.maVietTat}</td>
+							<td align="left">${item.moTa}</td>
+							<!--  <td align="center">${item.phanLoai}</td> -->
+							<td align="center">
+								<c:choose>
+									<c:when test="${item.phanLoai == 1}">
+										Công ty
+									</c:when>
+									<c:when test="${item.phanLoai == 2}">
+										Đại Lý/ Quận
+									</c:when>
+									<c:when test="${item.phanLoai == 3}">
+										Điểm Bán Hàng
+									</c:when>
+									<c:otherwise>
+										Trung Tâm
+									</c:otherwise>
+								</c:choose>
+							</td>
+							<c:choose>
+								<c:when test="${item.isActive}">
+									<td align="center"> Sử dụng </td>
+								</c:when>
+								<c:otherwise>
+									<td align="center"> Khóa </td>
+								</c:otherwise>
+							</c:choose>
+							<!--
+							<c:choose>
+								<c:when test="${permission == 1}">
+									<td align="center">Sửa&#160;|&#160;
+										Khóa
+									</td>
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose>
+							-->
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+
+			</div>
+	</div>
+</div>

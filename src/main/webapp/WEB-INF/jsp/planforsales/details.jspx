@@ -1,0 +1,227 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<![CDATA[
+	
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/planforsales.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		function deletePlanDetails(keHoachId,chiTieuId){
+			var url = "${pageContext.request.contextPath}/planforsales/delete/"+chiTieuId;
+			var answer = confirm ("Bạn có muốn xóa chỉ tiêu?")
+			if (answer){
+				$.ajax({
+					url:url, 
+					type:"GET", 
+					dataType: "json",
+					
+					contentType: "application/json; charset=utf-8",
+						success: function(response) {
+							var stringified = JSON.stringify(response);
+							var obj = JSON.parse(stringified)
+							console.log( obj.data.message );
+							console.log( obj.data.result );
+							
+							if(obj.data.code==200){
+								alert(obj.data.message);
+								window.location.href = "${pageContext.request.contextPath}/planforsales/detail/"+keHoachId;
+							}else{
+								alert(obj.data.message);
+								//document.getElementById('error_1').innerHTML = obj.data.message;
+							}
+					},
+					error: function(xhr, error) {
+						alert ("Xảy ra lỗi khi xóa dữ liệu.");
+					}
+				});
+			}
+			return ;
+		}
+		
+		function edit(){
+			//alert("aaaaaaaaaaa");
+		} 
+	</script>
+	
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>CHI TIẾT KẾ HOẠCH BÁN HÀNG</span>
+			</h2>
+		</div>
+		
+		<spring:url var="planDetailURL" value="/planforsales/detail" />
+		<spring:url var="planEditURL" value="/planforsales/edit/" />
+		<div id="content">
+			<div class="infoMessage" id="messageArea">
+				<c:if test="${param.updateSuccess=='t' or updateSuccess=='t'}">
+					<p>Giao chỉ tiêu cho nhân  thành công.</p>
+				</c:if>
+				<c:if test="${param.updateError=='t' or updateError=='t'}">
+					<p>Giao chỉ tiêu cho nhân viên không thành công.</p>
+				</c:if>
+			</div>
+			<table width="100%" cellpadding="0" cellspacing="5"
+				class="TableThongTinTram">
+				<col width="15%" />
+				<col width="85%" />
+				<c:forEach items="${keHoachBanHang}" var="item" varStatus="status">
+				<tr>
+					<td>Tên Kế Họach:</td>
+					<td><b>${item[5]}</b></td>
+				</tr>
+				<tr>
+					<td>Nhân Viên Thực Hiện:</td>
+					<td><b>${item[1]}</b></td>
+				</tr>
+				<tr>
+					<td>Kế Hoạch: </td>
+					<td><b>Tháng ${item[2]} &#160; Năm ${item[3]}</b></td>
+				</tr>
+				</c:forEach>
+				<tr>
+					<td colspan="2">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0"
+							class="table-2">
+							<thead>
+								<tr>
+									<td width="5%">STT</td>
+									<td width="20%">Hàng Hóa</td>
+									<td width="10%">Chỉ Tiêu</td>
+									<td width="15%">Loại Chỉ Tiêu</td>
+									<td width="15%">Hòan Thành</td>
+									<td width="15%">Hành động</td>
+								</tr>
+							</thead>
+							<tbody>
+								<c:forEach items="${listChiTietKeHoachBanHang}" var="item" varStatus="status">
+									<tr>
+										<td align="center">${(page-1)*size+status.count}</td>
+										<td>
+											<c:choose>
+												<c:when test="${item[6]=='65'}">
+											          Thẻ Cào
+											     </c:when>
+											     <c:otherwise>
+											          ${item[4]}
+											     </c:otherwise>
+											</c:choose>
+										</td>
+										
+										<td align="center"><fmt:formatNumber type="number" pattern="###,###" value="${item[1]}" /></td>
+										<td align="center">
+											<c:choose>
+												<c:when test="${item[7]==1}">
+											          Bán cho người tiêu dùng
+											     </c:when>
+											     <c:otherwise>
+											          Bán cho điểm bán hàng
+											     </c:otherwise>
+											</c:choose>
+										</td>
+										<td align="center">${item[2]}</td>
+										<td align="center">
+											<a href="${planEditURL}${keHoachBanHangId}" class="redTxt" title="Chỉnh sửa">
+												Chỉnh sửa
+											</a>
+											&#160;|&#160;
+											<a href="#" onClick="deletePlanDetails(${keHoachBanHangId},${item[0]});" class="redTxt" title="">
+												Xóa
+											</a>
+										</td>
+									</tr>
+									
+								</c:forEach>
+								<style>
+									.hidden { display: none; }
+										.unhidden { display: block; }
+								</style>
+								<script type="text/javascript">
+								 function unhide(divID) {
+								 	var item = document.getElementById(divID);
+								 	if (item) {
+								 		item.className=(item.className=='hidden')?'unhidden':'hidden';
+								 	}
+								 }
+								 </script> 
+								
+							</tbody>
+						</table>
+					</td>
+				</tr>
+				<c:if test="${not empty listSalesGoodsCat}">
+				
+	   				<tr>
+						<td colspan="2">
+						<a href="javascript:void(0)" onClick="unhide('chitietkehoachId');">
+						Thêm chi tiết
+						</a>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2">
+							<div id="chitietkehoachId">
+								<spring:url value="/planforsales/detail/${keHoachBanHangId}" var="planforsalesDetFormLink" scope="request">
+									<spring:param name="new" />
+								</spring:url>
+								<form:form action="${requestScope.planforsalesDetailFormLink}" method="POST"
+									commandName="chiTietKeHoachBanHang">
+									<table width="100%" cellpadding="0" cellspacing="5"
+										class="TableThongTinTram" border="0">
+										<col width="100%" />
+										
+										<tr>
+											<td>
+												Hàng Hóa:&#160;
+												<form:select
+													path="goodsCat.id" cssStyle="width:180px;">
+													<form:option value="-1"  label="---Chọn hàng hóa---" />
+													<form:options items="${listSalesGoodsCat}" />
+												</form:select>
+												<form:errors path="goodsCat.id" cssClass="errorMessage" />
+												&#160;&#160;Chỉ Tiêu:&#160;
+												<form:input path="soLuong" cssClass="textInput"  maxlength="50"/>
+												<form:errors path="soLuong" cssClass="errorMessage" />
+												&#160;&#160;
+												<a href="javascript:;" onclick="javascript:document.forms[0].submit();" class="btn-1" title="Lưu thông tin nhân viên"><span><span>Lưu</span></span></a>
+											</td>
+										</tr>
+										
+										
+									</table>
+									<form:hidden path="keHoachBanHang.id" value="${keHoachBanHangId}" cssClass="textInput"  maxlength="50"/>
+								</form:form>
+							</div>
+						</td>
+					</tr>
+				</c:if>
+			</table>
+		</div>
+	</div>
+	
+</div>
+
+
+
+
+
+	

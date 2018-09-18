@@ -1,0 +1,158 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <![CDATA[
+    <script type="text/javascript">
+
+        function renderComboBox(comboBoxSelector, items, label) {
+            var $domCbo = $(comboBoxSelector);
+            renderComboBoxEmpty(comboBoxSelector, label);
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var $domOption = $("<option value = '" + item.id + "'>" + item.name + "</option>");
+                $domCbo.append($domOption);
+            }
+        }
+
+        function renderComboBoxEmpty(comboBoxSelector, label) {
+            var $domCbo = $(comboBoxSelector);
+            $domCbo.empty();// remove old options
+            var $domOption = $("<option value = '0'>" + label + "</option>");
+            $domCbo.append($domOption);
+            $domCbo.select2();
+        }
+
+        function changeChannel($el) {
+            var $e = $('#userId');
+
+            var name = $el.attr("name");
+            name = name.replace("channelIdList[", "").replace("]", "");
+            var level = parseInt(name);
+            var data = new Object();
+
+            if ($el.val() == 0)
+            {
+                //chon dau muc
+                for (var i = level + 1; ; i++)
+                {
+                    var $combo = $('#channelIdList' + i);
+                    if ($combo.children().length < 2)
+                    {
+                        break;
+                    }
+                    renderComboBoxEmpty($combo, $combo[0].firstChild.text);
+                }
+
+                var listId = [];
+                $el.find('option').each(function ()
+                {
+                    if ($(this).val() != 0)
+                    {
+                        listId.push($(this).val());
+                    }
+                });
+                data.channelIdPOST = listId;
+            }
+            else {
+                //chon channel                
+                data.channelId = $el.val();
+            }
+
+            //data.locationId = $province.val();
+            //data.userId = $e.val();
+            var roles = '${roles}';
+            if (roles != '')
+            {
+                data.roles = roles.split(';');
+            }
+
+            var url = getAppRootPath() + "/ajax/getUserData";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                data: JSON.stringify(data),
+                success: function (data) {
+                    if ($e[0] !== undefined)
+                    {
+                        renderComboBox($e, data.employeeList, $e[0].firstChild.text);
+                    }
+                    if ($el.val() != 0)
+                    {
+                        var $nextDiv = $('#channelIdList' + (1 + level));
+                        if ($nextDiv.length > 0)
+                        {
+                            renderComboBox($nextDiv, data.channelList, $nextDiv[0].firstChild.text);
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+    ]]>
+    <div>
+        <c:forEach items="${channelList}" var="items" varStatus="status">
+            <div style="display: inline-block;width:170px;padding-right: 10px;padding-bottom: 5px;">
+                <select  id="channelIdList${status.index}" name="channelIdList[${status.index}]" style="width:170px;" class="select2_combo"
+                         onchange="changeChannel($(this));"> 
+                    <c:forEach items="${items}" var="item">
+                        <c:choose>
+                            <c:when test="${channelIdList[status.index]==item.id}">
+                                <option selected="selected" value="${item.id}">${item.name}</option>
+                            </c:when>
+                            <c:otherwise>
+                                <option value="${item.id}">${item.name}</option>
+                            </c:otherwise>
+                        </c:choose>                       
+
+                    </c:forEach>  
+                </select>
+            </div>
+        </c:forEach>
+    </div>
+
+
+    <div >
+        <div style="width:170px; display: none;padding-right: 10px;padding-top: 10px">
+            <form:select path="locationId" cssClass="select2_combo"
+                         style="width:170px" onchange="changeLocation($(this));">               
+                <form:options items="${provinceList}" itemValue="id" itemLabel="name" />  
+            </form:select>
+        </div>
+
+        <div style="width:170px; padding-right: 10px; display: inline-block;padding-top: 10px">
+            <form:select path="userId" cssClass="select2_combo"
+                         style="width:170px">
+                <form:options items="${employeeList}" itemValue="id" itemLabel="name" /> 
+            </form:select>
+        </div>
+        <c:choose>
+            <c:when test="${notShow}"></c:when>
+            <c:otherwise>
+                <div id="statusDiv"
+                     style="width: 170px; padding-right: 10px; display: inline-block; padding-top: 10px">
+                    <form:select path="statusId" style="width:170px"
+                                 cssClass="select2_combo">
+                        <form:option value="0">--- Trạng Thái ---</form:option>
+                        <form:options items="${statusList}" itemValue="id"
+                                      itemLabel="name" />
+                    </form:select>
+                </div>
+            </c:otherwise>
+        </c:choose>
+
+    </div>
+
+
+</div>
+

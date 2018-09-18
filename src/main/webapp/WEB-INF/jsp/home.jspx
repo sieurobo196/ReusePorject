@@ -1,0 +1,439 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="cssFolder" value="/resources/css" />
+	<spring:url var="jsFolder" value="/resources/js" />
+	
+	<spring:url var="userDetailURL" value="/user/detail" />
+	<spring:url var="supplierDetailURL" value="/npp/detail" />
+	<spring:url var="attendURL" value="/attend/detail" />
+	<spring:url var="salesDetailURL" value="/topSalesman/bestSales/details" />
+	<spring:url var="careDetailURL" value="/plan/view" />
+	<spring:url var="scriptsFolder" value="/scripts" />
+	<spring:url var="mapURL" value="/map/staff" />
+	
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+<script type="text/javascript">
+	var contextPath = "${pageContext.request.contextPath}";
+
+	function viewResults() {
+		submitActionForm('homeViewForm', '');
+	}
+	
+	
+	
+	function showStaffOnMap(staffId, fromDate){
+		showLoading();
+		window.location.href = contextPath + "/map/staff?staffId=" +staffId+"&fromDate="+fromDate; 
+	}
+	
+	function goToUrl(url){
+		showLoading();
+		window.location = url;
+	}
+	
+	function goToUrl2(url){
+		showLoading();
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		window.location = url + "?fromDate=" + fromDate + "&toDate=" + toDate;
+	}
+	
+	function attendanceReport(){
+	
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		 var dateRegEx = null;
+            dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+			var sdayobj =null ;
+            if (dateRegEx.test(fromDate)){
+            	
+				var sdayfield=fromDate.split("/")[0];
+				var smonthfield=fromDate.split("/")[1];
+				var syearfield=fromDate.split("/")[2];
+				sdayobj = new Date(syearfield, smonthfield-1, sdayfield);
+				
+				// dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+	            var edayobj =null ;
+	            if(dateRegEx.test(toDate)) {
+	            	var edayfield=toDate.split("/")[0];
+					var emonthfield=toDate.split("/")[1];
+					var eyearfield=toDate.split("/")[2];
+					edayobj = new Date(eyearfield, emonthfield-1, edayfield);
+					
+					 var millisecondsPerDay = 86400 * 1000;
+           			 var compDate = (edayobj - sdayobj)/millisecondsPerDay;
+           
+		            if(compDate >= 0){
+		            	if(compDate<=31){
+		            		if((smonthfield == emonthfield)&&(syearfield == eyearfield)){
+			            		var action = document.getElementById('homeViewForm').action;
+								document.getElementById('homeViewForm').action = contextPath +"/report/attendList";
+								document.getElementById('homeViewForm').submit();
+								document.getElementById('homeViewForm').action = action;
+							}else{
+								alert('Ngày bắt đầu, kết thúc phải cùng tháng. Bạn hãy nhập lại.' );
+							}
+		            	} else {
+		            		alert('Sồ ngày làm báo cáo không ược quá 31 ngày. Bạn hãy nhập lại.' );
+		            	}
+                
+            }else {
+                alert('Ngày kết thúc(đến ngày) báo cáo phải lớn hơn hoặc bằng ngày bắt đấu(từ ngày). Bạn hãy nhập lại.' );
+            }
+					
+					
+	            }else{
+	            	alert("Bạn chưa nhập dữ liệu vào ô 'Đến Ngày'. ");
+	            }
+				
+            }else{
+                alert("Bạn chưa nhập dữ liệu vào ô 'Từ Ngày'. ");
+            }
+	
+	}
+	
+	function attendanceSumReport(){
+	
+		var fromDate = document.getElementById("frm_startDate").value
+	    var toDate= document.getElementById("frm_endDate").value
+		 var dateRegEx = null;
+            dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+			var sdayobj =null ;
+            if (dateRegEx.test(fromDate)){
+            	
+				var sdayfield=fromDate.split("/")[0];
+				var smonthfield=fromDate.split("/")[1];
+				var syearfield=fromDate.split("/")[2];
+				sdayobj = new Date(syearfield, smonthfield-1, sdayfield);
+				
+				// dateRegEx = new RegExp(/^\d{1,2}\/\d{1,2}\/\d{4}$/);
+	            var edayobj =null ;
+	            if(dateRegEx.test(toDate)) {
+	            	var edayfield=toDate.split("/")[0];
+					var emonthfield=toDate.split("/")[1];
+					var eyearfield=toDate.split("/")[2];
+					edayobj = new Date(eyearfield, emonthfield-1, edayfield);
+					
+					 var millisecondsPerDay = 86400 * 1000;
+           			 var compDate = (edayobj - sdayobj)/millisecondsPerDay;
+           
+		            if(compDate >= 0){
+		            	if(compDate<=31){
+		            		if((smonthfield == emonthfield)&&(syearfield == eyearfield)){
+			            		var action = document.getElementById('homeViewForm').action;
+								document.getElementById('homeViewForm').action = contextPath +"/report/attendSum";
+								document.getElementById('homeViewForm').submit();
+								document.getElementById('homeViewForm').action = action;
+							}else{
+								alert('Ngày bắt đầu, kết thúc phải cùng tháng. Bạn hãy nhập lại.' );
+							}
+		            	} else {
+		            		alert('Sồ ngày làm báo cáo không ược quá 31 ngày. Bạn hãy nhập lại.' );
+		            	}
+                
+            }else {
+                alert('Ngày kết thúc(đến ngày) báo cáo phải lớn hơn hoặc bằng ngày bắt đấu(từ ngày). Bạn hãy nhập lại.' );
+            }
+					
+					
+	            }else{
+	            	alert("Bạn chưa nhập dữ liệu vào ô 'Đến Ngày'. ");
+	            }
+				
+            }else{
+                alert("Bạn chưa nhập dữ liệu vào ô 'Từ Ngày'. ");
+            }
+	
+	}
+	
+	$(document).ready(function() { 
+		$("select").select2(); 
+		$("#totalLabel").text($("#total").text() + ' (Bao)'); 
+	});
+	
+	function showDetail(el) {
+		$(el).toggleClass("icon-03-blue");
+		$(el).toggleClass("icon-04-blue");
+		var isShow = $(el).hasClass('icon-04-blue') ? '' : 'none';
+		$('.goodsDetail').css('display', isShow);
+	}
+</script>
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>TRANG CHỦ</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="homeViewForm" id="homeViewForm">
+				<!-- <input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" /> -->
+				<table width="100%" border="0" cellspacing="3px" cellpadding="0"
+					class="table-1">
+
+					<tr>	
+						<td>
+						<c:choose>
+							<c:when test="${companyLogin!=null}">
+								<input type="hidden" name="company" id="company" value="${companyLogin}"/>
+							</c:when>
+							<c:otherwise>
+								<div style="display: inline;width:140px;padding-right:10px">
+									<form:select path="company" style="width:150px"
+										onchange="changeUserCompany($(this) ,$('#agent'), [$('#provinceArea'), $('#employer')]);">
+										<form:options items="${companies}" itemValue="id"
+											itemLabel="ten" />
+									</form:select>
+								</div>
+							</c:otherwise>
+						</c:choose>
+						<div style="display: inline;width:150px;">
+							<form:select path="agent" style="width:140px;"
+								onchange="changeRegionList($(this), $('#area'), [$('#provinceArea'), $('#employer')]);">
+								<form:options items="${regionList}" itemValue="id"
+									itemLabel="name" />
+							</form:select>
+						</div>
+						<div
+							style="width: 150px; padding-left: 10px; display: inline;">
+							<form:select path="area"
+								style="width:140px" onchange="changeAreaList($(this), $('#provinceArea'), $('#employer'));">
+								<form:options items="${areaList}" itemValue="id"
+									itemLabel="name" />
+							</form:select>
+						</div>
+						<div
+							style="width: 150px; padding-left: 10px; display: inline;">
+							<form:select id="provinceArea" path="province"
+								style="width:140px">
+								<form:options items="${provinceAreaList}" itemValue="id"
+									itemLabel="name" />
+							</form:select>
+						</div>
+						<div style="padding-left: 10px; display: inline;">
+								<spring:message code="map_filter_from_date" htmlEscape="true" />
+								:
+								<fmt:formatDate value="${frm_startDate}" var="startDate"
+									pattern="dd/MM/yyyy" />
+								<form:input type="text" id="frm_startDate" size="14"
+									path="startDate" cssClass="dateField tcal" />
+						</div>
+						
+						<div style="padding-left: 10px; display: inline;">
+								<spring:message code="map_filter_to_date" htmlEscape="true" />
+								:
+								<fmt:formatDate value="${frm_endDate}" var="endDate"
+									pattern="dd/MM/yyyy" />
+								<form:input type="text" id="frm_endDate" size="14"
+									path="endDate" cssClass="dateField tcal" />
+						</div>
+						
+						<div style="padding-left: 10px; display: inline;">
+							<!--  <input name="searchText" value="${fn:escapeXml(searchText)}" onkeypress="if(event.keyCode==13) {document.forms[0].submit();}"/> 
+							&#160;&#160;&#160; 
+							-->
+							<a href="javascript:;" onclick="viewResults()" class="btn-1" title="Tìm">
+								<span><span style="width:70px">Tìm Kiếm</span></span>
+							</a>
+						</div>
+						
+						</td> 
+					</tr>
+
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" submitMethod="POST" listingURL="" formSubmit="homeViewForm"
+								id="devTopPagination" /></td>
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="15%">Tên Nhân Viên</td>
+										<td width="7%">Số Thẻ</td>
+										<td width="7%">Tỉnh Thành</td>
+										<td width="10%">Giờ Chấm Công</td>
+										<td width="10%">Giờ Chăm Sóc</td>
+										<td width="10%">Giờ Bán Hàng</td>
+										<td width="10%">Giờ Trả Hàng</td>
+										<td width="15%">Tên Kế Hoạch</td>	
+										<td width="10%">% Định Mức (%)</td>																		
+									</tr>
+								</thead>
+								<tbody>
+								<c:choose>
+										<c:when test="${not empty homeList}">
+											<c:forEach items="${homeList}" var="item" varStatus="status">
+												<tr id="${item.id }">
+													<td align="center">
+														${(page-1)*size+status.count}
+													</td>
+													<td>
+														<a href="javascript:;" onclick="goToUrl('${userDetailURL}/${item.nhanVienId}');">
+														${item.tenNhanVien}
+														</a>
+													</td>
+													<td>
+														${item.soThe}
+													</td>
+													<td>
+														${item.tinhThanh}
+													</td>
+													
+													<td align="center">
+													<c:choose>
+														<c:when test="${item.status == 1}">
+															<a href="javascript:;" onclick="goToUrl('${attendURL}/${item.idNPP}');">
+															<fmt:formatDate value="${item.gioBatDau}" 
+															type="both" dateStyle="medium" timeStyle="medium" 
+															var="formatedDate" pattern="dd/MM/yyyy HH:mm:ss" />
+															${formatedDate}
+														</a>
+														</c:when>
+														<c:otherwise>
+															<a href="javascript:;" onclick="goToUrl('${attendURL}/${item.idNPP}');" class="redTxt">
+															<fmt:formatDate value="${item.gioBatDau}" 
+																type="both" dateStyle="medium" timeStyle="medium" 
+																pattern="dd/MM/yyyy HH:mm:ss" />
+														</a>
+														</c:otherwise>
+													</c:choose>
+														
+														
+													</td>
+													
+													<td align="center">
+														<a href="javascript:;" onclick="showStaffOnMap('${item.nhanVienId}','${item.ngay}');">
+															<fmt:formatDate value="${item.ngay}" 
+																type="both" dateStyle="medium" timeStyle="medium" 
+																pattern="dd/MM/yyyy HH:mm:ss" />
+														</a>
+													</td>
+													<td align="center">
+														<a href="javascript:;" onclick="showStaffOnMap('${item.nhanVienId}','${item.gioKetThuc}');">
+														<fmt:formatDate value="${item.gioKetThuc}" 
+															type="both" dateStyle="medium" timeStyle="medium" 
+															pattern="dd/MM/yyyy HH:mm:ss" />
+														</a>	
+													</td>
+													<td align="center">
+														<fmt:formatDate value="${item.ngayKH}" 
+																type="both" dateStyle="medium" timeStyle="medium" 
+																pattern="dd/MM/yyyy HH:mm:ss" />
+													</td>
+													<td>
+														<a href="javascript:;" onclick="goToUrl('${careDetailURL}/${item.khId}');">${item.tenKH}</a>
+													</td>
+													<!-- <td align="center">
+														<fmt:formatDate value="${item.ngayKH}" 
+															type="both" dateStyle="medium" timeStyle="medium" 
+															var="formatedDate" pattern="dd/MM/yyyy" />
+														${formatedDate}
+													</td> -->
+													<td align="center">
+														<a href="javascript:;" onclick="goToUrl2('${salesDetailURL}/${item.nhanVienId}');">
+															<lable><strong><fmt:formatNumber type="number" 
+            												pattern="###,###.##" value="${item.phanTramChiTieu}"/></strong></lable>
+            											</a>
+            										</td>
+            															
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<spring:url value="13" var="col"></spring:url>
+												<td colspan="${col}" align="center">Không có dữ liệu</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+								<tr>
+								<td colspan="4"><strong>Tổng Điểm Bán Trong Tuyến: <fmt:formatNumber type="number" 
+            												pattern="###,###" value="${totalPOSCount}"/></strong></td> 
+								<td colspan="2"><strong>Đã Chăm Sóc: <fmt:formatNumber type="number" 
+            												pattern="###,###" value="${careCount}"/></strong></td> 
+								<td colspan="2"><strong>Đã Nhận Hàng: <fmt:formatNumber type="number" 
+            												pattern="###,###" value="${saleCount}"/></strong></td> 
+								<td colspan="2"><strong>Chăm Sóc và Nhận Hàng: <fmt:formatNumber type="number" 
+            												pattern="###,###" value="${saleCareCount}"/></strong></td> 
+								</tr>
+								<tr>
+									<td colspan="10" valign="middle">
+										<img src="${imagesFolder}/dummy.gif" class="ui-icon icon-03-blue" title="Xem chi tiết" onclick="showDetail(this)"/> 
+										<strong style="font-size:14px">Tổng sản lượng hàng bán: <label id="totalLabel"> </label></strong>
+            						</td>
+								</tr>
+								<thead class="goodsDetail" style="display:none">
+								<tr>
+									<td>STT</td>
+									<td>Sản Phẩm</td>
+									<td colspan="2">Sản Lượng (Bao)</td>
+									<td colspan="2">Số Điểm Nhận Hàng (Điểm)</td>
+									<td colspan="4">Ghi Chú</td>
+								</tr>
+								</thead>
+								<c:set var="total" value="0"/>
+								<c:forEach items="${goodsList}" var="item" varStatus="status">
+									<tr class="goodsDetail" style="display:none">
+										<td align="center">${status.count}</td>
+										<td>${item.name}</td>
+										<td colspan="2" align="right"><fmt:formatNumber type="number" 
+          												pattern="###,###" value="${item.quantity}"/></td>
+										<td colspan="2" align="right"><fmt:formatNumber type="number" 
+          												pattern="###,###" value="${item.posCount}"/></td>
+										<td colspan="4"></td>
+									</tr>
+        							<c:set var="total" value="${total + item.quantity}"/>
+								</c:forEach>
+								<br/>
+								<div id="total" style="display:none"><fmt:formatNumber type="number" pattern="###,###" value="${total}"/></div>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="homeViewForm"
+								page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+					</tr>
+					
+					<!-- <tr>
+						<td colspan="4">	
+							<a href="javascript:attendanceReport();" class="btn-1" title="Export XLS">
+								<span><span>Báo Cáo Chấm Công</span></span>
+							</a>
+							<a href="javascript:attendanceSumReport();" class="btn-1" title="Export XLS">
+								<span><span>Báo Cáo Tổng Hợp</span></span>
+							</a>
+						</td>
+					</tr> -->
+					
+				</table>
+			</form:form>
+		</div>
+</div>
+</div>

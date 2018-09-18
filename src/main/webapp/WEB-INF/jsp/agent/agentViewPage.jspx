@@ -1,0 +1,158 @@
+﻿
+<div xmlns:spring="http://www.springframework.org/tags" xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt" xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+	
+	<jsp:directive.page import="java.util.Arrays"/>
+	<jsp:directive.page import="java.util.ArrayList"/>
+	<jsp:directive.page import="java.util.List"/>
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	
+        <spring:url var="imageFolder" value="/resources/images" />
+
+	<div id="inner-content">
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	]]>	
+    	<span class="bor-left"><img src="${imageFolder}/dummy.gif" alt="" /></span>                    
+        <div class="content-title">
+            <h2><span>XEM VÙNG MIỀN</span></h2>
+        </div>
+		                    <div id="content">
+		                    		<form:form method="POST" commandName="agentForm" >
+		                        	<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+			                        		<tr>
+			                        			<td width="20%"><!-- Empty --></td>
+												<td width="20%"><!-- Empty --></td>
+												<td width="10%"><!-- Empty --></td>
+			                        			<td width="20%" >
+			                        			</td>
+												<td width="10%"><!-- Empty --></td>	
+												<td width="20%"><!-- Empty --></td>	
+			                        		</tr>
+		                        		<tr>
+											<td colspan="6"></td>
+		                        		</tr>
+		                        		<tr>
+											<td style="text-align:right"><label for="">Tên :</label></td>
+											<td colspan="3">
+												<form:input path="ten" disabled ="true" cssStyle="width:460px;" />
+											</td>
+											<td style="text-align:right"><label for="">Mã viết tắt:</label></td>
+											 <td>
+												<form:input path="maVietTat" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+		                        		</tr>
+										<tr><td colspan="6"></td></tr>
+		                        		<tr>
+											<td colspan="6"></td>
+		                        		</tr>
+		                        		<tr>
+											<td style="text-align:right"><label for="">Tỉnh Thành phố:</label></td>
+											<td>
+												<form:input path="tenTinh" disabled ="true" cssStyle="width:150px;" />
+											</td>
+											<td style="text-align:right"><label for="">Quận Huyện:</label></td>
+											 <td>
+												<form:input path="tenHuyen" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+											<td style="text-align:right"><label for="">Phường xã:</label></td>
+											 <td>
+												<form:input path="tenXa" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+		                        		</tr>
+										<tr><td colspan="6"></td></tr>										
+		                        		<tr>
+											<td colspan="6"></td>
+		                        		</tr>
+		                        		<tr>
+											<td style="text-align:right"><label for="">Địa chỉ:</label></td>
+											<td colspan="3">
+												<form:input path="diaChi" disabled ="true" cssStyle="width:460px;" />
+											</td>
+											<td style="text-align:right"><label for="">Điện thoại:</label></td>
+											 <td>
+												<form:input path="dienThoai" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+		                        		</tr>
+										<tr><td colspan="6"></td></tr>
+		                        		<tr>
+											<td colspan="6"></td>
+											 <td>
+												<form:errors path="nguoiLienHe" disabled ="true" cssClass="errorMessage" />
+											 </td>
+		                        		</tr>
+		                        		<tr>
+											<td style="text-align:right"><label for="">Fax:</label></td>
+											<td>
+												<form:input path="fax" disabled ="true" cssStyle="width:150px;" />
+											</td>
+											<td style="text-align:right"><label for="">Email:</label></td>
+											 <td>
+												<form:input path="email" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+											<td style="text-align:right"><label for="">Người Liên hệ:</label></td>
+											 <td>
+												<form:input path="nguoiLienHe" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+		                        		</tr>
+										<tr><td colspan="6"></td></tr>										
+		                        		<tr>
+											<td colspan="6"></td>
+		                        		</tr>
+		                        		<tr>
+											<td style="text-align:right"><label for="">Loại :</label></td>
+											<td>
+												<form:input path="loaiDaiLy" disabled ="true" cssStyle="width:150px;" />
+											</td>
+											<td style="text-align:right"><label for="">CEN-CODE:</label></td>
+											 <td>
+												<form:input path="CenCode" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+											<td style="text-align:right"><label for="">CF:</label></td>
+											 <td>
+												<form:input path="Cf" disabled ="true" cssStyle="width:150px;" />
+											 </td>
+		                        		</tr>
+		                        		<tr>
+											<td colspan="6"> </td>
+										</tr>
+										<tr>
+											<td colspan="6"></td>
+										</tr>
+										<tr>
+											<td style="text-align: right"><label for="">Cầp :</label>
+											</td>
+											<td colspan="5">
+												<form:input path="capDaiLy" disabled ="true" cssStyle="width:150px;" />
+											</td>
+										</tr>
+										<tr><td colspan="6"></td></tr>
+										<tr><td colspan="6"></td></tr>
+										
+		                                <tr>
+		                                    <td valign="top" style="text-align:right"><label for="">Ghi chú:</label>
+		                                    </td>
+		                                    <td colspan="5">
+		                                        <form:textarea path = "ghiChu" disabled ="true" cssStyle="width:765px" rows="3"/>
+		                                    </td>
+		                                </tr>
+										<tr><td colspan="6"></td></tr>
+		                                <tr>										
+		                                    <td>&#160;</td>
+		                                    <td colspan="5">
+												<a href="${pageContext.request.contextPath}/agent/create" class="btn-1" ><span><span>Tạo mới</span></span></a>
+											</td>
+		                                </tr>
+		                            </table>
+
+
+			</form:form>	
+		</div>
+	</div>					
+</div>
+

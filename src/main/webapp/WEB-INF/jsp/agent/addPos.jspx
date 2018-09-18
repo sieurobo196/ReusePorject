@@ -1,0 +1,382 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="FormInfoProduct" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<spring:url var="posSaleURL" value="/pos/sales" />
+	<spring:url var="editAgentURL" value="/agent/edit" />
+        <spring:url var="imageFolder" value="/resources/images" />
+        <spring:url var="agentPosListURL" value="/agent/listPos" />
+
+	<div id="inner-content">
+		<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/plan.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript">
+
+		var contextPath = "${pageContext.request.contextPath}";
+
+		function moveRight(sourceID, destID) {
+			var src = document.getElementById(sourceID);
+			var dest = document.getElementById(destID);
+			for(var count=0; count < src.options.length; count++) {
+				if(src.options[count].selected == true) {
+					var option = src.options[count];
+					var newOption = document.createElement("option");
+					newOption.value = option.value;
+					newOption.text = option.text;
+					newOption.selected = true;
+					var bExistItem = false;
+					
+						for(var countDest=0; countDest < dest.options.length; countDest++) {
+							var destOption = dest.options[countDest];
+							if (destOption.value ==option.value){
+								bExistItem=true;
+								break;
+							}
+						}
+						if (bExistItem==false){ 					
+							try {
+								dest.add(newOption, null); //Standard
+								src.remove(count, null);
+							}catch(error) {
+								dest.add(newOption); // IE only
+								src.remove(count);
+							}
+							count--;
+						}
+					
+				}
+			}
+		}
+		function moveLeft(sourceID, destID) {
+			var src = document.getElementById(sourceID);
+			var dest = document.getElementById(destID);
+		 
+			for(var count=0; count < src.options.length; count++) {
+		 
+				if(src.options[count].selected == true) {
+						var option = src.options[count];
+		 
+						var newOption = document.createElement("option");
+						newOption.value = option.value;
+						newOption.text = option.text;
+						newOption.selected = true;
+						try {
+								 dest.add(newOption, null); //Standard
+								 src.remove(count, null);
+						 }catch(error) {
+								 dest.add(newOption); // IE only
+								 src.remove(count);
+						 }
+						count--;
+						document.getElementById('count').innerHTML = src.options.length;
+				 }
+			}
+		}	
+		 function listbox_selectall(listID, isSelect) {
+			var listbox = document.getElementById(listID);
+			for(var count=0; count < listbox.options.length; count++) {
+				listbox.options[count].selected = isSelect;
+			}
+		}	
+		function moveRightAll(sourceID, destID){
+			 listbox_selectall(sourceID, true);
+			 moveRight(sourceID, destID);
+		}
+		function moveLeftAll(sourceID, destID){
+			 listbox_selectall(sourceID, true);
+			 moveLeft(sourceID, destID);
+		}
+		
+		 function moveUpDown(listID, direction) {
+			var listbox = document.getElementById(listID);
+			var selIndex = listbox.selectedIndex;
+			if(-1 == selIndex) {
+				alert("Chọn một điểm bán hàng để di chuyển lên xuống.");
+				return;
+			}
+			var increment = -1;
+			if(direction == 'up')
+				increment = -1;
+			else
+				increment = 1;
+			if((selIndex + increment) < 0 ||(selIndex + increment) > (listbox.options.length-1)) {
+				return;
+			}
+			var selValue = listbox.options[selIndex].value;
+			var selText = listbox.options[selIndex].text;
+			listbox.options[selIndex].value = listbox.options[selIndex + increment].value
+			listbox.options[selIndex].text = listbox.options[selIndex + increment].text
+			listbox.options[selIndex + increment].value = selValue;
+			listbox.options[selIndex + increment].text = selText;
+			listbox.selectedIndex = selIndex + increment;
+		}		
+		function submitDBH(){
+
+			var nguoiLap=document.getElementById('nguoiLap').value;
+			if (nguoiLap=="0")
+				document.getElementById('nguoiLap').value="${loggedInUser.id}";//will change to user login
+			listbox_selectall('ListDiemBHSelect', true);
+			listbox_selectall('listDiemBH', true);
+			document.getElementById('planForm').submit();
+
+		}
+		
+		function viewExtended() {
+			if ($('#grExtended').is(':hidden')) {
+				$('.extended').show();
+				$('.extendedList').hide();
+				
+			} else {
+				$('.extended').hide();
+				$('.extendedList').hide();
+			}
+		}
+		
+		function viewExtended1() {
+			if ($('#grExtended').is(':hidden')) {
+				$('.extended').show();
+				$('.extendedList').hide();
+				document.getElementById('toggle').innerHTML = 'Danh sách Điểm Bán Hàng';
+			} else {
+				$('.extended').hide();
+				$('.extendedList').show();
+				document.getElementById('toggle').innerHTML = 'Thêm ĐBH vào Đại Lý';
+			}
+		}
+				
+	</script>
+	]]>
+		<span class="bor-left"><img src="${imageFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>${tenDaiLy}</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="planForm">
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td>
+							<c:if test="${not empty success}">
+								<c:choose>
+									<c:when test="${success}">
+										<div class="infoMessage" id="messageArea">
+											<p>Nhập ĐBH thành công.</p>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="errorMessage" id="messageArea">
+											<p>Lỗi xảy ra khi nhập ĐBH</p>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+						</td>		
+					</tr>
+					
+					<tr>
+						<td colspan="5">
+						
+						<a href="${agentPosListURL}/${id}" class="btn-1" title="">
+									<span><span>Xem ĐBH</span></span>
+								</a>
+								
+						<a href="${editAgentURL}/${id}" class="btn-1" title="">
+								<span><span>Thông Tin Vùng Miền</span></span>
+						</a>
+						</td>
+					</tr>
+					
+					<!--
+					<tr>
+						<td colspan="5"><a href="javascript:;" onclick="viewExtended()" class="btn-1" title="">
+								<span><span id="toggle">Thêm ĐBH vào Đại Lý</span></span>
+						</a></td>
+					</tr>
+					-->
+					<tr class="extended"  id='grExtended'>
+						<td style="text-align: right"><label for="">Tìm kiếm theo mã ĐBH:</label>
+						</td>
+						<td>&#160;<form:input path="timKiem" cssStyle="width:176px;" />
+						</td>
+					</tr>	
+					<tr class="extended" >
+						<td width="10%" valign="top" style="text-align: right"><label
+							for="">Ðiểm bán hàng:</label></td>
+						<td colspan="5"><form:select path="tinhThanhPho" hidden="true"
+								cssStyle="width:180px;" onchange="selectCity(this);">
+								<form:options items="${provinceList}" />
+							</form:select> <label for="">&#160;&#160;</label> <form:select path="quanHuyen"
+								cssStyle="width:180px;" onchange="selectTown(this);">
+								<form:options items="${districtList}" />
+							</form:select> <label for="">&#160;&#160;</label> <form:select path="phuongXa"
+								cssStyle="width:173px;" onchange="selectWard(this);">
+								<form:options items="${wardList}" />
+							</form:select> <label for="">&#160;&#160;</label> <form:select
+								path="tuyenDuong" cssStyle="width:180px;"
+								onchange="selectStreet(this);">
+								<form:options items="${streetList}" />
+							</form:select> <label for="">&#160;&#160;</label> <a
+							href="javascript:refreshFilter();" class="btn-1" title="Xem ÐBH"><span><span>Xem
+										ÐBH</span></span></a></td>
+					</tr>
+					<tr class="extended" >
+						<td colspan="6">
+							<table width="100%" border="0">
+								<tr>
+									<td width="10%"></td>
+									<td width="38%"><label for=""><strong>Danh
+												sách ÐBH: <label id="selected"></label> </strong></label>  <br /> <form:select path="listDiemBH"
+											multiple="true" size="10" cssStyle="height:220px;width:100%;">
+											<form:options items="${saleAgentList}" />
+										</form:select></td>
+									<td width="14%" style="text-align: center"><a
+										href="javascript:moveRight('listDiemBH','ListDiemBHSelect')"
+										class="btn-1" title="Chọn ÐBH"><span><span>Chọn
+													ÐBH&#160;</span></span></a> <a
+										href="javascript:moveRightAll('listDiemBH','ListDiemBHSelect')"
+										class="btn-1" title="Chọn tất cả ÐBH"><span><span>Chọn
+													tất cả</span></span></a> <a
+										href="javascript:moveLeft('ListDiemBHSelect','listDiemBH')"
+										class="btn-1" title="Bỏ ÐBH"><span><span>&#160;&#160;&#160;Bỏ
+													ÐBH&#160;&#160;</span></span></a> <a
+										href="javascript:moveLeftAll('ListDiemBHSelect','listDiemBH')"
+										class="btn-1" title="Bỏ tất cả ÐBH"><span><span>&#160;&#160;Bỏ
+													tất cả&#160;</span></span></a></td>
+									<td width="38%"><label for=""><strong>ÐBH
+												được chọn (<label class="errorMessage">*</label>):
+										</strong></label>&#160;&#160; <form:errors path="ListDiemBHSelect"
+											cssClass="errorMessage" /> <br /> <form:select
+											path="ListDiemBHSelect" multiple="true"
+											cssStyle="height:220px;width:100%;">
+											<form:options items="${saleAgentSelectList}" />
+										</form:select></td>
+									<td width="2%"><a
+										href="javascript:moveUpDown('ListDiemBHSelect','up')"
+										title="Lên"><img alt="Lên" src="${imageFolder}/go-up.png" /></a>
+										<a href="javascript:moveUpDown('ListDiemBHSelect','down')"
+										title="Xuống"><img alt="Lên"
+											src="${imageFolder}/go-down.png" /></a></td>
+								</tr>								
+							</table>
+						</td>
+					</tr>
+					<tr style="visibility:hidden">
+						<td width="10%" valign="top" style="text-align: right"><label
+							for="">Nhập mã ĐBH theo từng dòng</label></td>
+						<td colspan="5"><form:textarea path="ghiChu"
+								cssStyle="width:40%;" rows="5"/></td>
+					</tr>
+					<tr class="extended" >
+						<td width="10%">&#160;</td>
+						<td colspan="5"><a href="javascript:submitDBH();"
+							class="btn-1"><span><span>NHẬP ĐIỂM BÁN HÀNG</span></span></a>
+						</td>
+					</tr>
+					<!--  
+					<tr class="extendedList" hidden="true">
+						<td colspan="5">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="10%">Mã ĐBH</td>
+										<td width="20%">Tên ĐBH</td>
+										<td width="10%">Người đại diện</td>
+										<td width="20%">Địa chỉ</td>
+										<td width="10%">Số ĐT</td>
+										<td width="10%">Email</td>
+										<td width="15%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty posList}">
+											<c:forEach items="${posList}" var="posItem" varStatus="status">
+												<tr>
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td>${posItem.maCuaHang}</td>
+													<td>${posItem.tenCuaHang}</td>
+													<td>${posItem.tenChuCuaHang}</td>
+													<td>${posItem.diaChi}</td>
+													<td>${posItem.soDienThoaiBan}</td>
+													<td>${posItem.email}</td>
+													<td>
+														<a href="${posSaleURL}/${posItem.id}"
+														class="redTxt" title="Nhân Viên">Nhân Viên</a>
+													</td>
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr><td colspan="8" align="center">Không có dữ liệu.</td></tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					-->		
+					
+					
+					<tr style="visibility:hidden">
+									<td style="text-align: right"><label for="">Tên kế
+											hoạch (<label class="errorMessage">*</label>):
+									</label></td>
+									<td colspan="5"><form:input path="tenKeHoach"
+											cssStyle="width:560px;" /> &#160;&#160;&#160;&#160; <form:errors
+											path="tenKeHoach" cssClass="errorMessage" /></td>
+								</tr>
+								<tr style="visibility:hidden">
+									<td></td>
+									<td colspan="2"><form:errors path="nhanVienThucHien"
+											cssClass="errorMessage" /></td>
+									<td colspan="3"><form:errors path="ngayBD"
+											cssClass="errorMessage" /></td>
+								</tr>
+								<tr style="visibility:hidden">
+									<td style="text-align: right"><label for="">Nhân viên
+											(<label class="errorMessage">*</label>):
+									</label></td>
+									<td><label for="">
+											<!-- Fix for FF -->
+									</label> <form:hidden path="nguoiLap" /> <form:hidden path="id" /> <form:select
+											path="nhanVienThucHien" cssStyle="width:180px;">
+											<form:option value="0" label="--- Chọn nhân viên ---" />
+											<form:options items="${staffList}" />
+										</form:select></td>
+									<td style="text-align: right"><label for="">Ngày (<label
+											class="errorMessage">*</label>):
+									</label></td>
+									<!--
+									-->
+									<td><form:input path="ngayBD" cssClass="tcal"
+											cssStyle="width:90px; margin-right:2px" /></td>
+									<td style="text-align: right"><label for="">Tìm kiếm:</label>
+									</td>
+									<td>&#160;<form:input path="timKiem" cssStyle="width:176px;" />
+									</td>
+								</tr>				
+				</table>
+
+			</form:form>
+		</div>
+	</div>
+</div>
+

@@ -1,0 +1,186 @@
+[
+  {
+    "workFlowTypeCode": "TAKE_PICTURE",
+    "workFlowTypeName": "Hình ảnh điểm bán hàng",
+    "workFlow": [
+      {
+        "title": "Chụp ảnh mặt bằng",
+        "code": "TAKE_PICTURE_1",
+        "isImage": 1,
+        "isRequired": 1,
+        "order": 1
+      },
+      {
+        "title": "Chụp hình nội thất",
+        "code": "TAKE_PICTURE_2",
+        "isImage": 1,
+        "isRequired": 0,
+        "order": 2
+      },
+      {
+        "title": "Chụp hình tủ trưng bày",
+        "code": "TAKE_PICTURE_3",
+        "isImage": 1,
+        "isRequired": 0,
+        "order": 3
+      }
+    ]
+  },
+  {
+    "workFlowTypeCode": "UPDATE_POS",
+    "workFlowTypeName": "Cập nhật thông tin điểm bán hàng",
+    "workFlow": [
+      {
+        "title": "Tình trạng điểm bán hàng",
+        "code": "POS_STATUS",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 1,
+        "option_select": [
+          {
+            "content": "Đang hoạt động"
+          },
+          {
+            "content": "Đóng cửa"
+          },
+          {
+            "content": "Ngừng hoạt động"
+          }
+        ]
+      },
+      {
+        "title": "Cập nhật điểm bán hàng",
+        "isImage": 0,
+        "isRequired": 0,
+        "order": 2,
+        "code": "POS_UPDATE",
+        "option_check_update": [
+          {
+            "content": "Tên điểm bán hàng",
+            "code": "POS_UPDATE_NAME"
+          },
+          {
+            "content": "Chủ điểm bán hàng",
+            "code": "POS_UPDATE_OWNER"
+          },
+          {
+            "content": "Địa chỉ điểm bán hàng",
+            "code": "POS_UPDATE_ADDRESS"
+          },
+          {
+            "content": "Số điện thoại điểm bán hàng",
+            "code": "POS_UPDATE_TEL"
+          }
+        ]
+      },
+      {
+        "title": "Cập nhật trang thiết bị",
+        "code": "POS_TOOLS",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 3,
+        "option_check_update": [
+          {
+            "content": "Bảng hiệu ngang"
+          },
+          {
+            "content": "Bảng hiệu đứng"
+          },
+          {
+            "content": "Bảng điểm bán hàng"
+          },
+          {
+            "content": "Đèn Led"
+          },
+          {
+            "content": "Tủ trưng bày"
+          },
+          {
+            "content": "Poster"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "workFlowTypeCode": "DIRECT_COMPETITOR",
+    "workFlowTypeName": "Đối thủ cạnh tranh",
+    "workFlow": [
+      {
+        "title": "Danh sách đối thủ cạnh tranh",
+        "code": "COMPETITOR_LIST",
+        "isImage": 0,
+        "isRequired": 1,
+        "order": 1,
+        "option_check": [
+          {
+            "content": "Viettel",
+            "details": [
+              {
+                "title": "Danh mục thiết bị",
+                "code": "COMPETITOR_TOOLS",
+                "isImage": 0,
+                "isRequired": 1,
+                "order": 1,
+                "option_check_update": [
+                  {
+                    "content": "Bảng hiệu ngang"
+                  },
+                  {
+                    "content": "Bảng hiệu đứng"
+                  },
+                  {
+                    "content": "Bảng điểm bán hàng"
+                  },
+                  {
+                    "content": "Đèn Led"
+                  },
+                  {
+                    "content": "Tủ trưng bày"
+                  },
+                  {
+                    "content": "Poster"
+                  }
+                ]
+              },
+              {
+                "title": "Sản phẩm đối thủ",
+                "code": "COMPETITOR_GOODS",
+                "isImage": 0,
+                "isRequired": 1,
+                "order": 2,
+                "option_check_update": [
+                  {
+                    "content": "Sim TOMATO"
+                  },
+                  {
+                    "content": "Bia sài gòn đỏ"
+                  }
+                ]
+              },
+              {
+                "title": "Chương trình khuyến mãi của đối thủ",
+                "code": "COMPETITOR_PROMOTION",
+                "isImage": 0,
+                "isRequired": 1,
+                "order": 3,
+                "option_check_update": [
+                  {
+                    "content": "Khuyến mãi 3G Viettel"
+                  },
+                  {
+                    "content": "Khuyến mãi gọi nội mạng"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "content": "vinaphone",
+            "details": []
+          }
+        ]
+      }
+    ]
+  }
+]

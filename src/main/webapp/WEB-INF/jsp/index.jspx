@@ -1,0 +1,90 @@
+<div xmlns:spring="http://www.springframework.org/tags" 
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" 
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="Top_ToolBar"
+	xmlns:sec="http://www.springframework.org/security/tags">
+	<jsp:directive.page import="java.util.Arrays"/>
+	<jsp:directive.page import="java.util.ArrayList"/>
+	<jsp:directive.page import="java.util.List"/>
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imageFolder" value="/resources/images" />
+        <spring:url var="posURL" value="/pos/list" />
+	<spring:url var="createPlanURL" value="/plan/create" />
+	<spring:url var="ccDiaryURL" value="/pos/diary" />
+	<spring:url var="trackingURL" value="/map" />
+	<spring:url var="planListURL" value="/plan/list" />
+	<spring:url var="performanceURL" value="/performance"  />
+	<spring:url var="createTargetURL" value="/planofsales/create"  />
+	<spring:url var="exportURL" value="/planforsales/goodstype/"  />
+	<spring:url var="addUserURL" value="/user/add"  />
+	<spring:url var="addDeviceURL" value="/device/add"  />
+	
+    <div id="inner-content">
+    	<span class="bor-left"><img src="${imageFolder}/dummy.gif" alt="" /></span>                    
+        <div class="content-title">
+            <h2><span>TRANG CHỦ</span></h2>
+        </div>
+        <div id="content">
+        	<ul class="lst-home">
+        		<!--<sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ">-->
+            	<li>
+                	<a href="${createPlanURL}" title="Lập kế hoạch Mới">
+                    	<img src="${imageFolder}/upload/img_1.png" width="180" height="100" alt="Lập kế hoạch mới" />
+                        <span>Lập kế hoạch mới</span>
+                    </a>
+                </li>
+               <!-- </sec:authorize>-->
+                <li>
+                	<a href="${ccDiaryURL}" title="Nhật ký chăm sóc điểm bán hàng">
+                    	<img src="${imageFolder}/upload/img_6.jpg" width="180" height="100" alt="Nhật ký chăm sóc điểm khách hàng" />
+                        <span>Nhật ký chăm sóc ĐBH</span>
+                    </a>
+                </li>
+                <!--<li>
+                	<a href="${performanceURL}" title="Đánh giá hiệu quả công việc">
+                    	<img src="${imageFolder}/upload/img_2.png" width="180" height="100" alt="Đánh giá hiệu quả công việc" />
+                        <span>Đánh giá hiệu quả công việc</span>
+                    </a>
+                </li>
+                <li>
+                	<a href="${addUserURL}" title="Thêm người sử dụng">
+                    	<img src="${imageFolder}/upload/img_3.png" width="180" height="100" alt="Thêm người sử dụng" />
+                        <span>Thêm người sử dụng</span>
+                    </a>
+                </li>
+                <li>
+                	<a href="${exportURL}" title="Xuất Hàng">
+                    	<img src="${imageFolder}/upload/img_4.png" width="180" height="100" alt="Xuất Hàng" />
+                        <span>Xuất Hàng</span>
+                    </a>
+                </li>-->
+                <!--<sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ"> -->
+                <li>
+                	<a href="${createTargetURL}" title="Chỉ tiêu bán hàng">
+                    	<img src="${imageFolder}/upload/img_5.png" width="180" height="100" alt="Chỉ tiêu bán hàng" />
+                        <span>Giao chỉ tiêu bán hàng</span>
+                    </a>
+                </li>
+                <!--</sec:authorize>-->
+                <li>
+                	<a href="${trackingURL}" title="Xem lộ trình chăm sóc ĐBH">
+                    	<img src="${imageFolder}/upload/img_7.png" width="180" height="100" alt="Lộ trình chăm sóc ĐBH" />
+                        <span>Lộ trình chăm sóc ĐBH</span>
+                    </a>
+                </li>
+                <!--<sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ">-->
+                <li>
+                	<a href="${addDeviceURL}" title="Thêm thiết bị">
+                    	<img src="${imageFolder}/upload/img_8.png" width="180" height="100" alt="Thêm thiết bị" />
+                        <span>Thêm thiết bị</span>
+                    </a>
+                </li>
+                <!--</sec:authorize>-->
+            </ul>
+           
+        </div>	
+    </div>
+
+</div>

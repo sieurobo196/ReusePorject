@@ -1,0 +1,53 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="ChangePassword" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="sendmail" value="/sendEmail.do" />
+    <![CDATA[
+    <script type="text/javascript">
+
+    </script>
+    ]]>
+    <div id="inner-content">
+        <div class="content-title">
+            <h2>
+                <span>Liên hệ nhà cung cấp phần mềm</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form method="post" action="${sendmail}">
+                <table border="0" width="80%">
+                    <tr>
+                        <td colspan="2" align="center">
+                            <input type="submit" value="Send E-mail" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>To:</td>
+                        <td><input type="text" name="recipient" size="65" value="chinhnq@vtm.co.jp"/></td>
+                    </tr>
+                    <tr>
+                        <td>Subject:</td>
+                        <td><input type="text" name="subject" size="65" value="Msales Test"/></td>
+                    </tr>
+                    <tr>
+                        <td>Message:</td>
+                        <td><textarea rows="4" cols="50" name="message">
+                           Msales test
+                            </textarea>
+                </td>
+    </tr>
+                </table>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,159 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="wardsURL" value="/settings/list/wards" />
+    <div id="inner-content">
+        <![CDATA[
+        <script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+        <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+        <script type="text/javascript" src="${jsFolder}/responsedata.js?v=2"></script>
+        <script type="text/javascript" src="${jsFolder}/location.js"></script>
+        <script type="text/javascript" src="${jsFolder}/agent.js"></script>
+
+        <script type="text/javascript">
+            var contextPath = "${pageContext.request.contextPath}";
+        </script>
+        <script type="text/javascript">
+            getAgent();
+            getProvinceCity();
+            getDistrict();
+        </script>
+        ]]>
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>THÊM ĐỊA ĐIỂM</span>
+            </h2>
+        </div>
+        <div id="content"></div>
+        <table width="100%" cellpadding="0" cellspacing="5">
+            <col width="20%" />
+            <col width="80%" />
+            <tr>
+                <td></td>
+                <td>
+                    <div class="infoMessage" id="messageArea" >
+                        <p id="infoMessage" class="infoMessage" ></p>
+                    </div>
+                    
+
+                </td>
+            </tr>
+            <!-- ###### -->
+            <tr>
+                <td align="right">Loại địa điểm :</td>
+                <td><select id="location_type" class="select2_combo"
+                            style="width: 170px" onchange="onLoadPerView();">
+                        <option value="1">Tình/TP</option>
+                        <option value="2">Quận/Huyện</option>
+                        <option value="3">Phường/Xã</option>
+                    </select></td>
+            </tr>
+
+            <!-- ###### -->
+            <tr id="tr_combo_province" style="display: none;">
+                <td align="right">Chọn Tình/Tp:</td>
+                <td><select style="width: 170px;" id="combo_province"
+                            onchange="getListDistrict(this);"></select></td>
+            </tr>
+            <!-- -->
+            <tr id="tr_combo_agent" style="display:none">
+                <td align="right">Chọn Vùng/Miền:</td>
+                <td><select style="width: 140px;" id="combo_agent"></select></td>
+            </tr>
+            <!-- -->
+            <tr id="tr_input_province">
+                <td align="right">Nhập tên Tình/Tp (<label
+                        class="errorMessage">*</label>):
+                </td>
+                <td><input id="input_province_name"
+                           class="textInput mediumWidth" type="text" autofocus="true" /><p id="input_province_name_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr id="tr_input_district" style="display: none;">
+                <td align="right">Nhập tên Quận/Huyện (<label
+                        class="errorMessage">*</label>):
+                </td>
+                <td><input id="input_district_name"
+                           class="textInput mediumWidth" type="text" autofocus="true" /><p id="input_district_name_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr id="tr_combo_district" style="display: none;">
+                <td align="right">Chọn Quận/Huyện:</td>
+                <td><select style="width: 140px;" id="combo_district"
+                            class="select3_combo"></select></td>
+            </tr>
+            <!-- ###### -->
+            <tr id="tr_input_ward" style="display: none;">
+                <td align="right">Nhập tên Phường Xã (<label
+                        class="errorMessage">*</label>):
+                </td>
+                <td><input id="input_ward_name" class="textInput mediumWidth"
+                           type="text" autofocus="true" /><p id="input_ward_name_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr>
+                <td align="right">Nhập Mã viết tắt (<label
+                        class="errorMessage">*</label>):
+                </td>
+                <td><input id="code_name" class="textInput mediumWidth"
+                           type="text" autofocus="true" /><p id="code_name_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr>
+                <td align="right">Vĩ độ  (<label class="errorMessage">*</label>):
+                </td>
+                <td><input id="lat" class="textInput mediumWidth" type="text"
+                           autofocus="true" /><p id="input_lat_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr>
+                <td align="right">Kinh độ (<label class="errorMessage">*</label>):
+                </td>
+                <td><input id="lng" class="textInput mediumWidth" type="text"
+                           autofocus="true" /><p id="input_lng_error" style="color: red;"></p></td>
+            </tr>
+            <!-- ###### -->
+            <tr>
+                <td align="right">Ghi Chú:
+                </td>
+                <td><input id="note" class="textInput mediumWidth" type="text"
+                           autofocus="true" /></td>
+            </tr>
+            <!-- ###### -->
+            <tr style="padding-top: 20px">
+                <!-- 				<td align="right"></td> -->
+                <!-- 				<td><a class="btn-1" title="Thêm Phường/Xã"><span><span -->
+                <!-- 							style="width: 100px" onclick="getDataLocation();">Thêm Phường/Xã</span></span></a></td> -->
+            </tr>
+            <tr>
+                <td></td>
+                <td>
+                    <div style="padding-right: 20px; display: inline;">
+                        <a href="javascript:;" onclick="getDataLocation();" class="btn-1"
+                           title="Lưu thông tin"><span><span style="width: 80px">Lưu</span></span></a>
+                    </div>
+                    <div style="padding-right: 20px; display: inline;">
+                        <a href="${wardsURL}" class="btn-1" title="Danh sách địa điểm"><span><span>Danh
+                                    sách địa điểm</span></span></a>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+    </div>
+</div>

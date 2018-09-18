@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+  
+  <definition extends="default" name="nppList">
+     <put-attribute name="body" value="/WEB-INF/jsp/supplier/listNPP.jspx"/>
+  </definition>
+  
+   
+  <definition extends="default" name="nppDetail">
+    <put-attribute name="body" value="/WEB-INF/jsp/supplier/details.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="nppAdd">
+    <put-attribute name="body" value="/WEB-INF/jsp/supplier/add.jspx"/>
+  </definition>
+  
+  
+</tiles-definitions>

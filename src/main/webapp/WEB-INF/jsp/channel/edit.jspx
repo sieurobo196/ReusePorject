@@ -1,0 +1,437 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0" class="TableWrapper"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="cssFolder" value="/resources/css" />
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/channel.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/channelsearch.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${jsFolder}/location.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+    <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        var editpath = "${pageContext.request}";
+    </script>
+    ]]>
+    <style>
+        .province_table td {border-bottom:1px solid lightgray;}
+        .province_table {padding-bottom:5px;}
+    </style>
+    <div id="inner-content">
+        <script type="text/javascript">
+            $('select').each(function () {
+                   $(this).attr("disabled", '${readonly}');
+               });
+            // get list provin
+            //getProvince();
+            // get list status for channel
+            getChannelStatus();
+            // get channel type
+            getChannelType(1);
+            document.addEventListener('DOMContentLoaded', function () {
+                // To get all checkboxes you have a couple of options.
+                // we era can use the :checkbox pseudo-selector
+                $(":checkbox").change(function () {
+                    var com = this.getAttribute('id').split('_');
+                    if (this.checked) {
+                        $('#locationList_' + parseInt(com[1]) + '_createdUser').attr('value', -1);
+                    } else {
+                        $('#locationList_' + parseInt(com[1]) + '_createdUser').attr('value', 1);
+                    }
+                });
+            });
+            var showProvince = "${showProvince}";
+            var isEdit = "${editChannel}";
+            if (showProvince == "false") {
+                if (isEdit == "true") {
+                    $('#location_type_district').show();
+                }
+            }
+            var channelLocationList = "${fnchannelLocation.locationList}";
+            $(document).ready(function(){
+                $('select').on('change', function(){
+                    console.log('channel>>>');
+                });
+            });
+        </script>
+        <jsp:directive.page contentType="text/html;charset=UTF-8" />
+        <jsp:output omit-xml-declaration="yes" />
+        <spring:url var="imageFolder" value="/resources/images" />
+        <span class="bor-left"><img src="${imageFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>
+                    ${createChannel? "Thêm kênh mới": "Chỉnh sửa kênh"}
+                </span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form modelAttribute="channelLocation" method="POST" id="channel_form">
+                <table  width="100%" border="0" cellspacing="5px" cellpadding="0">
+                    <col width="20%" />
+                    <col width="80%" />
+                    <tr>
+                        <form:hidden path="channel.id" id="channelId"/>
+                        <form:hidden path="channel.parents.id"/>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td align="left">
+                            <div class="infoMessage" id="a_messageInfor">${infoMessage}</div>
+                            <div class="errorMessage" id="a_messageError">${errorMessage}</div>
+                            <c:if test="${createSuccess}">
+                                <div class="infoMessage" id="a_messageInfor">Tạo kênh thành công.</div>
+                            </c:if>
+                            <c:if test="${updatedSuccess}">
+                                <div class="infoMessage" id="a_messageInfor">Cập nhật kênh thành công.</div>
+                            </c:if>
+                            <c:if test="${duplicated}">
+                                <div class="errorMessage" id="a_messageError">Mã kênh <b>[${fullCodeChannel}]</b> đã tồn tại.</div>
+                            </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            <form:hidden path="channel.channelTypes.id"/>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_type_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Tên Kênh (<label class="errorMessage">*</label>):
+                        </td>
+                        <td><form:input id="channel_name" path="channel.name" class="textInput mediumWidth" type="text"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_name_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Mã Kênh (<label class="errorMessage">*</label>)
+                        </td>
+                        <td>
+                            <form:input path="channel.parents.fullCode" id="full_code_parent" class="textInput mediumWidth" type="text" readonly="true"/> -
+                            <c:choose>
+                                <c:when test="${editChannel}">
+                                    <form:input id="channel_code" path="channel.code" class="textInput mediumWidth" type="text" cssStyle="width: 90px" readonly="true"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <form:input id="channel_code" path="channel.code" class="textInput mediumWidth" type="text" cssStyle="width: 90px"/>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_code_error"></label></td></tr>
+
+                    <tr>
+                        <td align="right">Địa chỉ :
+                        </td>
+                        <td><form:input path="channel.address" class="textInput mediumWidth" type="text"/>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="right">Số điện thoại :</td>
+                        <td><form:input id="channel_tel" path="channel.tel" class="textInput mediumWidth" type="text"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_tel_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Fax :</td>
+                        <td><form:input id="channel_fax" path="channel.fax" class="textInput mediumWidth" type="text"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_fax_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Email :</td>
+                        <td><form:input class="textInput mediumWidth" type="text" path="channel.email" id="channel_email"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_email_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Người liên hệ :</td>
+                        <td><form:input path="channel.contactPersonName" class="textInput mediumWidth" type="text"/></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right">Kinh độ(<label class="errorMessage">*</label>):</td>
+                        <td><form:input id="channel_lat" path="channel.lat" class="textInput mediumWidth" type="text" onkeyup="restrictInputDoubleOnly(event,this)"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_lat_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Vĩ độ(<label class="errorMessage">*</label>):</td>
+                        <td><form:input id="channel_lag" path="channel.lng" class="textInput mediumWidth" type="text" onkeyup="restrictInputDoubleOnly(event,this)"/></td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_lag_error"></label></td></tr>
+                    <tr>
+                        <td align="right">Tình trạng :</td>
+                        <td>
+                            <form:select  path="channel.statuss.id" class="select2_combo" style="width:150px">
+                                <form:options items="${statusList}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_status_error"></label></td></tr>
+                    <tr style="display: none">
+                        <td align="right">Có bán hàng :</td>
+                        <c:if test="${channel.isSalePoint!=0}">
+                            <td><input type="checkbox" id="isSalePoint" checked="true"/></td>
+                            </c:if>
+                            <c:if test="${channel.isSalePoint==0}">
+                            <td><input  type="checkbox" id="isSalePoint" checked="false" /></td>
+                            </c:if>
+                    </tr>
+                    <tr>
+                        <td align="right">Loại địa điểm(<label class="errorMessage">*</label>) :</td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${editChannel}">
+                                    <form:select path="locationType" id="location_type" class="select2_combo" style="width:150px">
+                                        <form:options items="${locationTypes}" itemValue="id" itemLabel="name"/>
+                                    </form:select>                                    
+                                </c:when>
+                                <c:otherwise>
+                                    <form:select path="locationType" id="location_type" class="select2_combo" style="width:150px" onchange="changeLocation()">
+                                        <form:option value="0">--Chọn địa điểm--</form:option>
+                                        <form:options items="${locationTypes}" itemValue="id" itemLabel="name"/>
+                                    </form:select>
+                                </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                    <c:choose>
+                        <c:when test="${editChannel}">
+                            <tr id="location_type_district">
+                                <td></td>
+                                <td>
+                                    <table>
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <table width="250px" border="0" cellspacing="0" cellpadding="3px" class="table-1 province_table">
+                                                    <tbody id="table_channel_location">
+                                                        <c:forEach items="${channelLocation.locationList}" var="location" varStatus="status">
+                                                            <tr id="tr_${status.index}_channel_location">
+                                                                <td align="left">${location.locations.name}
+                                                                    <input id="input_${status.index}_chnallo_id" type="hidden" name="locationList[${status.index}].id" value="${location.id}"/>
+                                                                    <input id="input_${status.index}_chnallo_location_id" type="hidden" name="locationList[${status.index}].locations.id" value="${location.locations.id}"/>
+                                                                    <input id="input_${status.index}_chnallo_createdUser" type="hidden" name="locationList[${status.index}].createdUser" value="${location.createdUser}"/>
+                                                                    <input id="input_${status.index}_chnallo_deletedUser" type="hidden" name="locationList[${status.index}].deletedUser" value="${location.deletedUser}"/>
+                                                                </td>
+                                                                <td align="center">
+                                                                    <a name="checkView" href="javascript:deleteLocation('#tr_${status.index}_channel_location');" >Xóa</a>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <c:choose>
+                                            <c:when test="${channelLocation.isProvince == 1}">
+                                                <tr class="more">
+                                                    <td align="right"></td>
+                                                    <td>
+                                                        <form:select path="" id="channel_province" class="select2_combo" style="width:150px">
+                                                            <form:option value="0">--Tỉnh/Thành phố--</form:option>
+                                                            <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                                        </form:select>
+                                                            <a name="checkView" href="javascript:;" onclick="addLocation('#channel_province', 'Vui lòng chọn tỉnh/thành phố.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                                    </td>
+                                                </tr>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <tr class="more">
+                                                    <td align="right"></td>
+                                                    <td>
+                                                        <form:select path="" id="channel_province" class="select2_combo" style="width:150px" onchange="getDistrict(this)">
+                                                            <form:option value="0">--Tỉnh/Thành phố--</form:option>
+                                                            <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                                        </form:select>
+                                                        <select id="channel_district" class="select2_combo" style="width:150px; margin-left: 3px">
+                                                            <option value="0">--Quận/Huyện--</option>
+                                                        </select>
+                                                            <a name="checkView" href="javascript:;" onclick="addLocation('#channel_district', 'Vui lòng chọn quận/huyện.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                                    </td>
+                                                </tr>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </table>
+                                </td>
+                            </tr>
+                        </c:when>
+                            <c:otherwise>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <table width="250px" border="0" cellspacing="0" cellpadding="3px" class="table-1 province_table">
+                                            <tbody id="table_channel_location">
+                                                    <c:forEach items="${channelLocation.locationList}" var="location" varStatus="status">
+                                                        <tr id="tr_${location.id}_channel_location">
+                                                            <td align="left">${location.locations.name}
+                                                                <input id="input_${status.index}_chnallo_id" type="hidden" name="locationList[${status.index}].id" value="${location.id}"/>
+                                                                <input id="input_${status.index}_chnallo_location_id" type="hidden" name="locationList[${status.index}].locations.id" value="${location.locations.id}"/>
+                                                                <input id="input_${status.index}_chnallo_createdUser" type="hidden" name="locationList[${status.index}].createdUser" value="${location.createdUser}"/>
+                                                                <input id="input_${status.index}_chnallo_deletedUser" type="hidden" name="locationList[${status.index}].deletedUser" value="${location.deletedUser}"/>
+                                                            </td>
+                                                            <td align="center">
+                                                                <a name="checkView" href="javascript:deleteLocation('#tr_${location.id}_channel_location');" >Xóa</a>
+                                                            </td>
+                                                        </tr>
+                                                    </c:forEach>
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <c:choose>
+                                <c:when test="${isDistrict}">
+                                    <tr id="location_type_province" class="more">
+                                        <td></td>
+                                        <td>
+                                    <tr class="more">
+                                        <td align="right"></td>
+                                        <td>
+                                            <form:select path="" id="channel_province" class="select2_combo" style="width:150px">
+                                                <form:option value="0">--Quận/Huyện--</form:option>
+                                                <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                            </form:select>
+                                                <a name="checkView" href="javascript:;" onclick="addLocation('#channel_province', 'Vui lòng chọn Quận/Huyện.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                        </td>
+                                    </tr>
+                                </td>
+                            </tr>
+                        </c:when>
+                        <c:otherwise>
+                            <c:choose>
+                                <c:when test="${isArea}">
+                                    <tr id="location_type_province" class="more"  style="display: none">
+                                        <td></td>
+                                        <td>
+                                            <table>
+                                                <tr class="more">
+                                                    <td align="right"></td>
+                                                    <td>
+                                                        <form:select path="" id="channel_province" class="select2_combo" style="width:150px">
+                                                            <form:option value="0">--Quận/Huyện--</form:option>
+                                                            <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                                        </form:select>
+                                                            <a name="checkView" href="javascript:;" onclick="addLocation('#channel_province', 'Vui lòng chọn quận/huyện.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </c:when>
+                                <c:otherwise>
+                                    <tr id="location_type_province" class="more"  style="display: none">
+                                        <td></td>
+                                        <td>
+                                            <table>
+                                                <tr class="more">
+                                                    <td align="right"></td>
+                                                    <td>
+                                                        <form:select path="" id="channel_province" class="select2_combo" style="width:150px">
+                                                            <form:option value="0">--Tỉnh/Thành phố--</form:option>
+                                                            <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                                        </form:select>
+                                                            <a name="checkView" href="javascript:;" onclick="addLocation('#channel_province', 'Vui lòng chọn tỉnh/thành phố.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </c:otherwise>
+                            </c:choose>
+                            <tr id="location_type_district" style="display: none">
+                                <td></td>
+                                <td>
+                                    <table>
+                                        <tr class="more">
+                                            <td align="right"></td>
+                                            <td>
+                                                <form:select path="" id="channel_location_province" class="select2_combo" style="width:150px" onchange="getDistrict(this)">
+                                                    <form:option value="0">--Tỉnh/Thành phố--</form:option>
+                                                    <form:options items="${provinceList}" itemValue="id" itemLabel="name"/>
+                                                </form:select>
+                                                <select id="channel_district" class="select2_combo" style="width:150px; margin-left: 3px">
+                                                    <option value="0">--Quận/Huyện--</option>
+                                                </select>
+                                                    <a name="checkView" href="javascript:;" onclick="addLocation('#channel_district', 'Vui lòng chọn quận/huyện.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </c:otherwise>
+                    </c:choose>
+                </c:otherwise>
+                </c:choose>
+                <tr><td></td><td><label class="errorMessage" id="channel_location_error"></label></td></tr>
+                <tr>
+                        <td>&#160;</td><td>&#160;</td>
+                    </tr>
+                    <tr  class="more">
+                        <td valign="top" style="text-align: right"><label for="">Sản phẩm trọng tâm:</label></td>
+                        <td >
+                            <table width="250px" border="0" cellspacing="0" cellpadding="3px" class="table-1 province_table">
+                                <tbody id="table_combo_goods_channel_focus">
+                                    <c:forEach items="${channelLocation.goodsChannelFocusList}" var="goodsFocus" varStatus="status">
+                                        <tr id="tr_${status.index}_goods_channel_focus">
+                                            <td id="td_${status.index}_goods_channel_focus" align="left">${goodsFocus.goodss.name}
+                                                <input id="input_${status.index}_id" type="hidden" name="goodsChannelFocusList[${status.index}].id" value="${goodsFocus.id}"/>
+                                                <input id="input_${status.index}_goodss_name" type="hidden" name="goodsChannelFocusList[${status.index}].gooodss.name" value="${goodsFocus.goodss.name}"/>
+                                                <input id="input_${status.index}_goodss_id" type="hidden" name="goodsChannelFocusList[${status.index}].gooodss.id" value="${goodsFocus.goodss.id}"/>
+                                                <input id="input_${status.index}_createdUser" type="hidden" name="goodsChannelFocusList[${status.index}].createdUser" value="${goodsFocus.createdUser}"/>
+                                                <input id="input_${status.index}_deletedUser" type="hidden" name="goodsChannelFocusList[${status.index}].deletedUser" value="${goodsFocus.deletedUser}"/>
+                                            </td>
+                                            <td align="center">
+                                                <a name="checkView" href="javascript:deleteGoodsFocus('#tr_${status.index}_goods_channel_focus');" >Xóa</a>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                </tbody>
+                            </table>
+                            <form:select path="" id="combo_goods_channel_focus" class="select2_combo" style="width:150px">
+                                <form:option value="0">-- Chọn sản phẩm --</form:option>
+                                <form:options items="${goodsList}" itemValue="id" itemLabel="name"/>
+                            </form:select>
+                                <a name="checkView" href="javascript:;" onclick="javascript:addGoodsFocus('#combo_goods_channel_focus', 'Vui lòng chọn sản phẩm trọng tâm.');" class="btn-1"><span><span style="width:30px">Thêm</span></span></a>
+                        </td>
+                    </tr>
+                    <tr><td></td><td><label class="errorMessage" id="channel_province_error"></label></td></tr>
+                    <tr>
+                        <td>&#160;</td><td>&#160;</td>
+                    </tr>
+                    <tr class="more">
+                        <td valign="top" style="text-align: right"><label for="">Ghi chú:</label></td>
+                        <td><form:textarea path="channel.note" rows="4" style="width: 320px; margin: 0px; height: 116px;" ></form:textarea></td>
+                        </tr>
+                        <tr><td colspan="2">&#160;</td></tr>
+                        <tr>
+                            <td align="right"></td>
+                            <td align="left">
+                            <c:choose>
+                                <c:when test="${createChannel}">
+                                    <a name="checkView" href="javascript:;" onclick="createChannel();" class="btn-1"><span><span style="width:50px">Tạo mới</span></span></a>
+                                    <a name="checkView" href="javascript:;" onclick="javascript:document.forms[0].reset()" class="btn-1"><span><span style="width:50px">Làm lại</span></span></a>
+                                </c:when>
+                                <c:otherwise>
+                                        <a name="checkView" href="javascript:;" onclick="updateChannel();" class="btn-1"><span><span style="width:50px">Cập nhật</span></span></a>
+                                    </c:otherwise>
+                            </c:choose>
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+</div>

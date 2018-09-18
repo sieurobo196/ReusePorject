@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+  
+  <definition extends="default" name="categoryList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/categoryList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="categoryView">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/categoryDetails.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="productList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/list.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="productView">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/details.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="comDefList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/comDefList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="comDefPage">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/comDefForm.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="rewardList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/rewardList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="rewardDefList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/rewardDefList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="rewardDefPage">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/rewardDefForm.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="comDefRedoList">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/comDefRedoList.jspx"/>
+  </definition>
+  
+  <definition extends="default" name="comDefRedoPage">
+    <put-attribute name="body" value="/WEB-INF/jsp/product/comDefRedoForm.jspx"/>
+  </definition>
+  
+  
+</tiles-definitions>

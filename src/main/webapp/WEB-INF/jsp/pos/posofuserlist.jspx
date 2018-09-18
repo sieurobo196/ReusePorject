@@ -1,0 +1,247 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="posDetailURL" value="/pos/details" />
+	<spring:url var="posSaleURL" value="/pos/sales" />
+	<spring:url var="ccURL" value="/pos/customercare" />
+	<spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="diaryURL" value="/pos/diary" />
+
+<![CDATA[
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js"></script>
+<script type="text/javascript">
+		function FilterList(){
+			document.getElementById('pageNum').value= "1";
+			document.getElementById('pageName').value= "listPosPage";
+			document.getElementById('frmPOSList').submit();
+		}
+/*
+function changeProvince(province) {
+	$("select#district").empty();
+	$("select#ward").empty();
+	
+	var provinceId = ($(province)).val();
+	
+	var url = "${ajaxURL}/getDistricts?cityId=" + provinceId;
+	$.ajax({type: 'GET', dataType:'json', url: url, success: function(data) {
+		var cboDistrict = $("select#district");
+		for ( var i = 0; i < data.data.length; i++) {
+			var item = data.data[i];
+			var cboOoption = $("<option value = '" + item.id + "'>" + item.name + "</option>");
+			cboDistrict.append(cboOoption);
+		}
+	}});
+}
+
+function changeDistrict(district) {
+	$("select#ward").empty();
+
+	var districtId = ($(district)).val();
+
+	var url = "${ajaxURL}/getWards?districtId=" + districtId;
+	$.ajax({type: 'GET', dataType:'json', url: url, success: function(data) {
+		var cboWard = $("select#ward");
+		for ( var i = 0; i < data.data.length; i++) {
+			var item = data.data[i];
+			var cboOoption = $("<option value = '" + item.id + "'>" + item.name + "</option>");
+			cboWard.append(cboOoption);
+		}
+	}});
+}
+*/
+
+function changeWard(ward) {
+	// DO NOTHING
+}
+</script>
+]]>
+	
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH CÁC ĐIỂM BÁN HÀNG</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" id="frmPOSList" name="frmPOSList" commandName="frmPOSList" cssClass="frm-general frm-xetnghiem">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<colgroup>
+					    <col width="8%" />
+					    <col width="40%" />
+					    <col width="4%" />
+					    <col width="8%" />
+					    <col width="40%" />
+					</colgroup>
+					<tr>
+						<td style="text-align: right"><label for="">Lọc KQ:</label></td>
+						<td colspan="4">
+						<!--
+							<form:hidden path="pageNum"/>
+							<form:hidden path="pageName"/>
+						-->	 
+
+							<form:select id="province" path="province" cssStyle="width:180px"
+								onchange="changeProvince($('#province'),$('#district'),$('#ward'));">
+								<form:options items="${provinceList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							
+							&#160;&#160;&#160;
+							 <form:select id="district" path="district" cssStyle="width:180px"
+								onchange="changeDistrict($('#district'),$('#ward'));">
+								<form:options items="${districtList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							&#160;&#160;&#160;
+							<form:select id="ward" path="ward" cssStyle="width:180px">
+								<form:options items="${wardList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							&#160;&#160;&#160; 
+							
+							<!--
+							<form:select path="province" cssStyle="width:180px"
+								onchange="javascript:changeProvince(this);">
+								<form:options items="${provinceList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select>
+							&#160;&#160;&#160;
+							<form:select id="district" path="district" cssStyle="width:180px"
+								onchange="javascript:changeDistrict(this);">
+								<form:options items="${districtList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							&#160;&#160;&#160;
+
+							<form:select id="ward" path="ward" cssStyle="width:180px"
+								onchange="javascript:changeWard(this);">
+								<form:options items="${wardList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> &#160;&#160;&#160; 
+							-->
+							
+							<form:input path="text" cssStyle="width: 120px" /> &#160;&#160;&#160; 
+							
+							<!--
+							<a href="javascript:" onclick="javascript:FilterList();"
+							class="btn-1" title="Danh Sách ĐBH"><span><span>Danh
+										Sách ĐBH</span></span></a></td>
+							-->
+							<a href="javascript:void(0);" onclick="javascript:document.getElementById('frmPOSList').submit();"
+							class="btn-1" title="Danh Sách ĐBH"><span><span>Danh
+										Sách ĐBH</span></span></a></td>
+					</tr>
+					
+					<tr>
+						<td style="text-align: right">&#160;</td>
+						<td colspan="4">
+						 
+
+							<form:select id="branch" path="branch" cssStyle="width:180px"
+								onchange="changeBranchList($('#branch'),$('#agent'),'',$('#employer'));">
+								<form:options items="${branchList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							
+							&#160;&#160;&#160;
+							 <form:select id="agent" path="agent" cssStyle="width:180px"
+								onchange="changeAgentUserList($('#agent'),$('#employer'));">
+								<form:options items="${agentList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							&#160;&#160;&#160;
+							<form:select id="employer" path="employer" cssStyle="width:180px">
+								<form:options items="${employerList}" itemValue="id"
+										itemLabel="name"/>
+							</form:select> 
+							&#160;&#160;&#160; 
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posTopPagination" 
+								formSubmit="frmPOSList" submitMethod="POST" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table width="99%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="5%">STT</td>
+										<td width="10%">Mã ĐBH</td>
+										<td width="20%">Tên ĐBH</td>
+										<td width="10%">Người đại diện</td>
+										<td width="20%">Địa chỉ</td>
+										<td width="10%">Số ĐT</td>
+										<td width="15%">Nhân Viên Bán Hàng</td>
+										<td width="10%">Hành động</td>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty posList}">
+											<c:forEach items="${posList}" var="posItem" varStatus="status">
+												<tr>
+													<td align="center">${(page-1)*size+status.count}</td>
+													<td>${posItem.maCuaHang}</td>
+													<!--  <td><a href="${posDetailURL}/${posItem.id}">${posItem.tenCuaHang}</a></td> -->
+													<td>${posItem.tenCuaHang}</td>
+													<td>${posItem.tenChuCuaHang}</td>
+													<td>${posItem.diaChi}</td>
+													<td>${posItem.soDienThoaiBan}</td>
+													<td>${posItem.tenNhanVienBanHang}</td>
+													
+													<td align="center">
+													<!--<a href="${posDetailURL}/${posItem.id}"
+													class="redTxt" title="Xem chi tiết ĐBH">Xem</a>
+													&#160;|&#160;
+													<a href="${diaryURL}/?posId=${posItem.id}"
+													class="redTxt" title="Xem nhật ký CSĐBH">Nhật ký CSĐBH</a>&#160;|&#160;-->
+													<c:if test="${not empty posItem.nhanVienBanHang}">
+													<a href="javascript:void(0);" onClick="deleteUserPOS(${posItem.id});"
+													class="redTxt" title="Xóa">Xóa</a>
+													</c:if>
+													</td>
+														
+												
+												</tr>
+											</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr><td colspan="8" align="center">Không có dữ liệu.</td></tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<util:pagination maxPages="${maxPages}" page="${page}"
+								size="${size}" listingURL="" id="posBottomPagination" formSubmit="frmPOSList" submitMethod="POST"/>
+						</td>
+					</tr>
+				</table>
+			</form:form>
+		</div>
+	</div>
+</div>

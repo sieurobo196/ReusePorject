@@ -1,0 +1,221 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+	xmlns:sec="http://www.springframework.org/security/tags"
+	escapeXML="true">
+	<jsp:directive.page import="java.util.Arrays" />
+	<jsp:directive.page import="java.util.ArrayList" />
+	<jsp:directive.page import="java.util.List" />
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="ajaxURL" value="/ajax" />
+	<spring:url var="scriptsFolder" value="/resources/scripts" />
+	<spring:url var="orderViewURL" value="/order/view" />
+	<spring:url var="approveURL" value="/order/approve" />
+	<spring:url var="requestGoodsListURL" value="/order/requestGoods/list" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=1"></script>
+	<script type="text/javascript" src="${scriptsFolder}/device.js"></script>
+	<script type="text/javascript">
+	
+	var contextPath = "${pageContext.request.contextPath}";
+
+	$(document).ready(function() { 
+	$("select").select2(); 
+	});
+
+	function submitActionForm(formId, url) {	
+		$("#" + formId).attr("action", url);
+		$("#" + formId).submit();
+	};
+
+</script>
+]]>
+	<style>
+		.wait_row{color:red;}	
+	</style>
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<c:choose>
+					<c:when test="${isTraHang}">
+						<span>CHI TIẾT YÊU CẦU TRẢ HÀNG</span>
+					</c:when>
+					<c:otherwise>
+						<span>CHI TIẾT YÊU CẦU NHẬN HÀNG</span>
+					</c:otherwise>
+				</c:choose>
+				
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="requestDetailsForm" id="requestDetailsForm">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="5px" cellpadding="0"
+					class="table-1">
+					<tr>
+						<td>
+						</td>
+					</tr>
+					<c:if test="${not empty salesTransList }">
+						<tr class="info">
+							<td align="right"><strong>Thông tin nhân viên</strong></td>
+						</tr>
+						
+						<tr>
+							<td align="right"><strong>Tên nhân viên :</strong></td>
+							<td><label>${salesTransList.employee.name}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Mã nhân viên :</strong></td>
+							<td><label>${salesTransList.employee.username}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Vai trò :</strong></td>
+							<td><label>${salesTransList.employee.userRoles}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Số Điện thoại :</strong></td>
+							<td><label>${salesTransList.employee.tel}</label></td>
+						</tr>
+					</c:if>
+					<tr>	
+						<td>&#160;
+						</td>
+					</tr>
+					<c:if test="${not empty salesTransList}">
+						<tr class="info">
+							<td align="right"><strong>Thông tin nơi nhận hàng</strong></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Tên :</strong></td>
+							<td><label>${salesTransList.channel.name}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Mã :</strong></td>
+							<td><label>${salesTransList.channel.fullCode}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Số điện thoại :</strong></td>
+							<td><label>${salesTransList.channel.tel}</label></td>
+						</tr>
+						<tr>
+							<td align="right"><strong>Địa chỉ :</strong></td>
+							<td><label>${salesTransList.channel.address}</label></td>
+						</tr>
+					</c:if>
+					<!--
+					<tr>
+						<td colspan="4"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" id="catTopPagination"
+								formSubmit="requestDetailsForm" submitMethod="POST" /></td>
+					</tr>
+					-->
+					<tr>	
+						<td>&#160;
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4">
+						</td>
+					</tr>
+					<!-- 
+					<tr>
+						<td colspan="4"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" id="catBottomPagination"
+								formSubmit="requestDetailsForm" submitMethod="GET" listingURL=""/></td>
+					</tr>
+					-->
+
+				</table>
+				<div align="center">
+					<table width="80%" border="0" cellspacing="0" cellpadding="0"
+									class="table-2">
+									<thead>
+										<tr>
+											<td width="7%">STT</td>
+											<!--
+											<td width="15%">TÃÂªn NhÃÂ¢n ViÃÂªn</td>
+											<td width="6%">MÃÂ£ NhÃÂ  PP</td>
+											<td width="20%">TÃÂªn NhÃÂ  PP</td>
+											-->
+											<td width="20%" colspan = "2">Ngày tạo</td>
+											<td width="19%">Tên hàng hoá</td>
+											<td width="12%">Số lượng yêu cầu</td>
+											<td width="15%">Thành tiền yêu cầu</td>
+											<td width="12%">Số lượng tồn</td>
+											<!-- <td width="10%">HÃÂ ng Trong Kho</td> -->
+											<td width="15%">Thành tiền tồn</td>
+										</tr>
+									</thead>
+									<tbody>
+										<c:choose>
+											<c:when test="${not empty inventoryDetailsList}">
+												<c:forEach items="${inventoryDetailsList}" var="item" varStatus="status">
+												<tr>
+														<td align="center">${(page-1)*size+status.count}</td>
+														<!--
+														<td>${item.tenNhanVien}</td>
+														<td>${item.maNpp}</td>
+														<td>${item.tenNpp}</td>	
+														-->					
+														<td align="center"><fmt:parseDate
+															value="${item.salesTransDate}"
+															pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+															value="${transDate}" pattern="dd/MM/yyyy" /></td>
+														<td align="center"><fmt:parseDate
+															value="${item.salesTransDate}"
+															pattern="yyyy-MM-dd HH:mm:ss" var="transDate" /> <fmt:formatDate
+															value="${transDate}" pattern="HH:mm:ss" /></td>
+														<td>${item.goodss.name}</td>	
+														<td align="center">${item.quantity}</td>
+														<td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${item.totalPrice}" />
+														</td>
+														<c:choose>
+															<c:when test="${isTraHang}">
+																<td align="center">0</td>
+																<td align="right">0</td>
+															</c:when>
+															<c:otherwise>
+																<td align="center">${item.soLuongTon}</td>
+																<td align="right"><fmt:formatNumber type="number" pattern="###,###" value="${item.thanhTienTon}" /></td>
+															</c:otherwise>
+														</c:choose>	
+																			
+												</tr>
+												</c:forEach>
+											</c:when>
+											<c:otherwise>
+												<tr>
+													<td colspan="9" align="center">Không có dữ liệu.</td>
+												</tr>
+											</c:otherwise>
+										</c:choose>
+									</tbody>
+								</table>
+							</div>
+							<div align="center">
+								<table width="80%" border="0" cellspacing="0" cellpadding="0" class="table-3">
+									<tr>&#160;	
+										<td>&#160;
+										</td>
+									</tr>
+									<tr>
+										<td colspan="3"></td>
+									</tr>
+									<tr><td colspan="3"><a href="${requestGoodsListURL}" class="btn-1" title="Quay lại danh sách nhận trả hàng của NVBH"><span><span>&#160;&#160;Quay lại&#160;&#160;</span></span></a></td></tr>
+								</table>
+							</div>
+			</form:form>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,297 @@
+
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:th="http://www.thymeleaf.org"
+     xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="jsFolder" value="/resources/js" />
+
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="cssFolder" value="/resources/css" />
+
+    <spring:url var="editChannel" value="/channel/edit/" />
+    <spring:url var="createChannel" value="/channel/create" />
+    <spring:url var="channelTypeView" value="/channelType/view/"/>
+
+    <c:url var="dojo" value="/resources/dojo/dojo.js" />
+    <c:url var="spring" value="/resources/spring/Spring.js" />
+    <c:url var="spring_dojo" value="/resources/spring/Spring-Dojo.js" />
+
+    <script type="text/javascript">
+        var contextPath = "${pageContext.request.contextPath}";
+        var editPath = "${editChannel}";
+        var channelItems = new Array();
+        var channelSelectedID = 0;
+        var channelSelectedCode = "";
+        var companyName = "${userPrincipal.companyName}";
+        var companyId = parseInt("${userPrincipal.companyId}");
+        var channelTypeWebList = new Array();
+        var comboVal = 0;
+        var jsonChannelType = ${chanelTypeListJSON};
+        var channelTypeArray = [];
+        var selectChannelType;
+        var selectChannelTypeCurrent;
+        var minlevel = ${minLevel};
+        var isLink = ${!isAdmin};
+        var isView = ${isAssistant};
+        var type = ${type};
+
+        var page = ${page};
+        var size = ${size};
+        var maxPages = ${maxPages};
+        var idxRoot = (page-1)*size;
+
+    </script>
+
+    <![CDATA[
+    <script type="text/javascript" src="${dojo}"></script>
+    <script type="text/javascript" src="${spring}"></script>
+    <script type="text/javascript" src="${spring_dojo}"></script>
+
+    <script type="text/javascript" src="${jsFolder}/channel.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/channelsearch.js?v=5"></script>
+    <script type="text/javascript" src="${jsFolder}/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="${jsFolder}/location.js"></script>
+    <script type="text/javascript" src="${jsFolder}/utilities.js"></script>
+    <script type="text/javascript" src="${jsFolder}/responsedata.js"></script>
+    <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+    <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+
+    <script type="text/javascript">
+        var company = $('<a tag="' + companyId + '" onclick="getLinkAndMemberChannel(this)" href="javascript:;"><strong>' + companyName + '» </strong></a>');
+        $('#td_level_path').text(company);
+    </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            for (var i = 0; i < jsonChannelType.length; i++) {
+                channelTypeArray.push(jsonChannelType[i].id);
+            }
+            if (channelTypeArray.length > 0) {
+                selectChannelType = 'select_channel_' + channelTypeArray[0];
+                selectChannelTypeCurrent = '#select_channel_' + channelTypeArray[0];
+            }
+
+            var tdpath = $('#td_level_path');
+            $('select').on('change', function (evet) {
+
+                var com = $(this);
+                comboVal = parseInt(com.val());
+                var idString = $(com).attr('id').split('_');
+                var idchanIdSelected = parseInt(idString[idString.length - 1]);
+                var index = channelTypeArray.indexOf(parseInt(idchanIdSelected));
+
+                selectChannelTypeCurrent = '#' + $(this).attr('id');
+                selectChannelType = 'select_channel_' + channelTypeArray[index + 1];
+
+                removeAllContentCombo(com);
+                if (!isLink || isView) {
+                    tdpath.empty();
+                    var companyLink = $('<a tag="#select_channel_' + channelTypeArray[0] + '" onclick="changComboFromA(this)" href="javascript:;"><strong>' + companyName + '» </strong></a>');
+                    tdpath.append(companyLink);
+                    
+                    var lent = channelTypeArray.length;
+                    for (var i = 0; i < lent - 1; i++) {
+                        var comSelected = $('#select_channel_' + channelTypeArray[i]);
+                        if (comSelected.val() != '0' && comSelected.val() != null) {
+                            var text = comSelected.find(':selected').text();
+                            if (text.indexOf('-') > 0) {
+                                var texts = text.split('-');
+                                text = texts[1];
+                            }
+                            tdpath.append($('<a combo="#select_channel_' + channelTypeArray[i] + '" tag="' + comSelected.find(':selected').val() + '" onclick="linkAChange(this)" href="javascript:;"><strong>' + text + '» </strong></a>'));
+                        }
+                    }
+                } else {
+                    tdpath.empty();
+                    var companyLink = $('<label><strong>' + companyName + '» </strong></label>');
+                    tdpath.append(companyLink);
+                    var lent = channelTypeArray.length;
+                    for (var i = 0; i < lent - 1; i++) {
+                        var comSelected = $('#select_channel_' + channelTypeArray[i]);
+                        if (comSelected.val() != '0' && comSelected.val() != null) {
+                            var text = comSelected.find(':selected').text();
+                            if (text.indexOf('-') > 0) {
+                                var texts = text.split('-');
+                                text = texts[1];
+                            }
+                            if (i < minlevel) {
+                                tdpath.append($('<label><strong>' + text + '» </strong></label>'));
+                            } else {
+                                tdpath.append($('<a combo="#select_channel_' + channelTypeArray[i] + '" tag="' + comSelected.find(':selected').val() + '" onclick="linkAChange(this)" href="javascript:;"><strong>' + text + '» </strong></a>'));
+                            }
+                        }
+                    }
+                }
+            });
+
+            if (type) {
+                initLink();
+            }
+            
+            if('${types}'!='' && '${types}'!=0)
+            {
+                $(".paging").find("li").each(function(){
+                    var linkA = $(this).find('a')[0];
+                    var url = linkA.getAttribute("onclick");
+                    if(url!=null)
+                    {
+                        linkA.setAttribute("onclick",url.replace("?","?types="+'${types}'+"&"));
+                    }
+                });
+            }
+        });
+
+    </script>
+    ]]>
+
+
+    <div id="inner-content">
+        <span class="bor-left">
+            <img src="${imagesFolder}/dummy.gif" alt="" />
+        </span>
+        <div class="content-title" >
+            <h2>
+                <span>Hệ thống kênh quản lý</span>
+            </h2>
+        </div>
+
+        <div id="content">
+            <form:form method="POST" commandName="channelForm" path="channelForm" id="channelForm">
+
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="99%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+                    <tr>
+                        <td colspan="3" align="center"><span class="errorMessage">${error}</span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" id="td_list_channel">
+                            <c:choose>
+                                <c:when test="${isAdmin or isAssistant}">
+                                    <c:forEach items="${chanelTypeList}" var="webChannel">
+                                        <form:select tag="${webChannel.channelType.id}" path="" id="select_channel_${webChannel.channelType.id}" cssStyle="width:140px;height:21px;margin-left: 10px;" cssClass="select2_combo" onchange="comboChanCompany(this)">
+                                            <form:option value="0">-- ${webChannel.channelType.name} --</form:option>
+                                            <c:forEach items="${webChannel.channels}" var="channel">
+                                                <c:choose>
+                                                    <c:when test="${webChannel.channelSelected == channel.id}">
+                                                <option value="${channel.id}" selected="selected">[${channel.fullCode}]-${channel.name}</option>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <option value="${channel.id}">[${channel.fullCode}]-${channel.name}</option>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+                                </form:select>
+                            </c:forEach>
+                        </c:when>
+                        <c:otherwise>
+                            <c:forEach items="${chanelTypeList}" var="webChannel" varStatus="status">
+                                <form:select tag="${webChannel.channelType.id}" path="" id="select_channel_${webChannel.channelType.id}" cssStyle="width:140px;height:21px;margin-left: 10px;" cssClass="select2_combo" onchange="comboChanCompany(this)">
+                                    <c:choose>
+                                        <c:when test="${(webChannel.channels != null) and (status.index != minLevel)}">
+                                            <form:options items="${webChannel.channels}" itemValue="id" itemLabel="name"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <form:option value="0">-- ${webChannel.channelType.name} --</form:option>
+                                            <form:options items="${webChannel.channels}" itemValue="id" itemLabel="name"/>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </form:select>
+                            </c:forEach>
+                        </c:otherwise>
+                    </c:choose>
+                    </td>
+                    </tr>
+                    <tr>
+                        <td id="divCombobox">
+                        </td>
+                        <td colspan="6" style="text-align: right;">
+                            <c:if test="${isAdmin}">
+                                <a onclick="create();" class="btn-1" href="javascript:void(0)"><span><span>Thêm</span></span></a>
+                                        </c:if>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding-top:8px" colspan="6" id="td_level_path">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="channelForm" id="userTopPagination"  /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="3">
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="4%">STT</td>
+                                        <td width="15%">Mã viết tắt</td>
+                                        <td width="20%">Tên</td>
+                                        <td width="15%">Số điện thoại</td>
+                                        <td width="10%">Loại</td>
+                                        <td width="15%">Thực Hiện</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_channel_list">
+                                    <c:choose>
+                                        <c:when test="${not empty memberList}">
+                                            <c:forEach begin="0" end="${fn:length(memberList)-1}" step="1" var="id">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+(id+1)}</td>
+                                                    <td>
+                                                        <a href="${editChannel}${memberList[id].id}">${memberList[id].fullCode}</a>
+                                                        <input type="hidden" value="${memberList[id].id}"/>
+                                                    </td>
+                                                    <td>
+                                                        <a href="${editChannel}${memberList[id].id}" >${memberList[id].name}</a>
+                                                    </td>
+                                                    <td>${memberList[id].tel == null ? "" : memberList[id].tel}</td>
+                                                    <td style="text-align: center;"><a href="${channelTypeView}${memberList[id].channelTypes.id}">${memberList[id].channelTypes.name}</a></td>
+                                                    <td style="text-align: center;">
+                                                        <a href="javascript:;" tag="${memberList[id].id}" onclick="selectItemCombo(${memberList[id].id}, 'select_channel_${memberList[id].channelTypes.id}')" class="redTxt" >Xem Kênh</a>
+                                                        <c:if test="${isAdmin}">
+                                                            | <a href="javascript:;" tag="${memberList[id].id}" onclick="javascript:deleteChannel(${memberList[id].id}, '${memberList[id].name}')" class="redTxt" >Xóa</a>
+                                                        </c:if>
+                                                    </td>
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="7" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="7">
+                            <util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="channelForm" id="userTopPagination" />
+                        </td>
+                    </tr>
+                </table>
+            </form:form>
+        </div>
+    </div>
+    <jsp:include page="searchForm.jspx"></jsp:include>
+    <jsp:include page="agentForm.jspx"></jsp:include>
+
+</div>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN" "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+<tiles-definitions>
+
+    <definition extends="default" name="report">
+        <put-attribute name="body" value="/WEB-INF/jsp/channel/reportkbh.jspx" />
+    </definition>
+	
+    <definition extends="default" name="channel">
+        <put-attribute name="body" value="/WEB-INF/jsp/channel/channel.jspx" />
+    </definition>
+    <definition extends="default" name="channeledit">
+        <put-attribute name="body" value="/WEB-INF/jsp/channel/edit.jspx" />
+    </definition>
+    <definition extends="default" name="channelTypeList">
+    	<put-attribute name="body" value="/WEB-INF/jsp/channel/channelTypeList.jspx"></put-attribute>
+    </definition>
+    <definition extends="default" name="channelTypeDetails">
+    	<put-attribute name="body" value="/WEB-INF/jsp/channel/channelTypeDetails.jspx"></put-attribute>
+    </definition>
+    <definition extends="default" name="channelTypeCreate">
+    	<put-attribute name="body" value="/WEB-INF/jsp/channel/channelFormCreate.jspx"></put-attribute>
+    </definition>
+    <definition extends="default" name="distribution">
+        <put-attribute name="body" value="/WEB-INF/jsp/channel/distribution.jspx"></put-attribute>
+    </definition>
+</tiles-definitions>

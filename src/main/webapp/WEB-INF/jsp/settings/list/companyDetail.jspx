@@ -1,0 +1,174 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form" class="Provinces" escapeXML="true">
+	<jsp:output omit-xml-declaration="yes" />
+
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="jsFolder" value="/resources/js" />
+	<spring:url var="listURL" value="/settings/list/company"/>
+	<spring:url var="saveURL" value="/settings/company/save"/>
+	<![CDATA[	
+	<script type="text/javascript" src="${jsFolder}/channel.js?v=3"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";	
+		$(document).ready(function() { 
+			$("select").select2(); 
+		});
+    </script>
+	]]>
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>
+				<c:choose>
+					<c:when test="${company.id!=0}">
+						SỬA THÔNG TIN CÔNG TY
+					</c:when>
+					<c:otherwise>
+						THÊM MỚI CÔNG TY
+					</c:otherwise>
+				</c:choose>
+				</span>
+			</h2>
+		</div>
+		<div id="content">
+			<form:form method="POST" commandName="company" action="${saveURL}" enctype="multipart/form-data">
+			<table width="100%" border="0" cellspacing="5px" cellpadding="0" class="table-1">
+					<tr>
+						<td colspan="6" align="center">
+							<c:if test="${not empty param.add}">
+								<div class="infoMessage">
+									Thêm mới thành công.
+								</div>
+							</c:if>
+							<c:if test="${not empty param.update}">
+								<div class="infoMessage">
+									Cập nhật thành công.
+								</div>
+							</c:if>
+							<c:if test="${not empty messageError}">
+								<div class="errorMessage">
+									${messageError}
+								</div>
+							</c:if>
+						</td>
+					</tr>
+					
+					<tr class="more">
+						<td style="text-align:right;width:12%">
+							<label for="">Tên Công ty (<label class="errorMessage">*</label>):
+							</label>
+						</td>
+						<td colspan="3" style="width:40%">
+							<form:input path="ten" style="width:100%;"/>
+							<c:if test="${company.id!=0}">
+								<form:hidden path="id"/>
+							</c:if>
+						</td>
+						<td style="text-align:right;width:12%">
+							<label for="">Người Liên hệ:</label>
+						</td>
+						<td>
+							<form:input path="nguoiLienHe" style="width:100%;" />
+						</td>
+					</tr>
+					<tr >
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Mã viết tắt(<label class="errorMessage">*</label>):</label></td>
+						<td colspan="3"><form:input path="maVietTat" style="width:100%;" /></td>
+						<td style="text-align: right"><label for="">Email:</label></td>
+						<td><form:input path="email" style="width:100%;" /></td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more" >
+						<td style="text-align: right"><label for="">Quận
+								Huyện:
+						</label></td>
+						<td><form:select path="quanHuyen" style="width:150px;"
+								 onchange="selectTown(this, '#phuongXa');">
+								<form:option value="0">--- Quận/Huyện ---</form:option>
+								<form:options items="${listQuanHuyen}" itemValue="id"
+									itemLabel="name" />
+							</form:select></td>
+						<td style="text-align: right"><label for="">Phường xã:
+						</label></td>
+						<td><form:select path="phuongXa" style="width:150px;">
+								<form:option value="0">--- Phường/Xã ---</form:option>
+								<form:options items="${listPhuongXa}" itemValue="id"
+									itemLabel="name" />
+							</form:select></td>
+						<td style="text-align: right"><label for="">Điện
+								thoại:
+						</label></td>
+						<td><form:input path="dienThoai" style="width:100%;" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right"><label for="">Địa chỉ:
+						</label></td>
+						<td colspan="3"><form:input path="diaChi" style="width:100%;" /></td>
+						<td style="text-align: right"><label for="">Fax:</label></td>
+						<td><form:input path="fax" style="width:100%;" /></td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td valign="top" style="text-align: right"><label for="">Ghi
+								chú:</label></td>
+						<td colspan="5">
+							<form:textarea rows="3" style="width:100%" path="ghiChu"/>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="6"></td>
+					</tr>
+					<tr class="more">
+						<td style="text-align: right;vertical-align:top"><label for="">Logo (188 x 43):
+						</label></td>
+						<td colspan="3">
+							<c:choose>
+								<c:when test="${company.logoImage!=null}">
+								<fmt:formatDate value="${company.ngayCapNhat}" type="both"
+									dateStyle="medium" timeStyle="medium" var="ver"
+									pattern="ddMMyyyyHHmmss" />
+									<form:hidden path="logoImage"/>
+									<spring:eval var="imagesRoot" expression="@systemProperties['system.imagesRoot']" />
+									<spring:url value="/" var="path" />
+									<div onclick="$('#logoFile').click();" style="cursor:pointer;display:table-cell;text-align:center;vertical-align:middle;width:190px;height:50px;border:solid 1px gray;">
+										<img src="${path}${imagesRoot}/companies/${company.logoImage}?v=${ver}" height="43px"/></div>
+								</c:when>
+								<c:otherwise>
+									<div onclick="$('#logoFile').click();" style="cursor:pointer;display:table-cell;text-align:center;vertical-align:middle;width:190px;height:50px;border:solid 1px gray;">188 x 43</div>
+								</c:otherwise>
+							</c:choose>
+							<br/>
+							<input type="file" name="logoFile" id="logoFile" accept="image/*"/>
+						</td>
+						<td style="text-align: right"></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan="6" align="center">
+							<a href="javascript:;" onclick="$('#company').submit();" class="btn-1"><span><span style="width:50px">Lưu</span></span></a>
+							<a href="${listURL}" class="btn-1"><span><span style="width:100px">DS Công ty</span></span></a>
+						</td>
+					</tr>
+				</table>
+			</form:form>	
+			</div>
+	</div>
+</div>

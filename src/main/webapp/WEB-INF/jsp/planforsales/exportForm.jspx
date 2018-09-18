@@ -1,0 +1,251 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:form="http://www.springframework.org/tags/form">
+
+	<jsp:directive.page contentType="text/html;charset=UTF-8"
+		pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+
+	<spring:url var="scriptsFolder" value="/scripts" />
+
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/planforsales.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script src="${pageContext.request.contextPath}/scripts/json/json2.js"></script>
+	
+	<script type="text/javascript" src="${scriptsFolder}/user.js"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function changeEmployee(){
+			var e = document.getElementById("nhanVien.id");
+
+			var strUser = e.options[e.selectedIndex].text;
+			
+			var thang = document.getElementById("thang");
+			var strThang = thang.options[thang.selectedIndex].text;
+			
+			var nam = document.getElementById("nam");
+			var strNam = nam.options[nam.selectedIndex].text;
+			
+			var ten = document.getElementById("ten");
+			ten.value = strUser + " - Chỉ tiêu " + strThang + "/" + strNam ;
+			//alert(strUser + strThang + strNam);
+		}
+		
+		function createPlan(iCount){
+			var ten = document.getElementById("ten").value;
+			
+			var nhanVien = document.getElementById("nhanVien.id");
+
+			var nhanVienId = nhanVien.options[nhanVien.selectedIndex].value;
+			
+			var thang = document.getElementById("thang");
+			var strThang = thang.options[thang.selectedIndex].value;
+			
+			var nam = document.getElementById("nam");
+			var strNam = nam.options[nam.selectedIndex].value;
+			
+		
+			var url = "${pageContext.request.contextPath}/planforsales/create/";
+			
+			var chiTietKeHoachBanHangInfo = [];
+			var myJSON = "";
+		
+			for (var i = 1; i <= iCount; i++) {
+				var hangHoa = document.getElementById("itemId_"+i).value
+				var soLuong = document.getElementById("item_"+i).value
+			    var item = {
+			        "soLuong": soLuong,
+			        "hangHoa": hangHoa
+			    };
+			
+			    chiTietKeHoachBanHangInfo.push(item);
+			}
+
+			$.ajax({
+				url:url, 
+				type:"POST", 
+				dataType: "json",
+				data: JSON.stringify( {ten:ten,nhanVienId:nhanVienId,thang:strThang,nam:strNam,chiTietKeHoachBanHangInfo:chiTietKeHoachBanHangInfo}),
+			
+
+				contentType: "application/json; charset=utf-8",
+					//data:$('#keHoachBanHang').serialize(), 
+					success: function(response) {
+						var stringified = JSON.stringify(response);
+						var obj = JSON.parse(stringified)
+						console.log( obj.data.message );
+						console.log( obj.data.result );
+						if(obj.data.code==200){
+							window.location.href = "${pageContext.request.contextPath}/planforsales/detail/"+obj.data.message;
+						}else{
+							document.getElementById('error_1').innerHTML = obj.data.message;
+						}
+					
+						//$('#keHoachBanHang').find('.error').html(response);
+				},
+				error: function(xhr, error) {
+					document.getElementById('error_1').innerHTML = 'Xảy ra lỗi khi lưu dữ liệu.';
+				}
+			});
+		
+		return false;
+	}
+			
+	</script>
+]]>
+
+	<form:form action="${requestScope.goodsFormLink}" method="POST"
+		commandName="keHoachBanHang">
+		
+		<form:hidden path="id"/>
+		<div class="formContent">
+			<table width="100%" cellpadding="0" cellspacing="5"
+				class="TableThongTinTram" border="0">
+				
+				<tr>
+						<td width="10%">
+							<!-- Empty -->
+						</td>
+						<td width="5%">
+							<!-- Empty -->
+						</td>
+						<td width="2%">
+							<!-- Empty -->
+						</td>
+						<td width="3%">
+							<!-- Empty -->
+						</td>
+						<td width="2%">
+							<!-- Empty -->
+						</td>
+						<td width="28%">
+							<!-- Empty -->
+						</td>
+				</tr>
+				
+				<tr>
+						<td colspan="6" align="center">
+							<c:if test="${not empty success}">
+								<c:choose>
+									<c:when test="${success}">
+										<div class="infoMessage" id="messageArea">
+											<p>Thông tin được cập nhật thành công.</p>
+										</div>
+									</c:when>
+									<c:otherwise>
+										<div class="errorMessage" id="messageArea">
+											<p>Xảy ra lỗi khi lưu dữ liệu</p>
+										</div>
+									</c:otherwise>
+								</c:choose>
+							</c:if>
+							<div class="errorMessage" id="error_1"></div>
+						</td>
+				</tr>
+				
+				
+				<tr>
+					<td align="right">Tên Kế Họach:</td>
+					<td colspan="5">
+						<form:input path="ten" cssStyle="width:540px;" disabled="true" />&#160;&#160;&#160;&#160;
+						<form:errors path="ten" cssClass="errorMessage" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td align="right">Nhân viên:</td>
+					<td>
+						<form:select
+							path="nhanVien.id" cssStyle="width:180px;" onchange="changeEmployee(this);">
+							<form:option value="0" label="--- Chọn nhân viên ---" />
+							<form:options items="${staffList}" />
+						</form:select>
+					</td>
+					<td align="right" >Tháng:</td>
+					<td>
+						<form:select path="thang" cssStyle="width:100px;" onchange="changeEmployee(this);">
+							<form:option value="-1"  label="Chọn tháng" />
+							<c:forEach items="${listThang}" var="item" varStatus="status">
+								<c:choose>
+									<c:when test="${item.key==month}">
+										<form:option value="${item.key}"  label="Tháng ${item.value}" selected="selected"/>
+									</c:when>
+									<c:otherwise>
+										<form:option value="${item.key}"  label="Tháng ${item.value}" />
+									</c:otherwise>
+								</c:choose>
+								
+							</c:forEach>
+						</form:select>
+						&#160;
+						<form:errors path="thang" cssClass="errorMessage" />
+					</td>
+					<td align="right">Năm:</td>
+					<td>
+						<form:select path="nam" cssStyle="width:100px;" onchange="changeEmployee(this);">
+							<form:option value="-1"  label="Chọn năm" />
+							<c:forEach items="${listNam}" var="item" varStatus="status">
+								<c:choose>
+									<c:when test="${item.key==year}">
+										<form:option value="${item.key}"  label="${item.value}" selected="selected"/>
+									</c:when>
+									<c:otherwise>
+										<form:option value="${item.key}"  label="${item.value}" />
+									</c:otherwise>
+								</c:choose>
+							</c:forEach>
+						</form:select>
+						&#160;
+						<form:errors path="nam" cssClass="errorMessage" />
+					</td>
+				</tr>
+				
+				<tr>
+					<td colspan="6">&#160;</td>
+				</tr>
+				<c:forEach items="${listSalesGoodsCat}" var="item" varStatus="status">
+					<tr>
+						<td align="right">
+							${item.value}: 
+						</td>
+						<td colspan="5">
+							<input type="text" name="item_${status.count}" id="item_${status.count}" value="0"/>
+							<c:choose>
+								<c:when test="${item.key=='65'}">
+									&#160;(Thành Tiền)
+								</c:when>
+								<c:otherwise>
+									&#160;(Cái)
+								</c:otherwise>
+							</c:choose>
+							<input type="hidden" name="itemId_${status.count}" id="itemId_${status.count}" value="${item.key}"/>
+							
+						</td>
+					</tr>
+				</c:forEach>
+				
+				<tr>
+					<td colspan="6">&#160;</td>
+				</tr>
+				<tr>
+					<td><label> <!-- Empty -->
+					</label></td>
+					<td colspan="5"><a href="javascript:;"
+						onclick="createPlan(${listSalesGoodsCat.size()});" class="btn-1"
+						title=""><span><span>Tạo</span></span></a>
+						<a href="javascript:;"
+						onclick="javascript:document.forms[0].reset();" class="btn-1"
+						title="Làm lại"><span><span>Reset</span></span></a></td>
+				</tr>
+			</table>
+		</div>
+	</form:form>
+</div>

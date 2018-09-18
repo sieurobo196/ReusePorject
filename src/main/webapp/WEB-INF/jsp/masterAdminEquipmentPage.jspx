@@ -1,0 +1,145 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="TableWrapper"
+     xmlns:sec="http://www.springframework.org/security/tags"
+     xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="editEquipment" value="/admin/equipment/edit" />
+    <spring:url var="deleteEquipment" value="/admin/equipment/delete" />
+    <spring:url var="listEquipment" value="/admin/equipment" />
+
+    <div id="inner-content">
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>DANH SÁCH THIẾT BỊ</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" action="${listEquipment}" modelAttribute="searchObject" id="equipmentList">
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0" class="table-1">
+                    <tr>   
+                        <td>
+                            <div style="width: 200px;padding-right:10px;display: inline-block">
+                                <form:select path="branch" class="select2_combo" style="width:100%"> 
+                                    <form:options items="${branchList}" itemLabel="name" itemValue="id" />
+                                </form:select>
+                            </div>
+
+                            <div style="padding-right:10px; display: inline-block;width: 200px;">
+                                <form:input path="searchText" style="width:200px;" />
+                            </div>                           
+                        </td>
+                        <td >
+                            <div style="width:200px;text-align: right" >
+                                <a href="javascript:"
+                                   onclick="document.forms[0].submit()" class="btn-1"
+                                   title="Danh Sách NSD"><span><span style="width:90px">Xem Danh Sách</span></span></a>
+                            </div>
+                        </td>
+                    </tr> 
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST"
+                                         formSubmit="equipmentList" id="userTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="8%">Mã công ty</td>
+                                        <td width="15%">Tên công ty</td>
+                                        <td width="15%">imei</td>	
+                                        <td width="15%">subsriberId</td>
+                                        <td width="15%">Nhân viên</td>
+                                        <td width="7%">Version</td>
+                                        <td width="10%">Trạng thái</td>
+                                        <td width="10%">Chức năng</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <c:choose>
+                                        <c:when test="${not empty equipmentList}">
+                                            <c:forEach items="${equipmentList}" var="item" varStatus="status">
+                                                <tr>
+                                                    <td align="center">${(page-1)*size+status.count}</td>
+                                                    <td align="center">${item.companys.code}</td>
+                                                    <td>${item.companys.name}</td>
+                                                    <td align="center"><a href="${editEquipment}/${item.branch}/${item.id}">${item.imei}</a></td>
+                                                    <td align="center"><a href="${editEquipment}/${item.branch}/${item.id}">${item.subscriberId}</a></td>
+                                                    
+                                                    <td align="center">${item.users.username}</td>
+                                                    <td align="right">${item.version}</td>
+
+                                                    <td align="center"> ${item.isActive? "Hoạt động":"Khóa"}</td>
+
+                                                    <td  align="center">
+                                                        <a href="${editEquipment}/${item.branch}/${item.id}">Chỉnh sửa </a>
+                                                        | 
+                                                        <a href="javascript:;" onclick="deleteEquipment(${item.branch},${item.id})">Xóa</a>
+                                                    </td>                                                
+                                                </tr>
+                                            </c:forEach>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <tr>
+                                                <td colspan="10" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><util:pagination maxPages="${maxPages}"
+                                         submitMethod="POST" formSubmit="equipmentList" page="${page}"
+                                         size="${size}" id="userBottomPagination" /></td>
+                    </tr>
+                </table>
+
+            </form:form>
+        </div>
+    </div>
+
+    <![CDATA[
+    <script>
+        function deleteEquipment(branch, id) {
+            var conf = confirm("Bạn có chắc muốn xóa thiết bị này không?");
+            if (conf) {
+                var url = '${deleteEquipment}' + "/" + branch + "/" + id;
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'json',
+                    contentType: 'application/json; charset=utf-8',
+                    url: url,
+                    success: function (data) {
+                        if (data.success == 'OK') {
+                            alert("Xóa thành công.");
+                            window.location = window.location.href;
+                        }
+                        else if (data.success == 'FALSE') {
+                            alert("Xóa thất bại.");
+                        }
+                        else {
+                            alert(data.success);
+                        }
+                    }
+                });
+            }
+        }
+    </script>
+    ]]>
+
+</div>

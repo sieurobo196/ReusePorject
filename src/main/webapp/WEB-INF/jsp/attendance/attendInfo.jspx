@@ -1,0 +1,131 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	
+
+	<jsp:output omit-xml-declaration="yes" />
+	
+	<spring:url var="imagesFolder" value="/images" />
+	<spring:url var="scriptsFolder" value="/scripts" />
+	<spring:url var="jsFolder" value="/resources/js" />
+
+	<form:form action="${requestScope.attendInfoLink}" method="POST"
+		commandName="cc">
+		<form:hidden path="id" />
+
+		<div class="formContent">
+			<table width="100%" cellpadding="0" cellspacing="5"
+				class="TableThongTinTram">
+				<col width="20%" />
+				<col width="80%" />
+
+				<tr>
+				</tr>
+				<tr>
+					<td align="right"><strong>Tên Nhà Phân Phối :</strong></td>
+					<td><label>${cc.tenNPP}</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Mã Nhà Phân Phối :</strong></td>
+					<td><label>${cc.maNPP}</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Tên Nhân Viên :</strong></td>
+					<td><label class="errorMessage"><strong>${cc.tenNhanVien}</strong></label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Loại Thiết Bị :</strong></td>
+					<td><label>${cc.loaiThietBi}</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Giờ :</strong></td>
+					<td><label>
+					<fmt:formatDate value="${cc.gioBatDau}" 
+						type="both" dateStyle="medium" timeStyle="medium" pattern="HH:mm:ss" />
+					
+					</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Ngày :</strong></td>
+					<td><label>
+					<fmt:formatDate value="${cc.gioBatDau}" 
+						type="both" dateStyle="medium" timeStyle="medium" pattern="dd/MM/yyyy" />
+					
+					</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Vĩ Độ :</strong></td>
+					<td><label>${cc.viDo1}</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Kinh Độ :</strong></td>
+					<td><label>${cc.kinhDo1}</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Khoảng Cách :</strong></td>
+					<td><label>${cc.khoangCach1} (m)</label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Chấm công :</strong></td>
+					<td><label class="errorMessage"><strong>
+						<c:choose>
+							<c:when test="${cc.status == 1}">ĐÚNG GIỜ
+							</c:when>
+							<c:when test="${cc.status == 0}">TRỄ GIỜ
+							</c:when>
+							<c:otherwise>
+								KHÔNG LẤY ĐƯỢC GIỜ
+							</c:otherwise>
+						</c:choose>
+						
+					</strong></label></td>
+				</tr>
+				<tr>
+					<td>&#160;</td>
+				</tr>
+				<tr>
+					<td align="right"><strong>Kế Hoạch Được Giao :</strong></td>
+					<td><label>${cc.note}</label></td>
+				</tr>
+				
+				<tr>
+					<td>&#160;</td>
+				</tr>
+			</table>
+		</div>
+	</form:form>
+</div>

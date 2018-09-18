@@ -1,0 +1,145 @@
+{
+  "bgColor": "FFFFFF",
+  "textColor": "FFFFFF",
+  "buttonBgColor": "930b0d",
+  "buttonBgColorOver": "FF0000",
+  "topBarBgColor": "930b0d",
+  "pages": {
+    "salesman": [
+      {
+        "pageId": "sales_page",
+        "buttons": [
+          {
+            "actionId": "care_page",
+            "name": "CHĂM SÓC"
+          },
+          {
+            "actionId": "direct_sales_page",
+            "name": "BÁN TRỰC TIẾP"
+          },
+          {
+            "actionId": "order_page",
+            "name": "ĐẶT HÀNG"
+          },
+          {
+            "actionId": "delivery_page",
+            "name": "GIAO HÀNG"
+          },
+          {
+            "actionId": "recover_page",
+            "name": "THU HỒI"
+          },
+          {
+            "actionId": "sales_via_phone_page",
+            "name": "BÁN HÀNG QUA ĐIỆN THOẠI"
+          },
+          {
+            "actionId": "list_of_promotion",
+            "name": "DANH SÁCH CTKM"
+          },
+          {
+            "actionId": "register_promotion",
+            "name": "ĐĂNG KÝ CTKM"
+          }
+        ]
+      },
+      {
+        "pageId": "main_page",
+        "buttons": [
+          {
+            "actionId": "mcp_page",
+            "name": "TUYẾN ĐƯỜNG"
+          },
+          {
+            "actionId": "plan_page",
+            "name": "CHỈ TIÊU"
+          },
+          {
+            "actionId": "store_page",
+            "name": "NHẬP HÀNG"
+          },
+          {
+            "actionId": "sales_page",
+            "name": "BÁN HÀNG"
+          },
+          {
+            "actionId": "point_of_sale_page",
+            "name": "PT ĐIỂM MỚI"
+          },
+          {
+            "actionId": "history_page",
+            "name": "NHẬT KÝ"
+          }
+        ]
+      }
+    ],
+    "salessup": [
+      {
+        "pageId": "main_page",
+        "buttons": [
+          {
+            "actionId": "monitor_evaluation_page",
+            "name": "GS ĐÁNH GIÁ"
+          },
+          {
+            "actionId": "monitor_sales_page",
+            "name": "GS BÁN HÀNG"
+          },
+          {
+            "actionId": "sup_sales_page",
+            "name": "BÁN HÀNG"
+          },
+          {
+            "actionId": "monitor_order_page",
+            "name": "GS ĐƠN HÀNG"
+          },
+          {
+            "actionId": "monitor_route_page",
+            "name": "GS LỘ TRÌNH"
+          },
+          {
+            "actionId": "monitor_store_page",
+            "name": "ĐIỂM BÁN HÀNG"
+          }
+        ]
+      },
+      {
+        "pageId": "sup_sales_page",
+        "buttons": [
+          {
+            "actionId": "care_page",
+            "name": "CHĂM SÓC"
+          },
+          {
+            "actionId": "direct_sales_page",
+            "name": "BÁN TRỰC TIẾP"
+          },
+          {
+            "actionId": "order_page",
+            "name": "ĐẶT HÀNG"
+          },
+          {
+            "actionId": "delivery_page",
+            "name": "GIAO HÀNG"
+          },
+          {
+            "actionId": "store_page",
+            "name": "NHẬP HÀNG"
+          },
+          {
+            "actionId": "withdraw_page",
+            "name": "THU HỒI"
+          },
+          {
+            "actionId": "point_of_sale_page",
+            "name": "PT ĐIỂM MỚI"
+          },
+          {
+            "actionId": "sales_via_phone_page",
+            "name": "BÁN HÀNG QUA ĐIỆN THOẠI"
+          }
+        ]
+      }
+    ]
+  }
+}

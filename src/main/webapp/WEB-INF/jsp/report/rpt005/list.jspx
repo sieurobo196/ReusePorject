@@ -1,0 +1,268 @@
+﻿<div xmlns:spring="http://www.springframework.org/tags"
+      xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+      xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+      xmlns:form="http://www.springframework.org/tags/form" class="Provinces"
+      escapeXML="true">
+    <jsp:directive.page import="java.util.Arrays" />
+    <jsp:directive.page import="java.util.ArrayList" />
+    <jsp:directive.page import="java.util.List" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+    <spring:url var="home" value="/" />
+    <spring:url var="urlOptionLink" value="/api/kpi" />
+
+    <fmt:setLocale value="en_US" scope="session" />
+    <![CDATA[
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/jquery-ui.css"/>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.ui.monthpicker.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/js/monthpicker.js"></script>
+    <script type="text/javascript" src="${pageContext.request.contextPath}/scripts/commonfilter.js?v=2"></script>
+    <script>
+        function checkForm(type) {
+            if (type == "export")
+                submitExportForm('rpt005Form', 'export')
+            else
+                submitActionForm('rpt005Form', 'list')
+        }
+
+        function renderComboBoxScope(comboBoxSelector, items, label) {
+            if (items && items != null && items.length > 0) {
+                var $domCbo = $(comboBoxSelector);
+                renderComboBoxEmptyScope(comboBoxSelector, label);
+                for (var i = 0; i < items.length; i++) {
+                    var item = items[i];
+                    var $domOption = $("<option value = '" + item.id + "'>" + item.val
+                            + "</option>");
+                    $domCbo.append($domOption);
+                }
+            }
+
+        }
+        function renderComboBoxEmptyScope(comboBoxSelector, label) {
+            var $domCbo = $(comboBoxSelector);
+            $domCbo.empty();// remove old options
+            var $domOption = $("<option value = '0'>" + label + "</option>");
+            $domCbo.append($domOption);
+            $domCbo.select2();
+        }
+
+        function selectScope(rsmId, asmId, supervisorId, provinceId) {
+            var urlLink = '${urlOptionLink}';
+            var isSubmit = 0;
+            if (rsmId && asmId && supervisorId && provinceId) {
+                var multipleProvinceValues = $(provinceId).val() || [];
+                var multipleSuperVisorValues = $(supervisorId).val() || [];
+                //multipleProvinceValues=multipleProvinceValues.join(",");		
+                //multipleSuperVisorValues=multipleSuperVisorValues.join(",");
+                if (multipleProvinceValues != "" && multipleSuperVisorValues != "") {
+                    isSubmit = 5;
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/" + multipleSuperVisorValues + "/" + multipleProvinceValues;
+                }
+            } else if (rsmId && asmId && supervisorId) {
+                var multipleSuperVisorValues = $(supervisorId).val() || [];
+                if (multipleSuperVisorValues != "") {
+                    isSubmit = 4;
+                    //multipleSuperVisorValues=multipleSuperVisorValues.join(",");
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/" + multipleSuperVisorValues + "/0";
+                }
+            } else if (rsmId && asmId && provinceId) {
+                var multipleProvinceValues = $(provinceId).val() || [];
+                if (multipleProvinceValues != "") {
+                    isSubmit = 3;
+                    //multipleProvinceValues=multipleProvinceValues.join(",");
+                    var rsmIdValue = $(rsmId).val();
+                    var asmIdValue = $(asmId).val();
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/0/" + multipleProvinceValues;
+                }
+            } else if (rsmId && asmId) {
+                var rsmIdValue = $(rsmId).val();
+                var asmIdValue = $(asmId).val();
+                if (asmIdValue != "0") {
+                    isSubmit = 2;
+                    urlLink = urlLink + "/" + rsmIdValue + "/" + asmIdValue + "/0/0";
+                }
+            } else if (rsmId) {
+                var rsmIdValue = $(rsmId).val();
+                if (rsmIdValue != "0") {
+                    isSubmit = 1;
+                    urlLink = urlLink + "/" + rsmIdValue + "/0/0/0";
+                }
+
+            }
+            if (isSubmit > 0) {
+                $.ajax({
+                    type: 'GET',
+                    url: urlLink,
+                    dataType: 'json',
+                    success: function (data) {
+                        if (isSubmit == 1) {
+                            if (data.asmList && data.asmList != null && data.asmList.length > 0) {
+                                renderComboBoxScope('#asmId', data.asmList, '--Chọn Khu Vực --');
+                                renderComboBoxEmptyScope('#supervisorId', '--Chọn Giám sát--');
+                                renderComboBoxEmptyScope('#provinceId', '--Chọn Tỉnh--');
+                                renderComboBoxEmptyScope('#salemanId', '--Chọn NVBH--');
+                            } else {
+                                renderComboBoxEmptyScope('#asmId', '--Chọn Khu Vực --');
+                                renderComboBoxEmptyScope('#supervisorId', '--Chọn Giám sát--');
+                                renderComboBoxEmptyScope('#provinceId', '--Chọn Tỉnh--');
+                                renderComboBoxEmptyScope('#salemanId', '--Chọn NVBH--');
+                            }
+                        } else if (isSubmit == 2) {
+                            if (data.provinceList && data.provinceList != null && data.provinceList.length > 0) {
+                                renderComboBoxScope('#provinceId', data.provinceList, '--Chọn Tỉnh--');
+                            } else {
+                                renderComboBoxEmptyScope('#provinceId', '--Chọn Tỉnh--');
+                            }
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#salemanId', data.salemanList, '--Chọn NVBH--');
+                            } else {
+                                renderComboBoxEmptyScope('#salemanId', '--Chọn NVBH--');
+                            }
+                            if (data.suppervisorList && data.suppervisorList != null && data.suppervisorList.length > 0) {
+                                renderComboBoxScope('#supervisorId', data.suppervisorList, '--Chọn Giám sát--');
+                            } else {
+                                renderComboBoxEmptyScope('#supervisorId', '--Chọn Giám sát--');
+                            }
+                        } else if (isSubmit == 4) {
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#salemanId', data.salemanList, '--Chọn NVBH--');
+                            } else {
+                                renderComboBoxEmptyScope('#salemanId', '--Chọn NVBH--');
+                            }
+                            if (data.provinceList && data.provinceList != null && data.provinceList.length > 0) {
+                                renderComboBoxScope('#provinceId', data.provinceList, '--Chọn Tỉnh--');
+                            } else {
+                                renderComboBoxEmptyScope('#provinceId', '--Chọn Tỉnh--');
+                            }
+                        } else if (isSubmit == 3 || isSubmit == 5) {
+                            if (data.salemanList && data.salemanList != null && data.salemanList.length > 0) {
+                                renderComboBoxScope('#salemanId', data.salemanList, '--Chọn NVBH--');
+                            } else {
+                                renderComboBoxEmptyScope('#salemanId', '--Chọn NVBH--');
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+
+    ]]>
+
+    <div id="inner-content">
+
+        <span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+                                    alt="" /></span>
+        <div class="content-title">
+            <h2>
+                <span>BÁO CÁO KPI</span>
+            </h2>
+        </div>
+        <div id="content">
+            <form:form method="POST" commandName="rpt005Form">
+                <table border="0" cellspacing="5px" cellpadding="0" class="table-1">
+					<tr>
+						<td colspan="3">
+						  <jsp:include page="../../locationSelector.jspx"></jsp:include>
+						</td>
+					</tr>
+					<tr>
+						<td  colspan="2" style="text-align: right; font-weight: bold;"><label
+							for="">Tháng:</label> <form:input type="text" name="startDateString" path="startDateString" id="frm_month" size="14"
+								 cssClass="" cssStyle="width:200px" /></td>
+						<script type="text/javascript">
+							$("#frm_month").monthpicker(optionMonthpicker);
+						</script>
+						<td> 		
+						<a href="javascript:void(0)" style="width: 150px"
+					onclick="submitActionForm('rpt005Form','list')" class="btn-1"
+					title="Xem danh sách"><span><span>Xem danh sách</span></span></a>
+
+				<a href="javascript:void(0)" style="width: 150px"
+					onclick="submitExportForm('rpt005Form','export')" class="btn-1"
+					title="Xuất báo cáo" ><span><span>Xuất báo cáo</span></span></a>
+						 </td>
+					</tr>
+				</table>
+                <tr>
+                    <util:pagination maxPages="${maxPages}" page="${page}"
+                                     size="${size}" submitMethod="POST" formSubmit="rpt006Form"
+                                     id="topPagination" />
+                </tr>
+                <tr>
+                    <td colspan="4">	
+
+                        <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                            <thead>
+                                <tr>
+                                    <td width="5%">STT</td>
+                                    <td width="10%">Tên NVBH</td>
+                                    <td width="7%">% đạt doanh thu</td>
+                                    <td width="7%">% đạt tuyến đường</td>
+                                    <td width="8%">Mục tiêu DT</td>
+                                    <td width="8%">Doanh thu</td>
+                                    <td width="7%">ĐB cần CS</td>								
+                                    <td width="7%">ĐB đã CS</td>
+                                    <td width="7%">ĐB đã bán hàng</td>									
+
+                                    <td width="7%">Tổng TG làm việc</td>
+                                    <td width="5%">Đánh giá</td>
+                                    <td >Giải thích</td>
+                                </tr>								
+                            </thead>
+                            <tbody>
+                                <c:choose>
+                                    <c:when test="${not empty user }">
+                                        
+                                    
+                                <c:forEach items="${user}" var="item" varStatus="status">
+                                    <tr>
+                                        <td align="center">${(page-1)*size+status.count}</td>
+                                        <td nowrap="nowrap">${item.nameUser}</td>
+                                        <td align="right"><fmt:formatNumber value="${item.percentRevenue }"></fmt:formatNumber>(%)</td>										
+                                        <td align="right"><fmt:formatNumber value="${item.percentRoute }"></fmt:formatNumber>(%)</td>										
+                                        <td align="right"><fmt:formatNumber value="${item.targetRevenue }"></fmt:formatNumber></td>
+                                        <td align="right"><fmt:formatNumber value="${item.revenue }"></fmt:formatNumber></td>
+
+                                            <td align="right">${item.targetPosCare }</td>
+                                        <td align="right">${item.posCare }</td>
+                                        <td align="right">${item.posSales }</td>
+
+
+                                        <td>${item.totalHour}</td>										
+                                        <td bgcolor="${item.supervisorComment}"></td>	
+                                        <td >${item.comment}</td>										
+                                    </tr>
+                                </c:forEach>
+                                    </c:when>
+                                    <c:otherwise>
+                                         <tr>
+                                                <td colspan="12" align="center">Không tìm thấy dữ liệu</td>
+                                            </tr>
+                                    </c:otherwise>
+                                    
+                                </c:choose>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                        <util:pagination maxPages="${maxPages}" page="${page}"
+                                         size="${size}" submitMethod="POST" formSubmit="rpt005Form"
+                                         id="topPagination" />
+                </tr>
+            </form:form>
+        </div>
+    </div>
+</div>

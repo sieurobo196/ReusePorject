@@ -1,0 +1,105 @@
+<jsp:root xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:spring="http://www.springframework.org/tags" xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0">
+    <jsp:output omit-xml-declaration="yes" />
+
+    <jsp:directive.attribute name="maxPages" type="java.lang.Integer" required="true" rtexprvalue="true" description="The maximum number of pages available (ie tableRecordCount / size)" />
+    <jsp:directive.attribute name="page" type="java.lang.Integer" required="false" rtexprvalue="true" description="The current page (not required, defaults to 1)" />
+    <jsp:directive.attribute name="size" type="java.lang.Integer" required="false" rtexprvalue="true" description="The number of records per page (not required, defaults to 10)" />
+    <jsp:directive.attribute name="render" type="java.lang.Boolean" required="false" rtexprvalue="true" description="Indicate if the contents of this tag and all enclosed tags should be rendered (default 'true')" />
+    <jsp:directive.attribute name="pageParamName" type="java.lang.String" required="false" rtexprvalue="true" description="Provide the param name to get current page" />
+    <jsp:directive.attribute name="sizeParamName" type="java.lang.String" required="false" rtexprvalue="true" description="Provide the param name to get total item" />
+    <jsp:directive.attribute name="id" type="java.lang.String" required="true" rtexprvalue="true" description="elementId" />
+    <jsp:directive.attribute name="elementsAsParams" type="java.lang.String" required="false" rtexprvalue="true" description="List all html elements' id, which seperator by comma, will be commit with paging actions" />
+    <jsp:directive.attribute name="submitMethod" type="java.lang.String" required="false" rtexprvalue="true" description="Submit method: POST or GET" />
+    <jsp:directive.attribute name="listingURL" type="java.lang.String" required="false" rtexprvalue="true" description="Listing URL" />
+    <jsp:directive.attribute name="formSubmit" type="java.lang.String" required="false" rtexprvalue="true" description="HTML form to submit" />
+
+    <spring:url var="imagesFolder" value="/resources/images" />
+
+    <c:if test="${empty render or render}">
+
+        <c:if test="${empty page || page lt 1}">
+            <c:set var="page" value="1" />
+        </c:if>
+
+        <c:if test="${empty size}">
+            <c:set var="size" value="10" />
+        </c:if>
+
+        <c:if test="${empty pageParamName}">
+            <c:set var="pageParamName" value="page" />
+        </c:if>
+
+        <c:if test="${empty sizeParamName}">
+            <c:set var="sizeParamName" value="size" />
+        </c:if>
+
+        <c:if test="${empty submitMethod}">
+            <c:set var="submitMethod" value="GET" />
+        </c:if>
+
+        <div class="pagination" id="${id}">
+            <div style="float:left;">
+                <strong>Trang ${page} trong ${maxPages} trang</strong>
+            </div>
+            <div style="float:right;">
+                <ul class="paging">
+                    <!-- First page -->
+                    <c:choose>
+                        <c:when test="${page ne 1}">
+                            <spring:url value="" var="firstURL">
+                                <spring:param name="${pageParamName}" value="1" />
+                                <spring:param name="${sizeParamName}" value="${size}" />
+                            </spring:url>
+                            <li><a href="javascript:;" onclick="doPagination('${firstURL}', '${elementsAsParams}', '${submitMethod}', '${formSubmit}');" title="Về trang đầu tiên">Đầu tiên <img src="${imagesFolder}/dummy.gif" class="ui-icon icon-first" alt="Đầu tiên" /></a></li>
+                                </c:when>
+                                <c:otherwise>
+                            <li><a href="javascript:;" title="Về trang đầu tiên" class="stat-disable">Đầu tiên <img src="${imagesFolder}/dummy.gif" class="ui-icon icon-first" alt="Đầu tiên" /></a></li>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- Previous page -->
+                            <c:choose>
+                                <c:when test="${page gt 1}">
+                                    <spring:url value="" var="previousURL">
+                                        <spring:param name="${pageParamName}" value="${page - 1}" />
+                                        <spring:param name="${sizeParamName}" value="${size}" />
+                                    </spring:url>
+                                    <li class="pd0"><a href="javascript:;" onclick="doPagination('${previousURL}', '${elementsAsParams}', '${submitMethod}', '${formSubmit}');"  title="Trang trước">Trước <img src="${imagesFolder}/dummy.gif" class="ui-icon icon-prev" alt="Trước" /></a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                    <li class="pd0"><a href="javascript:" title="" class="stat-disable">Trước <img src="${imagesFolder}/dummy.gif" class="ui-icon icon-prev" alt="Trước" /></a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                            <!-- Next page -->
+                            <c:choose>
+                                <c:when test="${page lt maxPages}">
+                                    <spring:url value="" var="nextURL">
+                                        <spring:param name="${pageParamName}" value="${page + 1}" />
+                                        <spring:param name="${sizeParamName}" value="${size}" />
+                                    </spring:url>
+                                    <li><a href="javascript:;" onclick="doPagination('${nextURL}', '${elementsAsParams}', '${submitMethod}', '${formSubmit}');" title="Trang kế"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-next" alt="Trang Kế" /> Kế tiếp</a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                    <li><a href="javascript:;" title="Trang kế" class="stat-disable"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-next" alt="Trang Kế" /> Kế tiếp</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                            <!-- Last page -->
+                            <c:choose>
+                                <c:when test="${page ne maxPages}">
+                                    <spring:url value="" var="lastURL">
+                                        <spring:param name="${pageParamName}" value="${maxPages}" />
+                                        <spring:param name="${sizeParamName}" value="${size}" />
+                                    </spring:url>
+                                    <li><a href="javascript:;" onclick="doPagination('${lastURL}', '${elementsAsParams}', '${submitMethod}', '${formSubmit}');" title="Cuối cùng"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-last" alt="Trang cuối" /> Cuối cùng</a></li>
+                                        </c:when>
+                                        <c:otherwise>
+                                    <li><a href="javascript:;" title="Cuối cùng" class="stat-disable"><img src="${imagesFolder}/dummy.gif" class="ui-icon icon-last" alt="Trang cuối" /> Cuối cùng</a></li>
+                                        </c:otherwise>
+                                    </c:choose>
+                </ul>
+            </div>
+        </div>
+    </c:if>
+</jsp:root>

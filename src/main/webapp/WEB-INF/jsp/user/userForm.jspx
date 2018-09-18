@@ -1,0 +1,637 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+     xmlns:c="http://java.sun.com/jsp/jstl/core"
+     xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+     class="UserDetailForm" xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+     xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+     xmlns:form="http://www.springframework.org/tags/form"
+     xmlns:sec="http://www.springframework.org/security/tags">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8"
+                        pageEncoding="UTF-8" />
+    <jsp:output omit-xml-declaration="yes" />
+
+    <spring:url var="scriptsFolder" value="/resources/scripts" />
+    <spring:url var="jsFolder" value="/resources/js" />
+    <spring:url var="cssFolder" value="/resources/css" />
+    <spring:url var="userPOSURL" value="/pos/user" />
+
+
+    <![CDATA[
+    <script type="text/javascript" src="${jsFolder}/jquery-1.7.1.js"></script>
+    <script type="text/javascript" src="${jsFolder}/ajax.js"></script>
+    <script type="text/javascript" src="${jsFolder}/common.js"></script>
+    <script type="text/javascript" src="${jsFolder}/listAgent.js"></script>
+    <script type="text/javascript" src="${scriptsFolder}/commonfilter.js"></script>
+    <script type="text/javascript" src="${jsFolder}/user.js"></script>
+    <link href="${cssFolder}/thickbox.css" rel="stylesheet" type="text/css" />
+    <script src="${scriptsFolder}/thickbox-compressed.js"></script>
+
+    ]]>
+
+
+    <![CDATA[
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('select').on('change', function (event) {
+                var combo = $(this);
+                var idcom = combo.attr('id');
+                if (!String.prototype.startsWith) {
+                    String.prototype.startsWith = function (searchString, position) {
+                        position = position || 0;
+                        return this.indexOf(searchString, position) === position;
+                    };
+                }
+                if (idcom.startsWith('channelIdList')) {
+                    var channelList = $('#list_channel_vertical').find('select');
+                    for (var i = channelList.length - 1; i >= 0; i--) {
+                        if (channelList[i].value != 0) {
+                            channelSelectedId = parseInt(channelList[i].value);
+                            channelCombo = $(channelList[i]);
+                            break;
+                        } else {
+                            channelSelectedId = 0;
+                        }
+
+                    }
+                }
+            });
+        });
+
+        /**
+         * Gen user name from full name and plus company name.
+         * @param {type} fullName is full name
+         * @returns {undefined} is username gen auto follow fullname
+         */
+
+        function generUsername() {
+            var lastname = document.getElementById("txtLastName").value;
+            lastname = removeAccent(lastname);
+            var matches = lastname.match(/\b(\w)/g);
+            lastname = matches.join('');
+            var firstName = document.getElementById("txtFirstName").value;
+            var fullName = lastname + firstName;
+
+            var username = removeAccent(fullName);
+            var genUserName = username + "@" + '${companyCode}';
+            var url = getAppRootPath() + "/user/checkName";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                data: genUserName,
+                success: function (data) {
+                    $('#txtUserName').val(data.username);
+                }
+            });
+
+
+        }
+
+
+        /*
+         * Remove accent vietnamese
+         */
+        function removeAccent(str) {
+            str = str.toLowerCase().trim();
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            return str;
+        }
+
+        // thay het cac option
+        function renderComboBox($domCbo, items, msg) {
+            renderComboBoxEmpty($domCbo, msg);// remove old options
+
+            for (var i = 0; i < items.length; i++) {
+                var item = items[i];
+                var $domOption = $("<option value = '" + item.id + "'>" + item.name
+                        + "</option>");
+                $domCbo.append($domOption);
+            }
+        }
+// xoa cac option
+        function renderComboBoxEmpty($domCbo, msg) {
+            if ($domCbo == null)
+                return;
+            if ($domCbo.find('option').length > 1) {
+                // chi xoa neu danh sach co tu 2 option tro len
+                $domCbo.empty();
+                var $domOption = $("<option value = '0' selected='selected'>" + msg
+                        + "</option>");
+                $domCbo.append($domOption);
+            }
+            $domCbo.select2();
+        }
+// doi option duoc select
+        function reSelect($domCbo, value) {
+            if ($domCbo.find('option').length > 1) {
+                // chi chon lai neu danh sach co tu 2 option tro len
+                $domCbo.find('option:selected').removeAttr('selected');
+                $domCbo.find("option[value='" + value + "']").attr('selected',
+                        'selected');
+            }
+        }
+
+        function showCombobox(div)
+        {
+            var name = div.getAttribute("id");
+            var level = name.substring(10, name.length);
+            level = parseInt(level);
+            var channelId = div.value;
+
+            var url = getAppRootPath() + "/ajax/getCbListChannelByParent";
+            $.ajax({
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                url: url,
+                data: JSON.stringify(channelId),
+                success: function (data) {
+                    var empty = new Object();
+                    for (var i = level + 1; i < 10; i++)
+                    {
+                        var $hideDiv = $("#cbbChannel" + i);
+                        renderComboBox($hideDiv, empty, $hideDiv[0].firstChild.text);
+                        var hideDiv = document.getElementById("channel" + i);
+                        hideDiv.style.display = "none";
+                    }
+
+                    if (data.channelList.length > 0)
+                    {
+                        var nextDiv = document.getElementById("channel" + (++level));
+                        nextDiv.style.display = "inline-block";
+                        var $nextCombobox = $("#cbbChannel" + level);
+                        renderComboBox($nextCombobox, data.channelList, $nextCombobox[0].firstChild.text);
+
+                        reSelect($nextCombobox, 0);
+                    }
+                    else {
+                        var nextDiv = document.getElementById("channel" + (++level));
+                        nextDiv.style.display = "none";
+                        var $nextCombobox = $("#cbbChannel" + level);
+                        renderComboBox($nextCombobox, empty, $nextCombobox[0].firstChild.text);
+                    }
+                }
+            });
+        }
+
+
+        function hideCombobox(div)
+        {
+            var name = div.getAttribute("id");
+            var level = name.substring(10, name.length);
+
+            level++;
+            var empty = new Object();
+
+            for (var i = level; i < 10; i++)
+            {
+                var $hideDiv = $("#cbbChannel" + i);
+                renderComboBox($hideDiv, empty, $hideDiv[0].firstChild.text);
+                var hideDiv = document.getElementById("channel" + i);
+                hideDiv.style.display = "none";
+            }
+        }
+
+
+        function changeChannel($el) {
+            var channelId = $el.value;
+            showCombobox($el);
+            if (channelId == 0)
+            {
+                hideCombobox($el);
+            }
+            else {
+                showCombobox($el);
+            }
+        }
+
+        function submitForm() {
+            if (validateForm())
+            {
+                frmUser.submit();
+            }
+        }
+
+
+        function validateForm()
+        {
+
+            var tableUserRoleChannel = document.getElementById("tableUserRoleChannel");
+            if (tableUserRoleChannel.rows.length < 1)
+            {
+                alert("Chưa chọn kênh quản lý.");
+                document.getElementById("cbbChannel1").focus();
+                return false;
+            }
+
+            var locationId = document.getElementById("locationId").value;
+            if (locationId == null || locationId == 0)
+            {
+                alert("Chưa chọn tỉnh thành .");
+                document.getElementById("locationId").focus();
+                return false;
+            }
+
+            var userRoleId = document.getElementById("userRoleId").value;
+            if (userRoleId == null || userRoleId == 0)
+            {
+                alert("Chưa chọn vai trò.");
+                document.getElementById("userRoleId").focus();
+                return false;
+            }
+//            var password = document.getElementById("newPassword").value;
+//            var rePassword = document.getElementById("rePassword").value;
+//            if (password.length > 0 && password != rePassword)
+//            {
+//                alert("Mật khẩu nhập lại không đúng.");
+//                document.getElementById("rePassword").focus();
+//                return false;
+//            }
+            var dateString = document.getElementById("birthday").value;
+            if (dateString.length > 0) {
+                var m = dateString.match(/^(((0[1-9]|[12]\d|3[01])\/(0[13578]|1[02])\/((19|[2-9]\d)\d{2}))|((0[1-9]|[12]\d|30)\/(0[13456789]|1[012])\/((19|[2-9]\d)\d{2}))|((0[1-9]|1\d|2[0-8])\/02\/((19|[2-9]\d)\d{2}))|(29\/02\/((1[6-9]|[2-9]\d)(0[48]|[2468][048]|[13579][26])|((16|[2468][048]|[3579][26])00))))$/);
+                if (m == null)
+                {
+                    alert("Ngày sinh không hợp lệ.");
+                    document.getElementById("birthday").focus();
+                    return false;
+                }
+            }
+            return true;
+
+        }
+
+        function addUserRoleChannel() {
+            if (channelSelectedId != 0) {
+                var now = new Date();
+                var date = now.getDate();
+                var month = now.getMonth() + 1;
+                var year = now.getFullYear();
+
+                if ($('#tr_urc_' + channelSelectedId).length === 0) {
+                    var tr = '<tr id="tr_urc_' + channelSelectedId + '">';
+                    tr += '<td style="display:none;">';
+                    tr += '<input type="text" id="urc_channelId" name="urc_channelId" value="' + channelSelectedId + '" />';
+                    
+                    var cbbName = channelCombo.attr("id");
+                    cbbName = cbbName.replace("channelIdList", "");
+
+                    var cbbLevel = parseInt(cbbName);
+                    var channelName = channelCombo.find(":selected").text();
+                    for (var i = cbbLevel - 1; i > -1; i--)
+                    {
+                        $comboParent = $("#channelIdList" + i);
+                        channelName = $comboParent.find(":selected").text()+ "»" + channelName;                        
+                    }
+                    tr += '<input type="text" id="urc_name_' + channelSelectedId + '" name="urc_name_' + channelSelectedId + '" value="' + channelCombo.find(":selected").text() + '" />';
+                    tr += '<input type="text" id="urc_channelName_' + channelSelectedId + '" name="urc_channelName_' + channelSelectedId + '" value="' + channelName + '" />';
+                    tr += '<input type="text" id="urc_channelType_' + channelSelectedId + '" name="urc_channelType_' + channelSelectedId + '" value="' + channelCombo.children()[0].textContent.replace(/-/gi, '') + '" />';
+                    tr += '</td>';
+                    tr += '<td style="text-align: left;">' + channelName + '</td>';
+                    tr += '<td style="text-align: center;">' + channelCombo.children()[0].textContent.replace(/-/gi, '') + '</td>';
+                    tr += '<td style="text-align: center;width: 130px">';
+                    tr += '<input type="text" id="beginAt" name="beginAt_' + channelSelectedId + '" size="14" class="textInput tcal tcalInput" value="' + date + '/' + month + '/' + year + '" />';
+                    tr += '</td>';
+                    tr += '<td style="text-align: center;width:130px">';
+                    tr += '<input type="text" id="endAt" name="endAt_' + channelSelectedId + '" size="14" class="textInput tcal tcalInput"/>';
+                    tr += '</td>';
+                    tr += '<td style="text-align: center">';
+                    tr += '<a href="javascript:deleteUserRoleChannel(' + channelSelectedId + ');" title="Xóa">Xóa</a>';
+                    tr += '</td>';
+                    tr += '</tr>';
+                    $('#tableUserRoleChannel').append($(tr));
+                    f_tcalInit();
+                }
+            } else {
+                alert('Vui lòng chọn kênh quản lý');
+            }
+        }
+        function deleteUserRoleChannel(id) {
+            var tr = $('#tr_urc_' + id);
+            tr.remove();
+        }
+
+        $(document).ready(function () {
+            $('#content').scroll(function () {
+                f_tcalCancel();
+            });
+        });
+
+        $(document).click(function (event) {
+            var name = event.toElement.id;
+            var input = $(event.toElement);
+            if (name === 'birthday' || name === 'beginAt' || name === 'endAt') {
+                $('#tcal').css({"top": input.offset().top + input.height()});
+            }
+        });
+    </script>
+    ]]>
+
+
+    <form:form id="frmUser" name="frmUser"  method="POST" 
+               commandName="user">
+        <form:hidden path="id" />
+
+        <div class="formContent">
+            <table width="100%" cellpadding="0" cellspacing="5"
+                   class="TableThongTinTram">
+                <col width="20%" />
+                <col width="80%" />
+                <tr>
+                    <td></td>
+                    <td>
+                        <c:if test="${not empty overSale and overSale}">
+                            <div class="errorMessage" id="messageArea">
+                                <p>Vượt quá ${saleMax} nhân viên sale của Công ty đăng ký!</p>
+                            </div>
+                        </c:if>
+                        
+                        <c:if test="${createUser}">
+                            <div class="infoMessage" id="messageArea">
+                                <p>Tạo nhân viên thành công.</p>
+                            </div>
+                        </c:if>
+
+
+                        <c:if test="${not empty success or not empty param.success}">
+                            <c:choose>
+                                <c:when test="${success or param.success}">
+                                    <div class="infoMessage" id="messageArea">
+                                        <p>Cập nhật thành công.</p>
+                                    </div>
+                                </c:when>
+                                <c:otherwise>
+                                    <div class="errorMessage" id="messageArea">
+                                        <p>Xãy ra lỗi khi cập nhật.</p>
+                                    </div>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </td>
+                </tr>
+
+
+                <tr class="info">
+                    <td align="right"><strong>Thông tin công ty</strong></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Công ty :(<label class="errorMessage">*</label>):
+                    </td>
+                    <td>
+                        <form:select cssClass="select2_combo" disabled="true" style="width:150px;" path="companyId" onchange="$('#nhanVienCongTy').click();">
+                            <!-- <form:options items="${companyList}" itemValue="id"
+                                          itemLabel="name" /> -->
+                            <form:option value="${companyid}" label="${companyName}" />
+                        </form:select>
+                    </td>
+                </tr>
+
+
+
+                <tr>               
+                    <td align="right" style="vertical-align: top">Kênh quản lý (<label class="errorMessage">*</label>):</td>
+                    <td>
+                        <jsp:include page="../channelSelectorVertical.jspx"></jsp:include>
+                            <a name="checkView" href="javascript:;" onclick="addUserRoleChannel()" class="btn-1"><span><span style="width:30px;">Thêm</span></span></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td >
+                            <table width="99%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td style="display: none"></td>
+                                        <td >Kênh</td>
+                                        <td width="20%">Loại kênh</td>
+                                        <td width="15%">Ngày gia nhập</td>
+                                        <td width="15%">Ngày rời</td>
+                                        <td width="10%">Hành động</td>                                        
+                                    </tr>
+                                </thead>
+                                <tbody id="tableUserRoleChannel">
+                                <c:forEach items="${userRoleChannelList}" var="item">
+                                    <tr id="tr_urc_${item.channels.id}">
+                                        <td style="display:none;">
+                                            <input type="text" id="urc_${item.channels.id}" name="urc_${item.channels.id}" value="${item.id}" />
+                                            <input type="text" id="urc_channelId" name="urc_channelId" value="${item.channels.id}" />
+                                            <input type="text" id="urc_channelName_${item.channels.id}" name="urc_channelName_${item.channels.id}" value="${item.channels.channelName}" />
+                                            <input type="text" id="urc_name_${item.channels.id}" name="urc_name_${item.channels.id}" value="${item.channels.name}" />
+                                            <input type="text" id="urc_channelType_${item.channels.id}" name="urc_channelType_${item.channels.id}" value="${item.channels.channelTypes.name}" />
+                                        </td>
+                                        <td style="text-align: left;">${item.channels.channelName}</td>
+                                        <td style="text-align: center;">${item.channels.channelTypes.name}</td>
+                                        <fmt:formatDate pattern="dd/MM/yyyy" value="${item.beginAt}" var="beginAt" />
+                                        <fmt:formatDate pattern="dd/MM/yyyy" value="${item.endAt}" var="endAt" />
+                                        <td style="text-align: center;width: 130px">
+                                            <input type="text" id="beginAt" name="beginAt_${item.channels.id}" size="14" class="textInput tcal tcalInput" value="${beginAt}" />
+                                        </td>
+                                        <td style="text-align: center;width:130px">
+                                            <input type="text" id="endAt" name="endAt_${item.channels.id}" size="14" class="textInput tcal tcalInput" value="${endAt}" />
+                                        </td>
+                                        <td style="text-align: center">
+                                            <a name="checkView" href="javascript:deleteUserRoleChannel(${item.channels.id});" title="Xóa">Xóa</a>
+                                        </td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+
+
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td align="right">
+                        <label for="locationId" style="display: inline-block; width: 150px;">Tỉnh thành (<label class="errorMessage">*</label>):
+                        </label>
+                    </td>
+                    <td>
+                        <form:select id="locationId" path="locationId" cssClass="select2_combo" style="width:150px">
+                            <form:options items="${provinceList}" itemLabel="name" itemValue="id" />
+                        </form:select>
+                    </td>
+                </tr>
+
+
+                <tr>
+                    <td align="right">Vai trò (<label class="errorMessage">*</label>):
+                    </td>
+                    <td><form:select id="userRoleId" path="userRole.id" cssClass="select2_combo" style="width:150px">               
+                            <form:options items="${userRoleList}" itemValue="id" itemLabel="name" />
+                        </form:select> <form:errors path="userRole.id" cssClass="errorMessage" /></td>
+                </tr>
+
+
+                <tr>
+                    <td>&#160;</td>
+                </tr>
+                <tr class="info">
+                    <td align="right"><strong>Hàng hóa được bán</strong></td>
+                </tr>
+                <tr class="more">
+                    <td align="right">
+                        <label for="">Loại hàng hóa :</label>
+                    </td>
+
+                    <td colspan="3">
+                        <c:set var="select_goodsCategory" scope="request">a_Goods_Category</c:set>
+                        <jsp:include page="../goodsCategorySelector.jspx"></jsp:include>
+                        </td>
+                    </tr>
+
+                    <!-- PHAN **** -->
+
+                    <tr>
+                        <td>&#160;</td>
+                    </tr>
+                    <tr class="info">
+                        <td align="right"><strong>Thông tin đăng nhập</strong></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right">Họ: (<label class="errorMessage">*</label>):
+                        </td>
+                        <td><form:input id="txtLastName" path="lastName" cssClass="textInput mediumWidth" onchange="generUsername()" />
+                        <form:errors path="lastName" cssClass="errorMessage" /></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Tên : (<label class="errorMessage">*</label>):
+                    </td>
+                    <td><form:input id="txtFirstName" path="firstName" cssClass="textInput mediumWidth" onchange="generUsername()" />
+                        <form:errors path="firstName" cssClass="errorMessage" /></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Số thẻ : 
+                    </td>
+                    <td><form:input path="userCode" cssClass="textInput" />
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td align="right">Mã nhân viên :(<label class="errorMessage">*</label>):
+                    </td>
+                    <td>
+                        <form:input id="txtUserName" path="username" cssClass="textInput" readonly="true" />                         
+                        <i id="codeMsg">(Mã đăng nhập) </i>
+                        <form:errors path="username" cssClass="errorMessage" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>&#160;</td>
+                </tr>
+                <tr class="info">
+                    <td align="right"><strong>Thông tin cá nhân</strong></td>
+                </tr>
+                <tr>                    
+                    <td align="right">Ngày sinh :</td>
+                    <fmt:formatDate pattern="dd/MM/yyyy" value="${user.birthday}" var="birthDay" />
+
+
+                    <td>
+                        <form:input id="birthday" path="birthday" cssClass="textInput tcal"
+                                    value="${birthDay}" /> &#160;&#160;&#160;(dd/MM/yyyy) <form:errors
+                                    path="birthday" cssClass="errorMessage" /></td>
+                </tr>
+                <tr>
+                    <td align="right">Giới tính :</td>
+                    <td><form:select path="sex" cssClass="select2_combo" style="width:150px;">
+                            <form:option value="true">Nam</form:option>
+                            <form:option value="false">Nữ</form:option>
+                        </form:select></td>
+                </tr>
+                <tr>
+                    <td align="right">Email :
+                    </td>
+                    <td>
+                        <form:input path="email" cssClass="textInput mediumWidth" />
+                        <form:errors path="email" cssClass="errorMessage" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Điện thoại di động :</td>
+                    <td><form:input path="tel" cssClass="textInput" />
+                        <form:errors path="tel" cssClass="errorMessage" /></td>
+                </tr>
+
+                <tr>
+                    <td align="right">Địa chỉ :</td>
+                    <td><form:input path="address"
+                                cssClass="textInput largestWidth" /></td>
+                </tr>
+
+                <tr>
+                    <td align="right"><label for="isActive">Đang khóa :</label></td>
+                    <c:if test="${user.isActive!=1}">
+                        <td><input  type="checkbox" name="chkIsActive" id="chkIsActive" checked=""/></td>
+                        </c:if>
+                        <c:if test="${user.isActive==1}">
+                        <td><input type="checkbox" name="chkIsActive" id="chkIsActive"/></td>
+                        </c:if>    
+
+                </tr>
+
+                <tr>
+                    <td align="right"><label >Trạng thái :</label></td>
+                    <td><form:select path="statuss.id" cssClass="select2_combo" style="width:150px;">
+                            <form:options items="${statusList}" itemLabel="name" itemValue="id"></form:options>
+                        </form:select></td>
+                </tr>
+
+
+
+
+
+                <tr>
+                    <td>&#160;</td>
+                </tr>
+                <tr>
+                    <td><label> <!-- Empty -->
+                        </label></td>
+                    <td>									
+                        <!-- <sec:authorize ifAnyGranted="ROLE_ADMIN,ROLE_HQ"> -->
+                        <a name="checkView" href="javascript:;"
+                           onclick="submitForm();" class="btn-1"
+                           title="Tạo mới nhân viên"><span><span>Cập nhật</span></span></a>
+                        <!-- </sec:authorize> -->
+                        <a name="checkView" href="javascript:;"
+                           onclick="javascript:document.forms[0].reset();" class="btn-1"
+                           title="Làm lại"><span><span>Reset</span></span></a></td>
+                </tr>
+
+                <tr>
+                    <td>
+                        &#160;
+                        <form:hidden path="companys.id" value="0" />       
+                        <form:hidden path="createdUser" value="0"/>       
+                        <form:hidden path="updatedUser" value="0"/>       
+                        <form:hidden path="deletedUser" value="0"/>       
+                        <form:hidden path="password" value="password"/>
+                    </td>
+
+                </tr>
+            </table>
+        </div> 
+    </form:form>
+
+    <script type="text/javascript">
+        var channelSelectedId = '${channelId}';
+        var channelCombo = $("#channelIdList" + ('${level-1}'));
+    </script>
+
+</div>

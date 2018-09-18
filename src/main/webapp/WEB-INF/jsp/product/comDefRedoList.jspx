@@ -1,0 +1,301 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+
+	<spring:url var="comDefRedoURL" value="/commissionDefRedo/add" />
+	<spring:url var="comDefRedoEditURL" value="/commissionDefRedo/edit" />
+
+	<div id="inner-content">
+	
+	<![CDATA[
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery-1.7.1.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/ajax.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/common.js"></script>
+	<script type="text/javascript" src="${pageContext.request.contextPath}/js/listAgent.js"></script>
+	<script type="text/javascript">
+		var contextPath = "${pageContext.request.contextPath}";
+		
+		function deleteComDefRedo(defId) {
+			if (confirm('Bạn có muốn xóa định nghĩa hoa hồng đã chọn')) {
+				// Delete selected CommissionDefRedo
+				var url = contextPath +"/commissionDefRedo/delete?defId="+defId;
+				$.ajax({type: 'POST', dataType:'json', url: url, success: function(data) {
+					if(data.status!='OK') {
+						alert('Định nghĩa hoa hồng không tồn tại hoặc lỗi truy cập dữ liệu!');
+					}
+					else {
+						$('#'+defId).hide();
+					}
+					}
+				});
+			}
+		}
+		
+	</script>
+	]]>
+	
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span>DANH SÁCH ĐỊNH NGHĨA HOA HỒNG</span>
+			</h2>
+		</div>
+		<div id="content">
+		 
+			<form:form method="POST" id="FrmComDefRedoList" name="FrmComDefRedoList" commandName="FrmComDefRedoList">
+				<input type="hidden" id="page" value="${page}" />
+				<input type="hidden" id="size" value="${size}" />
+				<table width="100%" border="0" cellspacing="3px" cellpadding="0"
+					class="table-1">
+					
+					<tr>
+						<td colspan="5">
+							
+						</td>
+					</tr>
+					
+					<tr>
+						<td>
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="branch" style="width:140px">
+									<form:options items="${branchList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="defType" style="width:140px">
+									<form:options items="${comDefTypeList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+						
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="contract" style="width:140px">
+									<form:options items="${contractList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+								
+							</div>
+						
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="level" style="width:140px">
+									<form:options items="${levelList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+								
+							</div>
+
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="type" style="width:140px">
+									<form:options items="${typeList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="goodsCatId" style="width:140px" onchange="selectCat(this);">
+									<form:options items="${goodsCatList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="goodsId" style="width:140px">
+									<form:options items="${goodsList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							
+							<div style="padding-left: 10px; display: inline;">
+								<form:select path="status" style="width:140px">
+									<form:options items="${statusList}" itemValue="id"
+										itemLabel="name" />
+								</form:select>
+							</div>
+							&#160;&#160;&#160; 
+							
+							<a href="javascript:void(0);" onclick="javascript:document.getElementById('FrmComDefRedoList').submit();" class="btn-1"
+							title="Tìm kết quả"><span><span>Tìm Kiếm</span></span></a>
+
+							<c:choose>
+								<c:when test="${permission > 0}">
+									<a href="${comDefRedoURL}" class="btn-1" title="Thêm định nghĩa hoa hồng">
+										<span><span>Thêm Định Nghĩa</span></span>
+									</a>
+								</c:when>
+								<c:otherwise>
+								</c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+					
+					
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}"
+								page="${page}" size="${size}" submitMethod="POST" formSubmit="FrmComDefRedoList"
+								id="devTopPagination" /></td>
+					</tr>
+					<tr>
+						<td colspan="5">
+							<table width="100%" border="0" cellspacing="0" cellpadding="0"
+								class="table-2">
+								<thead>
+									<tr>
+										<td width="3%">STT</td>
+										<td width="5%">Mã CS</td>
+										<td width="15%">Tên CS</td>
+										<td width="5%">Loại SP/DV</td>
+										<td width="13%">Tên SP/DV</td>
+										<td width="6%">Từ giá (VND)</td>
+										<td width="6%">Đến giá (VND)</td>
+										<!-- <td width="5%">Hoa Hồng</td> -->
+										<td width="4%">Tính Theo</td>
+										<td width="7%">Cấp phát triển</td>
+										<td width="7%">Loại HH</td>
+										<td width="5%">Định Nghĩa</td>
+										<td width="6%">Khu Vực</td>
+										<td width="5%">Trạng thái</td>
+										<c:choose>
+											<c:when test="${permission > 2}">
+												<td width="6%">Hành Động</td>
+											</c:when>
+											<c:otherwise>
+											</c:otherwise>
+										</c:choose>
+									</tr>
+								</thead>
+								<tbody>
+									<c:choose>
+										<c:when test="${not empty comDefRedoList}">
+										<c:forEach items="${comDefRedoList}" var="item" varStatus="status">
+											<tr id="${item.id }">
+												<td align="center">${(page-1)*size+status.count}</td>
+												<td align="center">${item.defCode} </td>
+												<td align="left">${item.defName} </td>
+												<td align="center">${item.goodsCatName}</td>
+												<c:choose>
+													<c:when test="${not empty item.goodsName}">
+														<td align="left">${item.goodsName}</td> 
+													</c:when>
+													<c:otherwise>
+														<td align="center"> Tất Cả </td>
+													</c:otherwise>
+												</c:choose>
+												<td align="center">${item.fromPrice}</td> 
+												<td align="center">${item.toPrice}</td> 
+												<!--  <td>${item.fromPrice}</td>
+												<td>${item.toPrice}</td> -->									
+												<!-- <td align="center">${item.comValue}</td> -->
+												<c:choose>
+													<c:when test="${item.comType == 1}">
+														<td align="center"> % </td>
+													</c:when>
+													<c:otherwise>
+														<td align="center"> VND </td>
+													</c:otherwise>
+												</c:choose>
+												<!--  <td align="center">${item.comLevel}</td> -->
+													<td align="left">Cấp Bán Hàng C${item.comLevel}</td>
+												<c:choose>
+													<c:when test="${item.comContract == 1}">
+														<td align="center"> Duy Trì </td>
+													</c:when>
+													<c:when test="${item.comContract == 2}">
+														<td align="center"> Phát Triển Mới </td>
+													</c:when>
+													<c:otherwise>
+														<td align="center"></td>
+													</c:otherwise>
+												</c:choose>
+												<c:choose>
+													<c:when test="${item.comDefType == 1}">
+														<td align="center"> Hoa Hồng </td>
+													</c:when>
+													<c:when test="${item.comDefType == 2}">
+														<td align="center"> Chiết Khấu </td>
+													</c:when>
+													<c:otherwise>
+														<td></td>
+													</c:otherwise>
+												</c:choose>
+												<c:choose>
+													<c:when test="${item.branchId == 1}">
+														<td align="center"> Chi Nhánh 1 </td>
+													</c:when>
+													<c:when test="${item.branchId == 12}">
+														<td align="center"> Chi Nhánh 2 </td>
+													</c:when>
+													<c:when test="${item.branchId == 13}">
+														<td align="center"> Chi Nhánh 3 </td>
+													</c:when>
+													<c:when test="${item.branchId == 14}">
+														<td align="center"> Chi Nhánh 4 </td>
+													</c:when>
+													<c:when test="${item.branchId == 15}">
+														<td align="center"> Chi Nhánh 5 </td>
+													</c:when>
+													<c:when test="${item.branchId == 16}">
+														<td align="center"> Chi Nhánh 6 </td>
+													</c:when>
+													<c:otherwise>
+														<td align="center"> Trung Tâm</td>
+													</c:otherwise>
+												</c:choose>	
+												<c:choose>
+													<c:when test="${item.status}">
+														<td align="center">Sử Dụng</td>
+													</c:when>
+													<c:otherwise>
+														<td align="center">Khóa</td>
+													</c:otherwise>
+												</c:choose>
+												<c:choose>
+													<c:when test="${permission > 2}">
+													<td align="center">
+													<a href="${comDefRedoEditURL}/${item.getId()}" 
+														class="redTxt" title="Xem chi tiết">Xem
+													</a>
+													&#160;|&#160;
+													<a href="javascript:deleteComDefRedo('${item.id}');" 
+														class="redTxt" title="Xóa Định Nghĩa">Hủy</a>
+													</td>
+													</c:when>
+													<c:otherwise>
+													</c:otherwise>
+											</c:choose>
+											</tr>
+										</c:forEach>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<spring:url value="13" var="col"></spring:url>
+												<td colspan="${col}" align="center">Không có dữ liệu</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+								</tbody>
+							</table>
+
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="FrmComDefRedoList"
+								page="${page}" size="${size}" id="devBottomPagination" /></td>
+					</tr>
+				</table>
+			</form:form>
+		
+		</div>
+	</div>
+</div>

@@ -1,0 +1,349 @@
+<div xmlns:spring="http://www.springframework.org/tags"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:util="urn:jsptagdir:/WEB-INF/tags/util"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:jsp="http://java.sun.com/JSP/Page" version="2.0"
+	class="TableWrapper"
+	xmlns:sec="http://www.springframework.org/security/tags" 
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:form="http://www.springframework.org/tags/form">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+        <spring:url var="scriptsFolder" value="/resources/scripts" />
+        <spring:url var="imagesFolder" value="/resources/images" />
+        <spring:url var="devDetailURL" value="/device/detail" />	
+	<spring:url var="userDetailURL" value="/user/detail" />
+	
+	<spring:url var="addURL" value="/ctkm/add"/>
+	<spring:url var="editURL" value="/ctkm/edit" />
+	<spring:url var="urlOptionLink" value="/api/ctkm" />
+	<spring:url var="delURL" value="/ctkm/del" />
+	<spring:url var="LIST_URL" value="/promotion/rp/list" />
+        <spring:url var="RP_URL" value="/promotion/rp/export01" />
+        <spring:url var="RP_ACCUMU_URL" value="/promotion/rp/export02" />
+        <spring:url var="RP_CONFLICT_URL" value="/promotion/rp/export03" />
+
+	
+
+<![CDATA[
+<script type="text/javascript" src="${jsFolder}/script.js"></script>
+<script type="text/javascript">
+
+function viewResults() {
+	var valid = true;			
+	if (valid) {
+	    var url = '${LIST_URL}';	
+	    document.forms['ctkmForm'].action = url;
+		$('#ctkmForm').submit();
+	}		
+}
+
+
+function exportResults() {
+	var valid = true;			
+	if (valid) {
+	    var url = '${RP_URL}';	
+	    document.forms['ctkmForm'].action = url;
+		$('#ctkmForm').submit();
+            flag = finishDownload(true);
+	}		
+}	
+
+function exportAccumuResults() {
+	var valid = true;			
+	if (valid) {
+	    var url = '${RP_ACCUMU_URL}';	
+	    document.forms['ctkmForm'].action = url;
+		$('#ctkmForm').submit();
+            flag = finishDownload(true);
+	}		
+}
+
+function exportConflictResults() {
+	var valid = true;			
+	if (valid) {
+	    var url = '${RP_CONFLICT_URL}';	
+	    document.forms['ctkmForm'].action = url;
+		$('#ctkmForm').submit();
+            flag = finishDownload(true);
+	}		
+}
+
+function renderComboBoxScope(comboBoxSelector, items, label) {
+	if(items && items!=null && items.length>0){
+		var $domCbo = $(comboBoxSelector);
+		renderComboBoxEmptyScope(comboBoxSelector, label);
+		for ( var i = 0; i < items.length; i++) {
+			var item = items[i];
+			var $domOption = $("<option value = '" + item.id + "'>" + item.val
+					+ "</option>");
+			$domCbo.append($domOption);
+		}
+	}
+	
+}
+function renderComboBoxEmptyScope(comboBoxSelector, label) {
+	if('#asmId'==comboBoxSelector){
+		renderNoneComboBoxEmptyScope(comboBoxSelector, label);
+	}else{
+		var $domCbo = $(comboBoxSelector);
+		$domCbo.empty();// remove old options
+		var $domOption = $("<option value = '0'  disabled='disabled'>" + label + "</option>");
+		$domCbo.append($domOption);
+		$domCbo.select2();
+	}	
+}
+
+function renderNoneComboBoxEmptyScope(comboBoxSelector, label) {
+	var $domCbo = $(comboBoxSelector);
+	$domCbo.empty();// remove old options
+	var $domOption = $("<option value = '0'>" + label + "</option>");
+	$domCbo.append($domOption);
+	$domCbo.select2();
+}
+
+function selectCategory(categoryId) {
+	var urlLink='${urlOptionLink}';
+	var isSubmit=0;
+	if(categoryId){
+		var categoryIdValue = $(categoryId).val();	
+		if(categoryIdValue!="0"){
+			isSubmit=1;
+			urlLink=urlLink+"/goods/"+categoryIdValue;
+			if(isSubmit>0){
+				$.ajax({
+					type : 'GET',
+					url : urlLink,
+					dataType: 'json',
+					success : function(data) {							
+						if(data && data!=null && data.length>0){
+							renderComboBoxScope('#goodsIdList', data, '--Chọn sản phẩm--');	
+						}else{
+							renderComboBoxEmptyScope('#goodsIdList', '--Chọn sản phẩm--');							
+						}								
+					}
+				});
+			}
+		}
+	}
+}
+
+function selectScope(rsmId, asmId, provinceId, nppId) {
+	var urlLink='${urlOptionLink}';
+	var isSubmit=0;
+	if(rsmId && asmId && provinceId && nppId){
+		var multipleProvinceValues = $(provinceId).val() || [];
+		var multipleNppValues = $(nppId).val() || [];
+		multipleProvinceValues=multipleProvinceValues.join(",");		
+		multipleNppValues=multipleNppValues.join(",");
+		if(multipleProvinceValues!="" && multipleNppValues!=""){
+			isSubmit=5;
+			var rsmIdValue = $(rsmId).val();	
+			var asmIdValue = $(asmId).val();	
+			urlLink=urlLink+"/"+rsmIdValue+"/"+asmIdValue+"/"+multipleProvinceValues+"/"+multipleNppValues;
+		}		
+	}else if(rsmId && asmId && provinceId){
+		var multipleProvinceValues = $(provinceId).val() || [];
+		if(multipleProvinceValues!=""){
+			isSubmit=4;
+			multipleProvinceValues=multipleProvinceValues.join(",");
+			var rsmIdValue = $(rsmId).val();	
+			var asmIdValue = $(asmId).val();	
+			urlLink=urlLink+"/"+rsmIdValue+"/"+asmIdValue+"/"+multipleProvinceValues+"/0";
+		}		
+	}else if(rsmId && asmId && nppId){
+		var multipleNppValues = $(nppId).val() || [];
+		if(multipleNppValues!=""){
+			isSubmit=3;
+			multipleNppValues=multipleNppValues.join(",");
+			var rsmIdValue = $(rsmId).val();	
+			var asmIdValue = $(asmId).val();
+			urlLink=urlLink+"/"+rsmIdValue+"/"+asmIdValue+"/0/"+multipleNppValues;
+		}		
+	}else if(rsmId && asmId){	
+		var rsmIdValue = $(rsmId).val();	
+		var asmIdValue = $(asmId).val();	
+		if(asmIdValue!="0"){
+			isSubmit=2;
+			urlLink=urlLink+"/"+rsmIdValue+"/"+asmIdValue+"/0/0";
+		}		
+	}else if(rsmId){	
+		var rsmIdValue = $(rsmId).val();	
+		if(rsmIdValue!="0"){
+			isSubmit=1;
+			urlLink=urlLink+"/"+rsmIdValue+"/0/0/0";
+		}
+		
+	}
+	if(isSubmit>0){
+		$.ajax({
+			type : 'GET',
+			url : urlLink,
+			dataType: 'json',
+			success : function(data) {	
+				if(isSubmit==1){
+					if(data.asmList && data.asmList!=null && data.asmList.length>0){
+						renderComboBoxScope('#asmId', data.asmList, '--Chọn Khu Vực --');	
+					}else{
+						renderComboBoxEmptyScope('#asmId', '--Chọn Khu Vực --');
+						renderComboBoxEmptyScope('#provinceIdList','--Chọn Tỉnh--');
+						renderComboBoxEmptyScope('#distributorsIdList', '--Chọn NPP--');
+						renderComboBoxEmptyScope('#retailerIdList', '--Chọn NVBH--');
+					}	
+				}else if(isSubmit==2){
+					if(data.provinceList && data.provinceList!=null && data.provinceList.length>0){
+						renderComboBoxScope('#provinceIdList', data.provinceList, '--Chọn Tỉnh--');	
+						renderComboBoxScope('#distributorsIdList', data.nppList, '--Chọn NPP--');
+						renderComboBoxScope('#retailerIdList', data.salemanList, '--Chọn NVBH--');
+					}else{
+						renderComboBoxEmptyScope('#provinceIdList','--Chọn Tỉnh--');
+						renderComboBoxEmptyScope('#distributorsIdList', '--Chọn NPP--');
+						renderComboBoxEmptyScope('#retailerIdList', '--Chọn NVBH--');
+					}
+				}else if(isSubmit==4){
+					if(data.salemanList && data.salemanList!=null && data.salemanList.length>0){
+						renderComboBoxScope('#retailerIdList', data.salemanList, '--Chọn NVBH--');
+					}else{
+						renderComboBoxEmptyScope('#retailerIdList', '--Chọn NVBH--');
+					}
+					if(data.nppList && data.nppList!=null && data.nppList.length>0){
+						renderComboBoxScope('#distributorsIdList', data.nppList, '--Chọn NPP--');
+					}else{
+						renderComboBoxEmptyScope('#distributorsIdList', '--Chọn NPP--');
+					}
+				}else if(isSubmit==3 || isSubmit==5){
+					if(data.salemanList && data.salemanList!=null && data.salemanList.length>0){
+						renderComboBoxScope('#retailerIdList', data.salemanList, '--Chọn NVBH--');
+					}else{
+						renderComboBoxEmptyScope('#retailerIdList', '--Chọn NVBH--');
+					}
+				}				
+			}
+		});
+	}
+}
+</script>
+<script type="text/javascript" src="${scriptsFolder}/device.js?v=1"></script>
+<script type="text/javascript" src="${scriptsFolder}/commonfilter.js?v=2"></script>
+]]>
+
+	<div id="inner-content">
+		<span class="bor-left"><img src="${imagesFolder}/dummy.gif"
+			alt="" /></span>
+		<div class="content-title">
+			<h2>
+				<span> BÁO CÁO CHƯƠNG TRÌNH KHUYẾN</span>
+			</h2>
+		</div>
+		<div id="content">
+                    <form:form id="ctkmForm" action="${LIST_URL}" method="POST" commandName="ctkmForm" >
+                <input type="hidden" id="page" value="${page}" />
+                <input type="hidden" id="size" value="${size}" />
+                <table width="100%" border="0" cellspacing="3px" cellpadding="0"
+                       class="table-1">					
+                    <tr>
+                        <td colspan="5" align="right">
+                            <jsp:include page="../promotionSelector.jspx" />
+                        </td>
+                    </tr>
+                    <tr height="28">
+		<td align="right"></td>									
+		<td colspan="4" align="left">&#160;&#160;
+<!--                 
+                    <a href="${RP_URL}" class="btn-1" title="Xuất báo cáo"><span><span>Xuất báo cáo theo đơn hàng</span></span></a>
+                    <a href="${RP_ACCUMU_URL}" class="btn-1" title="Xuất báo cáo tích lũy"><span><span>Xuất báo cáo tích lũy</span></span></a>
+                    <a href="${RP_CONFLICT_URL}" class="btn-1" title="Xuất báo cáo trùng KM"><span><span>Xuất báo cáo trùng KM</span></span></a>
+                -->
+                <a href="javascript:;" class="btn-1" onclick="javascript:exportResults();" 
+                    title="Xuất báo cáo"><span><span>Xuất báo cáo theo đơn hàng</span></span></a>
+		<a href="javascript:;" class="btn-1" onclick="javascript:exportAccumuResults();" 
+                    title="Xuất báo cáo tích lũy"><span><span>Xuất báo cáo tích lũy</span></span></a>
+                <a href="javascript:;" class="btn-1" onclick="javascript:exportConflictResults();" 
+                    title="Xuất báo cáo trùng KM"><span><span>Xuất báo cáo trùng KM</span></span></a>										
+									
+                </td>
+		</tr>	
+                    <tr>
+                        <td colspan="5"><util:pagination maxPages="${maxPages}"
+                                         page="${page}" size="${size}" submitMethod="POST" listingURL="" formSubmit="ctkmForm"
+                                         id="devTopPagination" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">
+                            <table width="100%" border="0" cellspacing="0" cellpadding="0"
+                                   class="table-2">
+                                <thead>
+                                    <tr>
+                                        <td width="5%">STT</td>
+                                        <td width="15%">Tên CTKM</td>
+                                        <td width="15%">Mô tả</td>
+                                        <td width="10%">Loại SP</td>
+                                        <td width="15%">Tên SP</td>
+                                        <td width="15%">KM</td>
+                                        <td width="5%">Cần Approve</td>
+                                        <td width="5%">Bắt đầu</td>
+                                        <td width="5%">Kết thúc</td>	
+                                        <td width="5%">Trạng thái</td>	
+                                        <td width="5%">Cập nhật</td>								
+                                    </tr>	
+                                </thead>
+                                <c:choose>
+                                    <c:when test="${not empty listPromotion}">
+                                        <spring:eval var="promotionImg" expression="@systemPros['system.promotionImage']" />
+                                        <tbody>
+                                            <c:forEach items="${listPromotion}" var="item" varStatus="status">
+                                                <tr id="tr_${item.id}">
+                                                    <td align="center">${(page-1)*size+status.count}</td>											
+                                                    <td><a href="${editURL}/${item.id}">${item.name}</a> 										
+                                                    </td>
+                                                    <td>${item.description}</td>
+                                                    <td>${item.goodsCategorys.name}</td>
+                                                    <td>
+                                                        <c:forEach items="${item.goodsList}" var="goods">
+                                                            -  ${goods.name}<br />
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td>
+                                                        <c:forEach items="${item.conditionString}" var="str">
+                                                            ● ${str}<br />
+                                                        </c:forEach>
+                                                    </td>
+                                                    <td>${item.approveRoles.name}</td>
+                                                    <td><fmt:formatDate value="${item.startDate}" type="both" pattern="dd/MM/yyyy" /></td>
+                                                    <td><fmt:formatDate value="${item.endDate}" type="both" pattern="dd/MM/yyyy" /></td>	
+                                                    <td>
+                                                        ${item.statuss.name}
+                                                    </td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${item.statuss.id==22}">														
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                <a class="redTxt" href="javascript:;" onclick="del(${item.id});">Xóa</a>
+                                                            </c:otherwise>
+                                                        </c:choose>												
+                                                    </td>										
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="11" align="center">Không có dữ liệu</td>
+                                            </tr>
+                                        </tbody>	
+                                    </c:otherwise>
+                                </c:choose>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="11"><util:pagination maxPages="${maxPages}" submitMethod="POST" formSubmit="ctkmForm"
+                                         page="${page}" size="${size}" id="devBottomPagination"  listingURL="" /></td>
+                    </tr>
+                </table>
+            </form:form>
+		</div>
+	</div>
+</div>

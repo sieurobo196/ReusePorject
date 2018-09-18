@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<root>
+    <!--only amdin company-->
+    <url patern="/workflow,/unit,/company,
+/settings/list/wardForm,
+/category/delete,/category/add,/category/create,/category/update,
+/product/add,/product/delete,/product/update,/product/create,
+/user/add,/user/lock,/user/resetPassword,
+/channelType/create,channelType/delete,
+/channel/delete,/channel/create"
+         role="any(USER_ROLE_ADMIN_COMPANY)"/>
+    
+    <!--only admin company | POST-->
+    <url patern="/settings/location/wardFormEdit,
+/user/detail,
+/planofsales/edit,
+/channelType/view"   
+         role="any(USER_ROLE_ADMIN_COMPANY)" method="POST" />
+    
+    <!--only admin company,admin channel--> 
+    <url patern="/settings/list/wards,/settings/location/wardFormEdit,
+/category/list,/category/view,/product/list,/product/view,
+/user/detail,
+/device/add,/device/create,/version/detail,
+/device/lock,/device/delete,/device/update,/device/GPSsetting,
+/planofsales/create" 
+         role="any(USER_ROLE_ADMIN_COMPANY,USER_ROLE_ADMIN_CHANNEL)"/>
+    
+    <!--only admin company,admin channel,salesup--> 
+    <url patern="/plan/create,
+/user/list,
+/pos/add,
+/plan/edit,/plan/delete,/plan/copy,/plan/printQRCode"
+         role="any(USER_ROLE_ADMIN_COMPANY,USER_ROLE_ADMIN_CHANNEL,USER_ROLE_SALES_SUPERVISOR)"/>
+    
+    <!-- only admin company,admin channel,sales Sup | POS -->
+    <url patern="/pos/sales"
+         role="any(USER_ROLE_ADMIN_COMPANY,USER_ROLE_ADMIN_CHANNEL,USER_ROLE_SALES_SUPERVISOR)" method="POS"/>
+    
+    <!-- only admin company,admin channel,assistane -->
+    <url patern="/map/salesSup"
+         role="any(USER_ROLE_ADMIN_COMPANY,USER_ROLE_ADMIN_CHANNEL,USER_ROLE_ASSISTANT)"/>
+    
+    
+    <!--only admin company,SalesSup--> 
+    <url patern="/order/cancel,/order/do,/order/update" 
+         role="any(USER_ROLE_ADMIN_COMPANY,USER_ROLE_SALES_SUPERVISOR)"/>
+  
+    
+    <!--except SaleLeader-->     
+    <url patern="/order/list,/order/view,
+/pos/list,/pos/sales,/newPos/list" 
+         role="except(USER_ROLE_SALES_LEADER)"/>
+    
+    <!--except Assisstant-->     
+    <url patern="/setOrder/create,/channel/create,/channel/edit,/channel/delete" 
+         role="except(USER_ROLE_ASSISTANT)"/>
+   
+    <package patern="/plan,/map,/order/list,/plan/import,/ajax/,/workflow,
+/company,/unit,/settings/list/ward,/category,/channel,/pos/,/newPos/,/report/rpt006/,
+/user/,/userRole,/product,/device,/version,/settings/changepasswd,/settings/location/"
+             except="/pos/diary,/pos/customercare"
+             type="1"/>
+    
+    <package patern="/plan,/map,/order/list,/plan/import,/workflow,
+/company,/unit,/settings/list/ward,/category,/ajax/,
+/product,/device,/version,/settings/changepasswd,/settings/location/,
+/channelType,/channel,/pos/,/newPos/,/salestrans,/report/rpt006,
+/user/,/userRole" 
+             except=""
+             type="2"/>
+    <package patern="*" 
+             except=""
+             type="3"/>
+    
+</root>
